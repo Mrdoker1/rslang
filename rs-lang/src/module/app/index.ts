@@ -2,7 +2,12 @@
 import Data from '../../module/api';
 
 export default class App {
-    constructor() {}
+    data: Data;
+    constructor(base: string) {
+        this.data = new Data();
+    }
 
-    start() {}
+    start() {
+        console.log('start!');
+    }
 }
