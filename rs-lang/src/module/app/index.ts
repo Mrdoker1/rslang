@@ -1,6 +1,12 @@
 //API
 import Data from '../../module/api';
 
+//UI
+import Render from '../ui';
+
+//Utils
+import getHTMLElement from '../../utils/getHTMLElement';
+
 //Interface
 import IUserBody from '../interface/IUserBody';
 
@@ -16,7 +22,7 @@ export default class App {
             email: 'test_2@gmail.com',
             password: '12345678',
         };
-
+        this.createPage();
         // let a = await this.data.createUser(user);
 
         // if (typeof a == 'number') {
@@ -66,5 +72,13 @@ export default class App {
         // } else {
         //     console.log(login);
         // }
+    }
+
+    createPage() {
+        const render = new Render();
+        const header = render.header();
+        const body = getHTMLElement(document.querySelector('body'));
+        body.appendChild(header);
+        header.innerHTML += `<h1>RSLang</h1>`;
     }
 }
