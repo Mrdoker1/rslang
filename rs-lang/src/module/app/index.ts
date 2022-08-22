@@ -23,62 +23,7 @@ export default class App {
     }
 
     async start() {
-        let user = {
-            name: 'test_2',
-            email: 'test_2@gmail.com',
-            password: '12345678',
-        };
         this.createPage();
-        // let a = await this.data.createUser(user);
-
-        // if (typeof a == 'number') {
-        //     console.log('error');
-        // } else {
-        //     console.log(a.id);
-        // }
-
-        // const login = await this.data.login({ email: 'test_2@gmail.com', password: '12345678' });
-
-        // if (typeof login != 'number') {
-        //     console.log(
-        //         await this.data.updateUser(
-        //             '63026adf900d1f0016796405',
-        //             {
-        //                 email: 'test_2@gmail.com',
-        //                 password: '12345678',
-        //             },
-        //             login.token
-        //         )
-        //     );
-        // } else {
-        //     console.log(login);
-        // }
-
-        // const login = await this.data.login({ email: 'test_2@gmail.com', password: '12345678' });
-
-        // if (typeof login != 'number') {
-        //     console.log(await this.data.deleteUser('63027dad900d1f0016796408', login.token));
-        // } else {
-        //     console.log(login);
-        // }
-
-        // const login = await this.data.login({ email: 'test_2@gmail.com', password: '12345678' });
-
-        // if (typeof login != 'number') {
-        //     console.log(login);
-        //     console.log(await this.data.updateToken('63027fb4900d1f001679640c', login.refreshToken));
-        // } else {
-        //     console.log(login);
-        // }
-
-        // const login = await this.data.login({ email: 'test_2@gmail.com', password: '12345678' });
-
-        // if (typeof login != 'number') {
-        //     console.log(await this.data.getUserWords('63027fb4900d1f001679640c', login.token));
-        // } else {
-        //     console.log(login);
-        // }
-
         this.initRouter();
     }
 
@@ -145,7 +90,7 @@ export default class App {
     }
 
     showBookPage(group: number, page: number) {
-        const body = getHTMLElement(document.querySelector('body'));
+        const body = getHTMLElement(document.body);
         let nextPage;
         let nextDisabled;
         if (page >= 30) {
@@ -175,7 +120,7 @@ export default class App {
     }
 
     showGames() {
-        const body = getHTMLElement(document.querySelector('body'));
+        const body = getHTMLElement(document.body);
         body.innerHTML = `
             <h2>Игры</h2>
             <a href="/">Главная</a>
@@ -185,7 +130,7 @@ export default class App {
     }
 
     showStats() {
-        const body = getHTMLElement(document.querySelector('body'));
+        const body = getHTMLElement(document.body);
         body.innerHTML = `
             <h2>Статистика</h2>
             <a href="/">Главная</a>
@@ -193,7 +138,7 @@ export default class App {
     }
 
     showSprint() {
-        const body = getHTMLElement(document.querySelector('body'));
+        const body = getHTMLElement(document.body);
         body.innerHTML = `
             <h2>Игра Спринт</h2>
             <a href="/">Главная</a>
@@ -201,7 +146,7 @@ export default class App {
     }
 
     showAudioCall() {
-        const body = getHTMLElement(document.querySelector('body'));
+        const body = getHTMLElement(document.body);
         body.innerHTML = `
             <h2>Игра Аудио-вызов</h2>
             <a href="/">Главная</a>
