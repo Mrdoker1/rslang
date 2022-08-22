@@ -1,0 +1,29 @@
+a {
+  text-decoration: none;
+  color: #fff;
+  padding: 3px 5px;
+  margin: 5px;
+  background-color: #333;
+  transition: var(--trans);
+  border-radius: 6px;
+  user-select: none;
+  display: inline-block;
+}
+
+a:visited {
+  color: #fff;
+}
+
+a:hover {
+  background-color: #444;
+}
+
+a:active {
+  transform: translateY(1px);
+}
+
+.no-link {
+  pointer-events: none;
+  color: #666;
+  background-color: #999;
+}
