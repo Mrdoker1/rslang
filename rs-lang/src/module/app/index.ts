@@ -30,7 +30,7 @@ export default class App {
     createPage() {
         const render = new Render();
         const header = render.header();
-        const body = getHTMLElement(document.querySelector('body'));
+        const body = getHTMLElement(document.body);
         body.appendChild(header);
         header.innerHTML += `<h1>RSLang</h1>`;
     }
@@ -68,7 +68,7 @@ export default class App {
     }
 
     showMain() {
-        const body = getHTMLElement(document.querySelector('body'));
+        const body = getHTMLElement(document.body);
         body.innerHTML = `
             <h2>Главная</h2>
             <a href="/">Главная</a>
@@ -79,7 +79,7 @@ export default class App {
     }
 
     showBook() {
-        const body = getHTMLElement(document.querySelector('body'));
+        const body = getHTMLElement(document.body);
         body.innerHTML = `
             <h2>Учебник</h2>
             <a href="/">Главная</a>
