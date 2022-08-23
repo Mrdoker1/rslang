@@ -14,24 +14,24 @@ export default class Render {
         <div class="header__menu">
             <ul class="header__menu-items">
                 <li class="header__menu-item">
-                    <a href="#">Главная</a>
+                    <a href="/">Главная</a>
                 </li>
                 <li class="header__menu-item">
-                    <a href="#">Учебник</a>
+                    <a href="/book">Учебник</a>
                 </li>
                 <li class="header__menu-item dropdown">
-                    <a href="#">Игры</a>
+                    <a href="/games">Игры</a>
                     <ul class="dropdown__menu">
                       <li class="dropdown__menu-item">
-                          <a href="#">Игра 1</a>
+                          <a href="/games/sprint">Играть в Спринт</a>
                       </li>
                       <li class="dropdown__menu-item">
-                          <a href="#">Игра 2</a>
+                          <a href="/games/audio-call">Играть в Аудио-вызов</a>
                       </li>
                     </ul>
                 </li>
                 <li class="header__menu-item">
-                    <a href="#">Статистика</a>
+                    <a href="/stats">Статистика</a>
                 </li>
                 <li class="header__menu-item">
                     <a href="#">Иконка авторизации</a>
@@ -183,13 +183,13 @@ export default class Render {
             <h3 class="footer__menu-title">Меню</h3>
             <ul class="footer__menu-items">
                 <li class="footer__menu-item">
-                    <a href="#">Главная</a>
+                    <a href="/">Главная</a>
                 </li>
                 <li class="footer__menu-item">
-                    <a href="#">Учебник</a>
+                    <a href="/book">Учебник</a>
                 </li>
                 <li class="footer__menu-item">
-                    <a href="#">Статистика</a>
+                    <a href="/stats">Статистика</a>
                 </li>
             </ul>
         </div>
@@ -209,5 +209,57 @@ export default class Render {
         </div>
         `;
         return footer;
+    }
+
+    //Pages
+    pageBook() {
+        const pageBook = document.createElement('div');
+        pageBook.classList.add('page__book');
+        const pageBookContainer = document.createElement('div');
+        pageBookContainer.classList.add('container');
+        pageBookContainer.appendChild(pageBook);
+        pageBook.innerHTML += `<h2>Учебник</h2>`;
+        return pageBookContainer;
+    }
+
+    pageGames() {
+        const pageGames = document.createElement('div');
+        pageGames.classList.add('page__games');
+        const pageGamesContainer = document.createElement('div');
+        pageGamesContainer.classList.add('container');
+        pageGamesContainer.appendChild(pageGames);
+        pageGames.innerHTML += `<h2>Игры</h2>`;
+        return pageGamesContainer;
+    }
+
+    pageStats() {
+        const pageStats = document.createElement('div');
+        pageStats.classList.add('page__stats');
+        const pageStatsContainer = document.createElement('div');
+        pageStatsContainer.classList.add('container');
+        pageStatsContainer.appendChild(pageStats);
+        pageStats.innerHTML += `<h2>Статистика</h2>`;
+        return pageStatsContainer;
+    }
+
+    //Games
+    gameSprint() {
+        const gameSprint = document.createElement('div');
+        gameSprint.classList.add('game__sprint');
+        const gameSprintContainer = document.createElement('div');
+        gameSprintContainer.classList.add('container');
+        gameSprintContainer.appendChild(gameSprint);
+        gameSprint.innerHTML += `<h2>Игра спринт</h2>`;
+        return gameSprintContainer;
+    }
+
+    gameAudioCall() {
+        const gameAudioCall = document.createElement('div');
+        gameAudioCall.classList.add('game__audio-call');
+        const gameAudioCallContainer = document.createElement('div');
+        gameAudioCallContainer.classList.add('container');
+        gameAudioCallContainer.appendChild(gameAudioCall);
+        gameAudioCall.innerHTML += `<h2>Игра аудио-вызов</h2>`;
+        return gameAudioCallContainer;
     }
 }

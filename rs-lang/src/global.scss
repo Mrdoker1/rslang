@@ -34,11 +34,19 @@ section {
 }
 
 button {
-    padding: 1rem 2rem;
+    padding: 5px 20px;
     border: 2px solid transparent;
+    border-radius: 2px;
     background-color: $color-background-primary;
     color: $color-secondary;
     font: $roboto;
+    transition: $transition-2;
+    cursor: pointer;
+    &:hover {
+        background: $color-background-white;
+        color: $color-primary;
+        border: 2px solid $color-primary;
+    }
 }
 
 .bttn--transparent {
@@ -46,8 +54,3 @@ button {
     color: $color-primary;
     border: 2px solid $color-primary;
 }
-
-
-
-
-

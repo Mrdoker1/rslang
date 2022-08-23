@@ -32,16 +32,28 @@ export default class App {
     }
 
     async start() {
-        this.createPage();
+        //this.createPage();
         this.initRouter();
     }
 
     createPage() {
         const render = new Render();
         const header = render.header();
-        const body = getHTMLElement(document.body);
+        const main = render.main();
+        const sectionSplash = render.sectionSplash();
+        const sectionDevelovers = render.sectionDevelovers();
+        const sectionBenefits = render.sectionBenefits();
+        const sectionGames = render.sectionGames();
+        const footer = render.footer();
+        const body = getHTMLElement(document.querySelector('body'));
+
         body.appendChild(header);
-        header.innerHTML += `<h1>RSLang</h1>`;
+        body.appendChild(main);
+        main.appendChild(sectionSplash);
+        main.appendChild(sectionDevelovers);
+        main.appendChild(sectionBenefits);
+        main.appendChild(sectionGames);
+        body.appendChild(footer);
     }
 
     initRouter() {
@@ -77,25 +89,22 @@ export default class App {
     }
 
     showMain() {
-        const body = getHTMLElement(document.body);
-        body.innerHTML = `
-            <h2>Главная</h2>
-            <a href="/">Главная</a>
-            <a href="/book">Учебник</a>
-            <a href="/games">Игры</a>
-            <a href="/stats">Статистика</a>
-        `;
+        document.body.innerHTML = '';
+        this.createPage();
     }
 
     showBook() {
-        const body = getHTMLElement(document.body);
-        body.innerHTML = `
-            <h2>Учебник</h2>
-            <a href="/">Главная</a>
-            <a href="/book/1/1">Первый раздел</a>
-            <a href="/book/2/1">Второй раздел</a>
-            <a href="/book/3/1>Третий раздел</a>
-        `;
+        document.body.innerHTML = '';
+        const render = new Render();
+        const header = render.header();
+        const footer = render.footer();
+        const pageBook = render.pageBook();
+        const main = render.main();
+        const body = getHTMLElement(document.querySelector('body'));
+        body.appendChild(header);
+        body.appendChild(main);
+        main.appendChild(pageBook);
+        body.appendChild(footer);
     }
 
     showBookPage(group: number, page: number) {
@@ -129,36 +138,58 @@ export default class App {
     }
 
     showGames() {
-        const body = getHTMLElement(document.body);
-        body.innerHTML = `
-            <h2>Игры</h2>
-            <a href="/">Главная</a>
-            <a href="/games/sprint">Играть в Спринт</a>
-            <a href="/games/audio-call">Играть в Аудио-вызов</a>
-        `;
+        document.body.innerHTML = '';
+        const render = new Render();
+        const header = render.header();
+        const footer = render.footer();
+        const pageGames = render.pageGames();
+        const main = render.main();
+        const body = getHTMLElement(document.querySelector('body'));
+        body.appendChild(header);
+        body.appendChild(main);
+        main.appendChild(pageGames);
+        body.appendChild(footer);
     }
 
     showStats() {
-        const body = getHTMLElement(document.body);
-        body.innerHTML = `
-            <h2>Статистика</h2>
-            <a href="/">Главная</a>
-        `;
+        document.body.innerHTML = '';
+        const render = new Render();
+        const header = render.header();
+        const footer = render.footer();
+        const pageStats = render.pageStats();
+        const main = render.main();
+        const body = getHTMLElement(document.querySelector('body'));
+        body.appendChild(header);
+        body.appendChild(main);
+        main.appendChild(pageStats);
+        body.appendChild(footer);
     }
 
     showSprint() {
-        const body = getHTMLElement(document.body);
-        body.innerHTML = `
-            <h2>Игра Спринт</h2>
-            <a href="/">Главная</a>
-        `;
+        document.body.innerHTML = '';
+        const render = new Render();
+        const header = render.header();
+        const footer = render.footer();
+        const gameSprint = render.gameSprint();
+        const main = render.main();
+        const body = getHTMLElement(document.querySelector('body'));
+        body.appendChild(header);
+        body.appendChild(main);
+        main.appendChild(gameSprint);
+        body.appendChild(footer);
     }
 
     showAudioCall() {
-        const body = getHTMLElement(document.body);
-        body.innerHTML = `
-            <h2>Игра Аудио-вызов</h2>
-            <a href="/">Главная</a>
-        `;
+        document.body.innerHTML = '';
+        const render = new Render();
+        const header = render.header();
+        const footer = render.footer();
+        const gameAudioCall = render.gameAudioCall();
+        const main = render.main();
+        const body = getHTMLElement(document.querySelector('body'));
+        body.appendChild(header);
+        body.appendChild(main);
+        main.appendChild(gameAudioCall);
+        body.appendChild(footer);
     }
 }
