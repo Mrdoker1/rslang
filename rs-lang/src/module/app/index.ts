@@ -10,6 +10,15 @@ import getHTMLElement from '../../utils/getHTMLElement';
 //Interface
 import IUserBody from '../interface/IUserBody';
 
+//Style
+import '../../global.scss';
+import '../ui/styles/header.scss';
+import '../ui/styles/sectionSplash.scss';
+import '../ui/styles/sectionDevelopers.scss';
+import '../ui/styles/sectionBenefits.scss';
+import '../ui/styles/sectionGames.scss';
+import '../ui/styles/footer.scss';
+
 export default class App {
     data: Data;
     constructor(base: string) {
@@ -77,8 +86,20 @@ export default class App {
     createPage() {
         const render = new Render();
         const header = render.header();
+        const main = render.main();
+        const sectionSplash = render.sectionSplash();
+        const sectionDevelovers = render.sectionDevelovers();
+        const sectionBenefits = render.sectionBenefits();
+        const sectionGames = render.sectionGames();
+        const footer = render.footer();
         const body = getHTMLElement(document.querySelector('body'));
+
         body.appendChild(header);
-        header.innerHTML += `<h1>RSLang</h1>`;
+        body.appendChild(main);
+        main.appendChild(sectionSplash);
+        main.appendChild(sectionDevelovers);
+        main.appendChild(sectionBenefits);
+        main.appendChild(sectionGames);
+        body.appendChild(footer);
     }
 }

@@ -1,0 +1,53 @@
+// Variables
+@import 'variables';
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+* {
+    padding: 0; 
+    margin:0;
+}
+
+ul, ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+body {
+    font: $roboto;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 10px;
+}
+
+section {
+    padding: 3rem 0;
+}
+
+.section__title {
+    margin-bottom: 4rem;
+    font: $roboto-xl;
+}
+
+button {
+    padding: 1rem 2rem;
+    border: 2px solid transparent;
+    background-color: $color-background-primary;
+    color: $color-secondary;
+    font: $roboto;
+}
+
+.bttn--transparent {
+    background: $color-background-white;
+    color: $color-primary;
+    border: 2px solid $color-primary;
+}
+
+
+
+
+
