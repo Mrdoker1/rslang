@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const miniCss = require('mini-css-extract-plugin');
 
 module.exports = {
@@ -23,11 +24,28 @@ module.exports = {
             },
             {
                 test: /\.(s*)css$/,
-                use: [miniCss.loader, 'css-loader', 'sass-loader'],
+                use: [
+                    {
+                        loader: miniCss.loader,
+                    },
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            url: false,
+                        },
+                    },
+                    {
+                        loader: 'sass-loader',
+                        options: {
+                            sourceMap: true,
+                        },
+                    },
+                ],
             },
             {
-                test: /\.(svg|png|jpe?g|gif)$/i,
+                test: /\.(png|jpe?g|gif|svg)$/i,
                 loader: 'file-loader',
+                type: 'javascript/auto',
                 options: {
                     outputPath: (url, resourcePath, context) => {
                         let relativePath = path.relative(context, resourcePath);
@@ -51,6 +69,9 @@ module.exports = {
         }),
         new miniCss({
             filename: 'style.css',
+        }),
+        new CopyWebpackPlugin({
+            patterns: [{ from: 'src/assets', to: 'assets' }],
         }),
     ],
     resolve: {

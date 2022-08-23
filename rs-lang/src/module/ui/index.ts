@@ -191,6 +191,7 @@ export default class Render {
                 <li class="footer__menu-item">
                     <a href="/stats">Статистика</a>
                 </li>
+                <div class="rs-icon"></div>
             </ul>
         </div>
         <div class="footer__menu-block">
