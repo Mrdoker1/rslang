@@ -1,0 +1,39 @@
+// Variables
+@import '../../../variables.scss';
+
+.header {
+    padding: 1.5rem 0;
+
+    .container {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    &__logo {
+        text-decoration: none;
+    }
+
+    &__menu-items {
+        display: flex;
+        padding: 0.5rem;
+    }
+
+    &__menu-item {
+        padding: 0 1rem;
+        a {
+            color: $color-link;
+            text-decoration: none;
+        }
+    }
+
+    .dropdown {
+        &__menu {
+            display: none;
+        }
+        &:hover .dropdown__menu {
+            display: block;
+        }
+    }
+}

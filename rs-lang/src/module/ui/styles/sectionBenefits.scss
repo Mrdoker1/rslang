@@ -1,0 +1,20 @@
+// Variables
+@import '../../../variables.scss';
+
+.benefits {
+    &__list {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+    }
+    &__item {
+        flex-basis: 33%;
+        text-align: center;
+        &-title {
+            margin: 1rem 2rem;
+            font: $roboto-medium;
+            font-weight: 500;
+        }
+    }
+   
+}

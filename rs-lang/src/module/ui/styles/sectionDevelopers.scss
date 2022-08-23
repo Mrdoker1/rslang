@@ -1,0 +1,28 @@
+// Variables
+@import '../../../variables.scss';
+
+.developers {
+    &__list {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+    }
+    .developer {
+        display: flex;
+        flex-direction: column;
+        &__title {
+            margin-bottom: 1rem;
+            font:  $roboto-medium;
+        }
+        &__role-list {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        &__role-item {
+            padding: 3px 15px;
+            background-color: $color-background-secondary;
+            border-radius: 25px;
+        }
+    }
+}

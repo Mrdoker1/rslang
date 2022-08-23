@@ -1,29 +1,56 @@
-a {
-  text-decoration: none;
-  color: #fff;
-  padding: 3px 5px;
-  margin: 5px;
-  background-color: #333;
-  transition: var(--trans);
-  border-radius: 6px;
-  user-select: none;
-  display: inline-block;
+// Variables
+@import 'variables';
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+* {
+    padding: 0; 
+    margin:0;
 }
 
-a:visited {
-  color: #fff;
+ul, ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
 
-a:hover {
-  background-color: #444;
+body {
+    font: $roboto;
 }
 
-a:active {
-  transform: translateY(1px);
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 10px;
 }
 
-.no-link {
-  pointer-events: none;
-  color: #666;
-  background-color: #999;
+section {
+    padding: 3rem 0;
+}
+
+.section__title {
+    margin-bottom: 4rem;
+    font: $roboto-xl;
+}
+
+button {
+    padding: 5px 20px;
+    border: 2px solid transparent;
+    border-radius: 2px;
+    background-color: $color-background-primary;
+    color: $color-secondary;
+    font: $roboto;
+    transition: $transition-2;
+    cursor: pointer;
+    &:hover {
+        background: $color-background-white;
+        color: $color-primary;
+        border: 2px solid $color-primary;
+    }
+}
+
+.bttn--transparent {
+    background: $color-background-white;
+    color: $color-primary;
+    border: 2px solid $color-primary;
 }

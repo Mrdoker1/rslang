@@ -1,0 +1,22 @@
+// Variables
+@import '../../../variables.scss';
+
+.footer {
+    padding: 1.5rem 0;
+    .container {
+        display: flex;
+        flex-direction: row;
+        gap: 2rem;
+    }
+
+    &__menu-title {
+        margin-bottom: 1rem;
+        font: $roboto-medium;
+        font-weight: 500;
+    }
+
+    &__menu-item a {
+        text-decoration: none;
+        color: $color-link;
+    }
+}
