@@ -10,9 +10,17 @@
     .developer {
         display: flex;
         flex-direction: column;
+        &__img {
+            width: 160px;
+            height: 160px;
+            margin: 0 auto;
+            margin-bottom: 1.5rem;
+            border-radius: 50%;
+        }
         &__title {
-            margin-bottom: 1rem;
+            margin-bottom: 2rem;
             font:  $roboto-medium;
+            text-align: center;
         }
         &__role-list {
             display: flex;

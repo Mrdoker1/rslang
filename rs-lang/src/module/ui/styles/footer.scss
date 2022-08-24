@@ -2,11 +2,12 @@
 @import '../../../variables.scss';
 
 .footer {
-    padding: 1.5rem 0;
-    .container {
+    padding: 1.5rem 0 0.5rem;
+    &__wrapper {
         display: flex;
         flex-direction: row;
         gap: 2rem;
+        margin-bottom: 2rem;
     }
 
     &__menu-title {
@@ -18,5 +19,14 @@
     &__menu-item a {
         text-decoration: none;
         color: $color-link;
+    }
+
+    &__copyright {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.5rem 0 0;
+        border-top: 1px solid #ccc;
     }
 }

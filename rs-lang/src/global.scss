@@ -3,9 +3,14 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
+html {
+    height: 100%;
+}
+
 * {
     padding: 0; 
     margin:0;
+    box-sizing: border-box;
 }
 
 ul, ol {
@@ -15,6 +20,9 @@ ul, ol {
 }
 
 body {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
     font: $roboto;
 }
 
@@ -22,6 +30,10 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 10px;
+}
+
+.main {
+    flex: 1 1 auto;
 }
 
 section {
@@ -32,6 +44,7 @@ section {
     margin-bottom: 4rem;
     font: $roboto-xl;
 }
+
 
 button {
     padding: 5px 20px;
@@ -57,6 +70,6 @@ button {
 
 .rs-icon{
     width: 60px;
-    height: 94px;
-    background: url("./assets/img/rs_school.svg") no-repeat;
+    height: 30px;
+    background: url("./assets/img/rs_school.svg") no-repeat center;
   }
