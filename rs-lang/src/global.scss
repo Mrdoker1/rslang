@@ -55,6 +55,9 @@ button {
     border: 2px solid $color-primary;
 }
 
-.cd-signin-modal__label.cd-signin-modal__label--username {  
-    background-image: url("./assets/img/cd-icon-username.svg");
+.rs-icon{
+    width: 60px;
+    height: 94px;
+    background: url("./assets/img/rs_school.svg") no-repeat;
 }
+

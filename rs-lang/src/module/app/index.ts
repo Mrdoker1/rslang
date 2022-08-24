@@ -26,6 +26,9 @@ import { createRouter } from 'routerjs';
 //Login
 import ModalLogin from '../login';
 
+//State
+import State from './state';
+
 export default class App {
     data: Data;
     constructor(base: string) {
@@ -33,8 +36,15 @@ export default class App {
     }
 
     async start() {
-        //this.createPage();
         this.initRouter();
+
+        //State use example
+        let obj1 = new State();
+        let obj2 = new State();
+        obj1.token = '12345678';
+        obj2.token;
+        console.log(obj1 === obj2);
+        console.log(obj2.token);
     }
 
     createPage() {
