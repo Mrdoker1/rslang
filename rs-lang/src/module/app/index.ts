@@ -18,12 +18,13 @@ import '../ui/styles/sectionDevelopers.scss';
 import '../ui/styles/sectionBenefits.scss';
 import '../ui/styles/sectionGames.scss';
 import '../ui/styles/footer.scss';
+import '../ui/styles/login.scss';
 
 //Router
 import { createRouter } from 'routerjs';
 
-//Styles
-import '../../global.scss';
+//Login
+import ModalLogin from '../login';
 
 export default class App {
     data: Data;
@@ -91,6 +92,7 @@ export default class App {
     showMain() {
         document.body.innerHTML = '';
         this.createPage();
+        this.createLogin();
     }
 
     showBook() {
@@ -191,5 +193,14 @@ export default class App {
         body.appendChild(main);
         main.appendChild(gameAudioCall);
         body.appendChild(footer);
+    }
+
+    createLogin() {
+        const render = new Render();
+        const modal = render.modalLogin();
+        document.body.append(modal);
+        const modalLogin = new ModalLogin(modal);
+
+        //console.log(modalLogin);
     }
 }

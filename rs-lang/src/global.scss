@@ -54,3 +54,7 @@ button {
     color: $color-primary;
     border: 2px solid $color-primary;
 }
+
+.cd-signin-modal__label.cd-signin-modal__label--username {  
+    background-image: url("./assets/img/cd-icon-username.svg");
+}
