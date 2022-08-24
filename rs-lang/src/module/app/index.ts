@@ -100,7 +100,7 @@ export default class App {
         const footer = render.footer();
         const pageBook = render.pageBook();
         const main = render.main();
-        const body = getHTMLElement(document.querySelector('body'));
+        const body = getHTMLElement(document.body);
         body.appendChild(header);
         body.appendChild(main);
         main.appendChild(pageBook);
@@ -144,7 +144,7 @@ export default class App {
         const footer = render.footer();
         const pageGames = render.pageGames();
         const main = render.main();
-        const body = getHTMLElement(document.querySelector('body'));
+        const body = getHTMLElement(document.body);
         body.appendChild(header);
         body.appendChild(main);
         main.appendChild(pageGames);
@@ -158,7 +158,7 @@ export default class App {
         const footer = render.footer();
         const pageStats = render.pageStats();
         const main = render.main();
-        const body = getHTMLElement(document.querySelector('body'));
+        const body = getHTMLElement(document.body);
         body.appendChild(header);
         body.appendChild(main);
         main.appendChild(pageStats);
@@ -172,7 +172,7 @@ export default class App {
         const footer = render.footer();
         const gameSprint = render.gameSprint();
         const main = render.main();
-        const body = getHTMLElement(document.querySelector('body'));
+        const body = getHTMLElement(document.body);
         body.appendChild(header);
         body.appendChild(main);
         main.appendChild(gameSprint);
@@ -186,7 +186,7 @@ export default class App {
         const footer = render.footer();
         const gameAudioCall = render.gameAudioCall();
         const main = render.main();
-        const body = getHTMLElement(document.querySelector('body'));
+        const body = getHTMLElement(document.body);
         body.appendChild(header);
         body.appendChild(main);
         main.appendChild(gameAudioCall);
