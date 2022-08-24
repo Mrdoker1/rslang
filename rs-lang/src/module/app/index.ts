@@ -36,7 +36,7 @@ export default class App {
 
     async start() {
         this.initRouter();
-
+        this.createPage();
         //State use example
         let obj1 = new State();
         let obj2 = new State();
@@ -50,46 +50,45 @@ export default class App {
         const render = new Render();
         const header = render.header();
         const main = render.main();
-        const sectionSplash = render.sectionSplash();
-        const sectionDevelovers = render.sectionDevelovers();
-        const sectionBenefits = render.sectionBenefits();
-        const sectionGames = render.sectionGames();
         const footer = render.footer();
-        const body = getHTMLElement(document.querySelector('body'));
+        const body = getHTMLElement(document.body);
 
         body.appendChild(header);
         body.appendChild(main);
-        main.appendChild(sectionSplash);
-        main.appendChild(sectionDevelovers);
-        main.appendChild(sectionBenefits);
-        main.appendChild(sectionGames);
         body.appendChild(footer);
     }
 
     initRouter() {
         const router = createRouter()
-            .get('/', () => {
+            .get('/', (req) => {
                 this.showMain();
+                Render.currentLink(req.path);
             })
-            .get('/book', () => {
+            .get('/book', (req) => {
                 this.showBook();
+                Render.currentLink(req.path);
             })
             .get('/book/:group/:page', (url) => {
                 const group = Number(url.params.group);
                 const page = Number(url.params.page);
                 this.showBookPage(group, page);
             })
-            .get('/games', () => {
+            .get('/games', (req) => {
                 this.showGames();
+                Render.currentLink(req.path);
             })
-            .get('/games/sprint', () => {
+            .get('/games/sprint', (req) => {
                 this.showSprint();
+                const render = new Render();
+                Render.currentLink(req.path);
             })
-            .get('/games/audio-call', () => {
+            .get('/games/audio-call', (req) => {
                 this.showAudioCall();
+                Render.currentLink(req.path);
             })
-            .get('/stats', () => {
+            .get('/stats', (req) => {
                 this.showStats();
+                Render.currentLink(req.path);
             })
             .error(404, () => {
                 //this.show404();
@@ -99,22 +98,26 @@ export default class App {
     }
 
     showMain() {
-        document.body.innerHTML = '';
-        this.createPage();
+        const main = getHTMLElement(document.querySelector('.main'));
+        main.innerHTML = '';
+        const render = new Render();
+        const sectionSplash = render.sectionSplash();
+        const sectionDevelovers = render.sectionDevelovers();
+        const sectionBenefits = render.sectionBenefits();
+        const sectionGames = render.sectionGames();
+        main.appendChild(sectionSplash);
+        main.appendChild(sectionDevelovers);
+        main.appendChild(sectionBenefits);
+        main.appendChild(sectionGames);
+        //this.createPage();
     }
 
     showBook() {
-        document.body.innerHTML = '';
+        const main = getHTMLElement(document.querySelector('.main'));
+        main.innerHTML = '';
         const render = new Render();
-        const header = render.header();
-        const footer = render.footer();
         const pageBook = render.pageBook();
-        const main = render.main();
-        const body = getHTMLElement(document.body);
-        body.appendChild(header);
-        body.appendChild(main);
         main.appendChild(pageBook);
-        body.appendChild(footer);
     }
 
     showBookPage(group: number, page: number) {
@@ -148,58 +151,34 @@ export default class App {
     }
 
     showGames() {
-        document.body.innerHTML = '';
+        const main = getHTMLElement(document.querySelector('.main'));
+        main.innerHTML = '';
         const render = new Render();
-        const header = render.header();
-        const footer = render.footer();
         const pageGames = render.pageGames();
-        const main = render.main();
-        const body = getHTMLElement(document.body);
-        body.appendChild(header);
-        body.appendChild(main);
         main.appendChild(pageGames);
-        body.appendChild(footer);
     }
 
     showStats() {
-        document.body.innerHTML = '';
+        const main = getHTMLElement(document.querySelector('.main'));
+        main.innerHTML = '';
         const render = new Render();
-        const header = render.header();
-        const footer = render.footer();
         const pageStats = render.pageStats();
-        const main = render.main();
-        const body = getHTMLElement(document.body);
-        body.appendChild(header);
-        body.appendChild(main);
         main.appendChild(pageStats);
-        body.appendChild(footer);
     }
 
     showSprint() {
-        document.body.innerHTML = '';
+        const main = getHTMLElement(document.querySelector('.main'));
+        main.innerHTML = '';
         const render = new Render();
-        const header = render.header();
-        const footer = render.footer();
         const gameSprint = render.gameSprint();
-        const main = render.main();
-        const body = getHTMLElement(document.body);
-        body.appendChild(header);
-        body.appendChild(main);
         main.appendChild(gameSprint);
-        body.appendChild(footer);
     }
 
     showAudioCall() {
-        document.body.innerHTML = '';
+        const main = getHTMLElement(document.querySelector('.main'));
+        main.innerHTML = '';
         const render = new Render();
-        const header = render.header();
-        const footer = render.footer();
         const gameAudioCall = render.gameAudioCall();
-        const main = render.main();
-        const body = getHTMLElement(document.body);
-        body.appendChild(header);
-        body.appendChild(main);
         main.appendChild(gameAudioCall);
-        body.appendChild(footer);
     }
 }
