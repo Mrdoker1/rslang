@@ -45,7 +45,6 @@ section {
     font: $roboto-xl;
 }
 
-
 button {
     padding: 5px 20px;
     border: 2px solid transparent;
@@ -72,4 +71,42 @@ button {
     width: 60px;
     height: 30px;
     background: url("./assets/img/rs_school.svg") no-repeat center;
-  }
+}
+
+.page {
+    margin: 3rem 0;
+
+    &__title {
+        margin-bottom: 2rem;
+        font: $roboto-xl;
+    }
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    flex-basis: calc(100% / 3 - 1rem);
+    padding: 1rem;
+    box-shadow: $shadow-1;
+    border-radius: 5px;
+
+    &__image {
+        width: 100%;
+    }
+}
+
+.pagination {
+    display: flex;
+    gap: 1rem;
+    order: 3;
+
+    &__item {
+        color: $color-primary;
+        border: 1px solid;
+        text-decoration: none;
+
+        &.active {
+            color: red;
+        }
+    }
+}

@@ -18,6 +18,7 @@ import '../ui/styles/sectionDevelopers.scss';
 import '../ui/styles/sectionBenefits.scss';
 import '../ui/styles/sectionGames.scss';
 import '../ui/styles/footer.scss';
+import '../ui/styles/pageBook.scss';
 
 //Router
 import { createRouter } from 'routerjs';
@@ -30,8 +31,11 @@ import State from './state';
 
 export default class App {
     data: Data;
+    render: Render;
+
     constructor(base: string) {
         this.data = new Data(base);
+        this.render = new Render();
     }
 
     async start() {
@@ -65,10 +69,10 @@ export default class App {
                 Render.currentLink(req.path);
             })
             .get('/book', (req) => {
-                this.showBook();
+                this.showBook(0);
                 Render.currentLink(req.path);
             })
-            .get('/book/:group/:page', (url) => {
+            .get('/book/:group/:page', (url, req) => {
                 const group = Number(url.params.group);
                 const page = Number(url.params.page);
                 this.showBookPage(group, page);
@@ -100,11 +104,10 @@ export default class App {
     showMain() {
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
-        const render = new Render();
-        const sectionSplash = render.sectionSplash();
-        const sectionDevelovers = render.sectionDevelovers();
-        const sectionBenefits = render.sectionBenefits();
-        const sectionGames = render.sectionGames();
+        const sectionSplash = this.render.sectionSplash();
+        const sectionDevelovers = this.render.sectionDevelovers();
+        const sectionBenefits = this.render.sectionBenefits();
+        const sectionGames = this.render.sectionGames();
         main.appendChild(sectionSplash);
         main.appendChild(sectionDevelovers);
         main.appendChild(sectionBenefits);
@@ -112,73 +115,94 @@ export default class App {
         //this.createPage();
     }
 
-    showBook() {
+    async showBook(group: number) {
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
-        const render = new Render();
-        const pageBook = render.pageBook();
-        main.appendChild(pageBook);
+        const pageBook = this.render.pageBook();
+
+        const dataWords = await this.data.getWords(0);
+        if (typeof dataWords === 'number') {
+            console.log('error');
+        } else {
+            const cardsArr = Object.values(dataWords).map((item) => {
+                return this.render.cardWord(item);
+            });
+            console.log(dataWords);
+            for (let i = 0; i <= 5; i++) {
+                const wordLevels = this.render.wordLevels(i);
+                getHTMLElement(pageBook.querySelector('.word-levels__list')).innerHTML += wordLevels;
+            }
+
+            for (let i = 0; i <= 29; i++) {
+                const pagination = this.render.bookPagination(group, i);
+                getHTMLElement(pageBook.querySelector('.pagination')).innerHTML += pagination;
+            }
+
+            cardsArr.forEach((card) => {
+                getHTMLElement(pageBook.querySelector('.words__list')).innerHTML += card;
+            });
+
+            main.appendChild(pageBook);
+        }
     }
 
-    showBookPage(group: number, page: number) {
-        const body = getHTMLElement(document.body);
-        let nextPage;
-        let nextDisabled;
-        if (page >= 30) {
-            nextPage = 30;
-            nextDisabled = 'no-link';
-        } else {
-            nextPage = page + 1;
-            nextDisabled = '';
-        }
+    async showBookPage(group: number, page: number) {
+        const main = getHTMLElement(document.querySelector('.main'));
+        main.innerHTML = '';
+        const pageBook = this.render.pageBook();
 
-        let prevPage;
-        let prevDisabled;
-        if (page <= 1) {
-            prevPage = 1;
-            prevDisabled = 'no-link';
+        const dataWords = await this.data.getWords(group, page);
+        if (typeof dataWords === 'number') {
+            console.log('error');
         } else {
-            prevPage = page - 1;
-            prevDisabled = '';
-        }
+            const cardsArr = Object.values(dataWords).map((item) => {
+                return this.render.cardWord(item);
+            });
+            console.log(dataWords);
+            for (let i = 0; i <= 5; i++) {
+                const wordLevels = this.render.wordLevels(i);
+                getHTMLElement(pageBook.querySelector('.word-levels__list')).innerHTML += wordLevels;
+            }
 
-        body.innerHTML = `
-            <h2>Страницы учебника</h2>
-            <a href="/">Главная</a>
-            <a href="/book/${group}/${prevPage}" class="${prevDisabled}">Назад</a>
-            <a href="/book/${group}/${nextPage}" class="${nextDisabled}">Вперед</a>   
-        `;
+            for (let i = 0; i <= 29; i++) {
+                const pagination = this.render.bookPagination(group, i);
+                getHTMLElement(pageBook.querySelector('.pagination')).innerHTML += pagination;
+            }
+            const linkActive = pageBook.querySelectorAll(`a[href='/book/${group}/${page}']`);
+            linkActive[0].classList.add('active');
+            cardsArr.forEach((card) => {
+                getHTMLElement(pageBook.querySelector('.words__list')).innerHTML += card;
+            });
+
+            main.appendChild(pageBook);
+        }
     }
 
     showGames() {
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
-        const render = new Render();
-        const pageGames = render.pageGames();
+        const pageGames = this.render.pageGames();
         main.appendChild(pageGames);
     }
 
     showStats() {
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
-        const render = new Render();
-        const pageStats = render.pageStats();
+        const pageStats = this.render.pageStats();
         main.appendChild(pageStats);
     }
 
     showSprint() {
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
-        const render = new Render();
-        const gameSprint = render.gameSprint();
+        const gameSprint = this.render.gameSprint();
         main.appendChild(gameSprint);
     }
 
     showAudioCall() {
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
-        const render = new Render();
-        const gameAudioCall = render.gameAudioCall();
+        const gameAudioCall = this.render.gameAudioCall();
         main.appendChild(gameAudioCall);
     }
 }
