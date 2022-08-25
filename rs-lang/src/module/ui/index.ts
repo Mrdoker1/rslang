@@ -35,8 +35,8 @@ export default class Render {
                     <a href="/stats">Статистика</a>
                 </li>
                 <li class="header__menu-item">
-                    <a href="#" class="js-signin-modal-trigger" data-signin="login">Войти</a>
-                    <a href="#" data-signin="logout">Выйти</a>
+                    <a href="#" data-routerjs-ignore class="js-signin-modal-trigger" data-signin="login">Войти</a>
+                    <a href="#" data-routerjs-ignore data-signin="logout">Выйти</a>
                 </li>
             </ul>
         </div>
@@ -349,8 +349,8 @@ export default class Render {
         const html = `
             <div class="cd-signin-modal__container">
                 <ul class="cd-signin-modal__switcher js-signin-modal-switcher js-signin-modal-trigger">
-                    <li><a href="#0" data-signin="login" data-type="login">Вход</a></li>
-                    <li><a href="#0" data-signin="signup" data-type="signup">Регистрация</a></li>
+                    <li><a href="#0" data-routerjs-ignore data-signin="login" data-type="login">Вход</a></li>
+                    <li><a href="#0" data-routerjs-ignore data-signin="signup" data-type="signup">Регистрация</a></li>
                 </ul>
     
                 <div class="cd-signin-modal__block js-signin-modal-block" data-type="login">
@@ -364,7 +364,7 @@ export default class Render {
                         <p class="cd-signin-modal__fieldset">
                             <label class="cd-signin-modal__label cd-signin-modal__label--password cd-signin-modal__label--image-replace" for="signin-password">Пароль</label>
                             <input class="cd-signin-modal__input cd-signin-modal__input--full-width cd-signin-modal__input--has-padding cd-signin-modal__input--has-border" minlength="8" required id="signin-password" type="text" placeholder="Введите пароль" autocomplete="false">
-                            <a href="#0" class="cd-signin-modal__hide-password js-hide-password">Скрыть</a>
+                            <a href="#0" data-routerjs-ignore class="cd-signin-modal__hide-password js-hide-password">Скрыть</a>
                             <span class="cd-signin-modal__error">Error message here!</span>
                         </p>
                         <p class="cd-signin-modal__message js-signin-modal__message"></p>
@@ -391,7 +391,7 @@ export default class Render {
                         <p class="cd-signin-modal__fieldset">
                             <label class="cd-signin-modal__label cd-signin-modal__label--password cd-signin-modal__label--image-replace" for="signup-password">Пароль</label>
                             <input class="cd-signin-modal__input cd-signin-modal__input--full-width cd-signin-modal__input--has-padding cd-signin-modal__input--has-border" minlength="8" required id="signup-password" type="text" placeholder="Введите пароль" autocomplete="false">
-                            <a href="#0" class="cd-signin-modal__hide-password js-hide-password">Скрыть</a>
+                            <a href="#0" class="cd-signin-modal__hide-password js-hide-password" data-routerjs-ignore>Скрыть</a>
                             <span class="cd-signin-modal__error">Error message here!</span>
                         </p>
                         <p class="cd-signin-modal__message js-signin-modal__message"></p>
@@ -400,7 +400,7 @@ export default class Render {
                         </p>
                     </form>
                 </div>
-                <a href="#0" class="cd-signin-modal__close js-close">Close</a>
+                <a href="#0" data-routerjs-ignore class="cd-signin-modal__close js-close">Close</a>
             </div>`;
         modal.innerHTML = html;
         return modal;

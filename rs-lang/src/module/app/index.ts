@@ -23,7 +23,7 @@ import '../ui/styles/login.scss';
 import '../ui/styles/pageBook.scss';
 
 //Router
-import { createRouter } from 'routerjs';
+import { createRouter, Router } from 'routerjs';
 
 //Login
 import ModalLogin from '../login';
@@ -34,10 +34,12 @@ import State from './state';
 export default class App {
     data: Data;
     render: Render;
+    router: Router;
 
     constructor(base: string) {
         this.data = new Data(base);
         this.render = new Render();
+        this.router = createRouter();
     }
 
     async start() {
@@ -70,10 +72,11 @@ export default class App {
     }
 
     initRouter() {
-        const router = createRouter()
+        this.router
             .get('/', (req) => {
                 this.showMain();
                 Render.currentLink(req.path);
+                // console.log('!!!');
             })
             .get('/book', (req) => {
                 this.showBook(0);
@@ -103,7 +106,7 @@ export default class App {
             })
             .error(404, () => {
                 //this.show404();
-                router.navigate('/');
+                this.router.navigate('/');
             })
             .run();
     }
@@ -229,11 +232,13 @@ export default class App {
 
         const loginLink = getHTMLElement(document.querySelector('[data-signin="login"]'));
         const logoutLink = getHTMLElement(document.querySelector('[data-signin="logout"]'));
-        logoutLink.addEventListener('click', () => {
+        logoutLink.addEventListener('click', (e) => {
+            e.preventDefault();
             state.token = '';
             localStorage.setItem('state', JSON.stringify(state));
             logoutLink.classList.add('hidden');
             loginLink.classList.remove('hidden');
+            this.router.run();
         });
 
         if (state.token) {
@@ -251,6 +256,7 @@ export default class App {
                 loginLink.classList.add('hidden');
                 logoutLink.classList.remove('hidden');
                 modal.classList.remove('cd-signin-modal--is-visible');
+                this.router.run();
             } else {
                 loginMessage.textContent = 'Неверный пароль или почта';
             }
@@ -271,6 +277,7 @@ export default class App {
                     loginLink.classList.add('hidden');
                     logoutLink.classList.remove('hidden');
                     modal.classList.remove('cd-signin-modal--is-visible');
+                    this.router.run();
                 }
             } else {
                 if (user === 422) signupMessage.textContent = 'Неверный пароль, имя или почта';
