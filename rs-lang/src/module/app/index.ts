@@ -19,11 +19,8 @@ import '../ui/styles/sectionDevelopers.scss';
 import '../ui/styles/sectionBenefits.scss';
 import '../ui/styles/sectionGames.scss';
 import '../ui/styles/footer.scss';
-<<<<<<< HEAD
 import '../ui/styles/login.scss';
-=======
 import '../ui/styles/pageBook.scss';
->>>>>>> develop
 
 //Router
 import { createRouter } from 'routerjs';
@@ -44,19 +41,10 @@ export default class App {
     }
 
     async start() {
-        this.initRouter();
-<<<<<<< HEAD
         this.initState();
-=======
         this.createPage();
->>>>>>> develop
-        //State use example
-        // let obj1 = new State();
-        // let obj2 = new State();
-        // obj1.token = '12345678';
-        // obj2.token;
-        // console.log(obj1 === obj2);
-        // console.log(obj2.token);
+        this.createLogin();
+        this.initRouter();
     }
 
     initState() {
@@ -121,11 +109,6 @@ export default class App {
     }
 
     showMain() {
-<<<<<<< HEAD
-        document.body.innerHTML = '';
-        this.createPage();
-        this.createLogin();
-=======
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
         const sectionSplash = this.render.sectionSplash();
@@ -136,8 +119,6 @@ export default class App {
         main.appendChild(sectionDevelovers);
         main.appendChild(sectionBenefits);
         main.appendChild(sectionGames);
-        //this.createPage();
->>>>>>> develop
     }
 
     async showBook(group: number) {
@@ -274,7 +255,6 @@ export default class App {
                     loginMessage.textContent = 'Вы авторизованы';
                 } else {
                     loginMessage.textContent = 'Неверный пароль или почта';
-                    //console.log('Incorrect e-mail or password'); //only 403
                 }
             } else {
                 //Нажали "Выйти"
@@ -298,15 +278,6 @@ export default class App {
             const user = await this.data.createUser({ name, email, password });
             if (typeof user != 'number') {
                 signupMessage.textContent = 'Аккаунт создан';
-                // const login = await this.data.login({ email, password });
-                // if (typeof login != 'number') {
-                //     console.log(login);
-                //     state.token = login.token;
-                //     loginBtn.value = 'Выйти';
-                //     signupBtn.disabled = true;
-                // } else {
-                //     console.log('ошибка авто логирования после регистрации');
-                // }
             } else {
                 if (user === 422) signupMessage.textContent = 'Неверный пароль, имя или почта';
                 else if (user === 417) signupMessage.textContent = 'Аккаунт уже существует';
