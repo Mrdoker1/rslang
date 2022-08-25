@@ -1,0 +1,20 @@
+.page__book {
+    display: flex;
+    flex-direction: column;
+}
+
+.words__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem 1rem;
+    flex: 1 1 0;
+    order: 2;
+    position: relative;
+    align-items: flex-start;
+    align-content: flex-start;
+}
+
+.word-levels {
+    display: flex;
+    order: 1;
+}
