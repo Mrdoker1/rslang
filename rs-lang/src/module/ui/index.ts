@@ -1,5 +1,6 @@
 //Utils
 import getHTMLElement from '../../utils/getHTMLElement';
+import IWord from '../interface/IWord';
 export default class Render {
     constructor() {}
 
@@ -226,11 +227,78 @@ export default class Render {
     pageBook() {
         const pageBook = document.createElement('div');
         pageBook.classList.add('page__book');
+        pageBook.classList.add('page');
         const pageBookContainer = document.createElement('div');
         pageBookContainer.classList.add('container');
         pageBookContainer.appendChild(pageBook);
-        pageBook.innerHTML += `<h2>Учебник</h2>`;
+        pageBook.innerHTML += `<h2 class="page__title">Учебник</h2>`;
+        const wordsList = document.createElement('div');
+        wordsList.classList.add('words__list');
+        pageBook.append(wordsList);
+        const wordLevels = document.createElement('div');
+        wordLevels.classList.add('word-levels');
+        wordLevels.innerHTML += `
+            <div class="word-levels__list">
+                Уровни
+            </div>
+        `;
+        pageBook.append(wordLevels);
+        const bookPagination = document.createElement('div');
+        bookPagination.classList.add('pagination');
+        pageBook.append(bookPagination);
         return pageBookContainer;
+    }
+
+    wordLevels(levelNumber: number) {
+        const wordLevels = `  
+            <a href="/book/${levelNumber}/0" class="word-levels__item">
+                Уровень ${levelNumber}
+            </a>
+        `;
+        return wordLevels;
+    }
+
+    bookPagination(levelNumber: number, paginationNumber: number) {
+        const pagination = `
+            <a href="/book/${levelNumber}/${paginationNumber}" class="pagination__item">
+                ${paginationNumber}
+            </a>
+        `;
+        return pagination;
+    }
+
+    cardWord(data: IWord) {
+        const card = `
+          <div class="card card-word">
+              <img src="https://rslang-learnwords-app.herokuapp.com/${data.image}" class="card__image">
+              <div class="card__title">
+                  <div class="card-word__translate">
+                      ${data.word} - ${data.wordTranslate} - ${data.transcription}
+                  </div>
+                  <div class="card-word__audio">
+                      <audio controls src="https://rslang-learnwords-app.herokuapp.com/${data.audioExample}">
+                        Your browser does not support the
+                        <code>audio</code> element.
+                      </audio>
+                  </div
+              </div>
+              <div class="card-word__text-example">
+                  <span>Пример</span>
+                  <p>${data.textExample}</p>
+              </div>
+              <div class="card-word__text-translate">
+                  <p>${data.textExampleTranslate}</p>
+              </div>
+              <div class="card-word__text-meaning">
+                  <span>Значение</span>
+                  <p>${data.textMeaning}</p>
+              </div>
+              <div class="card-word__text-meaning-translate">
+                  <p>${data.textMeaningTranslate}</p>
+              </div>
+          </div>
+        `;
+        return card;
     }
 
     pageGames() {
