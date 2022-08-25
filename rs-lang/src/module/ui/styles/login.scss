@@ -350,6 +350,15 @@
   font-size: 1em;
 }
 
+#signup-password, 
+#signin-password {
+  padding-right: 100px;
+}
+
+.hidden {
+  display: none;
+}
+
 // input:-webkit-autofill,
 // input:-webkit-autofill:focus {
 //     background-image: #FFF;
