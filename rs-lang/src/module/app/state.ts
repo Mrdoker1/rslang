@@ -17,4 +17,8 @@ export default class State {
     set token(value: string) {
         this._token = value;
     }
+
+    toJSON() {
+        return { token: this.token };
+    }
 }

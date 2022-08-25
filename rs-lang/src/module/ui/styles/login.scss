@@ -121,6 +121,15 @@
   font-size: 1.4em;
 }
 
+.cd-signin-modal__input[type="submit"]:disabled {
+  background-color: #777;
+  pointer-events: none;
+}
+
+.cd-signin-modal__input[type="submit"]:disabled:hover {
+  background-color: #777;
+}
+
 .cd-signin-modal__label.cd-signin-modal__label--image-replace {
   /* replace text with an icon */
   display: inline-block;
@@ -334,3 +343,17 @@
 .cd-signin-modal__block.cd-signin-modal__block--is-selected {
   display: block;
 }
+
+.cd-signin-modal__message {
+  text-align: center;
+  padding: 0;
+  font-size: 1em;
+}
+
+// input:-webkit-autofill,
+// input:-webkit-autofill:focus {
+//     background-image: #FFF;
+//     -webkit-box-shadow: 0 0 0px 1000px #fff inset;
+// }
+
+  

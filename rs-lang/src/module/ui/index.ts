@@ -278,17 +278,17 @@ export default class Render {
                     <form class="cd-signin-modal__form">
                         <p class="cd-signin-modal__fieldset">
                             <label class="cd-signin-modal__label cd-signin-modal__label--email cd-signin-modal__label--image-replace" for="signin-email">E-mail</label>
-                            <input class="cd-signin-modal__input cd-signin-modal__input--full-width cd-signin-modal__input--has-padding cd-signin-modal__input--has-border" id="signin-email" type="email" placeholder="Введите адрес почты" autocomplete="false">
+                            <input class="cd-signin-modal__input cd-signin-modal__input--full-width cd-signin-modal__input--has-padding cd-signin-modal__input--has-border" title="qwer@mail.ru" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required id="signin-email" type="email" placeholder="Введите адрес почты" autocomplete="false">
                             <span class="cd-signin-modal__error">Error message here!</span>
                         </p>
     
                         <p class="cd-signin-modal__fieldset">
                             <label class="cd-signin-modal__label cd-signin-modal__label--password cd-signin-modal__label--image-replace" for="signin-password">Пароль</label>
-                            <input class="cd-signin-modal__input cd-signin-modal__input--full-width cd-signin-modal__input--has-padding cd-signin-modal__input--has-border" id="signin-password" type="text" placeholder="Введите пароль" autocomplete="false">
+                            <input class="cd-signin-modal__input cd-signin-modal__input--full-width cd-signin-modal__input--has-padding cd-signin-modal__input--has-border" minlength="8" required id="signin-password" type="text" placeholder="Введите пароль" autocomplete="false">
                             <a href="#0" class="cd-signin-modal__hide-password js-hide-password">Скрыть</a>
                             <span class="cd-signin-modal__error">Error message here!</span>
                         </p>
-    
+                        <p class="cd-signin-modal__message js-signin-modal__message"></p>
                         <p class="cd-signin-modal__fieldset">
                             <input class="cd-signin-modal__input cd-signin-modal__input--full-width" type="submit" value="Войти">
                         </p>
@@ -299,23 +299,23 @@ export default class Render {
                     <form class="cd-signin-modal__form">
                         <p class="cd-signin-modal__fieldset">
                             <label class="cd-signin-modal__label cd-signin-modal__label--username cd-signin-modal__label--image-replace" for="signup-username">Имя пользователя</label>
-                            <input class="cd-signin-modal__input cd-signin-modal__input--full-width cd-signin-modal__input--has-padding cd-signin-modal__input--has-border" id="signup-username" type="text" placeholder="Введите имя" autocomplete="false">
+                            <input class="cd-signin-modal__input cd-signin-modal__input--full-width cd-signin-modal__input--has-padding cd-signin-modal__input--has-border" minlength="4" required id="signup-username" type="text" placeholder="Введите имя" autocomplete="false">
                             <span class="cd-signin-modal__error">Error message here!</span>
                         </p>
     
                         <p class="cd-signin-modal__fieldset">
                             <label class="cd-signin-modal__label cd-signin-modal__label--email cd-signin-modal__label--image-replace" for="signup-email">Адрес электронной почты</label>
-                            <input class="cd-signin-modal__input cd-signin-modal__input--full-width cd-signin-modal__input--has-padding cd-signin-modal__input--has-border" id="signup-email" type="email" placeholder="Введите адрес почты" autocomplete="false">
+                            <input class="cd-signin-modal__input cd-signin-modal__input--full-width cd-signin-modal__input--has-padding cd-signin-modal__input--has-border" required id="signup-email" type="email" title="qwer@mail.ru" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" placeholder="Введите адрес почты" autocomplete="false">
                             <span class="cd-signin-modal__error">Error message here!</span>
                         </p>
     
                         <p class="cd-signin-modal__fieldset">
                             <label class="cd-signin-modal__label cd-signin-modal__label--password cd-signin-modal__label--image-replace" for="signup-password">Пароль</label>
-                            <input class="cd-signin-modal__input cd-signin-modal__input--full-width cd-signin-modal__input--has-padding cd-signin-modal__input--has-border" id="signup-password" type="text" placeholder="Введите пароль" autocomplete="false">
+                            <input class="cd-signin-modal__input cd-signin-modal__input--full-width cd-signin-modal__input--has-padding cd-signin-modal__input--has-border" minlength="8" required id="signup-password" type="text" placeholder="Введите пароль" autocomplete="false">
                             <a href="#0" class="cd-signin-modal__hide-password js-hide-password">Скрыть</a>
                             <span class="cd-signin-modal__error">Error message here!</span>
                         </p>
-    
+                        <p class="cd-signin-modal__message js-signin-modal__message"></p>
                         <p class="cd-signin-modal__fieldset">
                             <input class="cd-signin-modal__input cd-signin-modal__input--full-width cd-signin-modal__input--has-padding" type="submit" value="Создать аккаунт">
                         </p>
