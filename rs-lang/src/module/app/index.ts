@@ -221,50 +221,38 @@ export default class App {
         let state = new State();
         const loginForm = getHTMLElement(modal.querySelector('[data-type="login"] form'));
         const loginMessage = getHTMLElement(loginForm.querySelector('.js-signin-modal__message'));
-        const loginBtn = getHTMLInputElement(loginForm.querySelector('[type="submit"]'));
         const loginEmailBox = getHTMLInputElement(loginForm.querySelector('#signin-email'));
         const loginPasswordBox = getHTMLInputElement(loginForm.querySelector('#signin-password'));
 
         const signupForm = getHTMLElement(modal.querySelector('[data-type="signup"] form'));
         const signupMessage = getHTMLElement(signupForm.querySelector('.js-signin-modal__message'));
-        const signupBtn = getHTMLInputElement(signupForm.querySelector('[type="submit"]'));
+
+        const loginLink = getHTMLElement(document.querySelector('[data-signin="login"]'));
+        const logoutLink = getHTMLElement(document.querySelector('[data-signin="logout"]'));
+        logoutLink.addEventListener('click', () => {
+            state.token = '';
+            localStorage.setItem('state', JSON.stringify(state));
+            logoutLink.classList.add('hidden');
+            loginLink.classList.remove('hidden');
+        });
 
         if (state.token) {
-            loginBtn.value = 'Выйти';
-            loginEmailBox.disabled = true;
-            loginPasswordBox.disabled = true;
-            signupBtn.disabled = true;
-            loginMessage.textContent = 'Вы авторизованы';
-        } else loginMessage.textContent = 'Вы неавторизованы';
+            loginLink.classList.add('hidden');
+        } else logoutLink.classList.add('hidden');
 
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const email = loginEmailBox.value;
+            const password = loginPasswordBox.value;
 
-            if (!state.token) {
-                //Войти
-                const email = loginEmailBox.value;
-                const password = loginPasswordBox.value;
-
-                const login = await this.data.login({ email, password });
-                if (typeof login != 'number') {
-                    state.token = login.token;
-                    loginBtn.value = 'Выйти';
-                    loginEmailBox.disabled = true;
-                    loginPasswordBox.disabled = true;
-                    signupBtn.disabled = true;
-                    loginMessage.textContent = 'Вы авторизованы';
-                } else {
-                    loginMessage.textContent = 'Неверный пароль или почта';
-                }
+            const login = await this.data.login({ email, password });
+            if (typeof login != 'number') {
+                state.token = login.token;
+                loginLink.classList.add('hidden');
+                logoutLink.classList.remove('hidden');
+                modal.classList.remove('cd-signin-modal--is-visible');
             } else {
-                //Нажали "Выйти"
-                state.token = '';
-                localStorage.setItem('state', JSON.stringify(state));
-                loginBtn.value = 'Войти';
-                signupBtn.disabled = false;
-                loginEmailBox.disabled = false;
-                loginPasswordBox.disabled = false;
-                loginMessage.textContent = 'Вы неавторизованы';
+                loginMessage.textContent = 'Неверный пароль или почта';
             }
         });
 
@@ -277,7 +265,13 @@ export default class App {
 
             const user = await this.data.createUser({ name, email, password });
             if (typeof user != 'number') {
-                signupMessage.textContent = 'Аккаунт создан';
+                const login = await this.data.login({ email, password });
+                if (typeof login != 'number') {
+                    state.token = login.token;
+                    loginLink.classList.add('hidden');
+                    logoutLink.classList.remove('hidden');
+                    modal.classList.remove('cd-signin-modal--is-visible');
+                }
             } else {
                 if (user === 422) signupMessage.textContent = 'Неверный пароль, имя или почта';
                 else if (user === 417) signupMessage.textContent = 'Аккаунт уже существует';

@@ -34,8 +34,9 @@ export default class Render {
                 <li class="header__menu-item">
                     <a href="/stats">Статистика</a>
                 </li>
-                <li class="header__menu-item js-signin-modal-trigger">
-                    <a href="#" data-signin="login">Иконка авторизации</a>
+                <li class="header__menu-item">
+                    <a href="#" class="js-signin-modal-trigger" data-signin="login">Войти</a>
+                    <a href="#" data-signin="logout">Выйти</a>
                 </li>
             </ul>
         </div>

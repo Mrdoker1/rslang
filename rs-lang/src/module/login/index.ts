@@ -31,9 +31,13 @@ class ModalLogin {
         //close modal
         this.element.addEventListener('click', (e) => {
             const target = getHTMLElement(e.target);
+            const messages = this.element.querySelectorAll('.cd-signin-modal__message');
             if (target.classList.contains('js-signin-modal') || target.classList.contains('js-close')) {
                 e.preventDefault();
                 this.element.classList.remove('cd-signin-modal--is-visible');
+                messages.forEach((mes) => {
+                    mes.textContent = '';
+                });
             }
         });
 
