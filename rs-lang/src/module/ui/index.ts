@@ -1,5 +1,6 @@
 //Utils
 import getHTMLElement from '../../utils/getHTMLElement';
+import IWord from '../interface/IWord';
 export default class Render {
     constructor() {}
 
@@ -20,7 +21,7 @@ export default class Render {
                     <a href="/book">Учебник</a>
                 </li>
                 <li class="header__menu-item dropdown">
-                    <a href="/games">Игры</a>
+                    <span>Игры</span>
                     <ul class="dropdown__menu">
                       <li class="dropdown__menu-item">
                           <a href="/games/sprint">Играть в Спринт</a>
@@ -71,6 +72,7 @@ export default class Render {
             <h3 class="section__title">Наша команда</h3>
             <div class="developers__list">
                 <div class="developer">
+                    <img src="https://via.placeholder.com/120x120?text=Фото разработчика" class="developer__img" alt="разраб1">
                     <div class="developer__title">Разраб 1</div>
                     <ul class="developer__role-list">
                         <li class="developer__role-item">Role1</li>
@@ -79,8 +81,10 @@ export default class Render {
                     <p class="developer__description">
                         Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia, sunt.
                     </p>
+                    <a href="#" class="developer__link" target="_blank">Ссылка на гитхаб</a>
                 </div>
                 <div class="developer">
+                    <img src="https://via.placeholder.com/120x120?text=Фото разработчика" class="developer__img" alt="разраб2">
                     <div class="developer__title">Разраб 2</div>
                     <ul class="developer__role-list">
                         <li class="developer__role-item">Role1</li>
@@ -90,8 +94,10 @@ export default class Render {
                     <p class="developer__description">
                         Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia, sunt.
                     </p>
+                    <a href="#" class="developer__link" target="_blank">Ссылка на гитхаб</a>
                 </div>
                 <div class="developer">
+                    <img src="https://via.placeholder.com/120x120?text=Фото разработчика" class="developer__img" alt="разраб3">
                     <div class="developer__title">Разраб 3</div>
                     <ul class="developer__role-list">
                         <li class="developer__role-item">Role1</li>
@@ -99,6 +105,7 @@ export default class Render {
                     <p class="developer__description">
                         Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia, sunt.
                     </p>
+                    <a href="#" class="developer__link" target="_blank">Ссылка на гитхаб</a>
                 </div>
             </div>
         `;
@@ -179,34 +186,38 @@ export default class Render {
         footerContainer.classList.add('container');
         footer.appendChild(footerContainer);
         footerContainer.innerHTML += `
-        <div class="footer__menu-block">
-            <h3 class="footer__menu-title">Меню</h3>
-            <ul class="footer__menu-items">
-                <li class="footer__menu-item">
-                    <a href="/">Главная</a>
-                </li>
-                <li class="footer__menu-item">
-                    <a href="/book">Учебник</a>
-                </li>
-                <li class="footer__menu-item">
-                    <a href="/stats">Статистика</a>
-                </li>
-                <div class="rs-icon"></div>
-            </ul>
+        <div class="footer__wrapper">
+          <div class="footer__menu-block">
+              <h3 class="footer__menu-title">Меню</h3>
+              <ul class="footer__menu-items">
+                  <li class="footer__menu-item">
+                      <a href="/">Главная</a>
+                  </li>
+                  <li class="footer__menu-item">
+                      <a href="/book">Учебник</a>
+                  </li>
+                  <li class="footer__menu-item">
+                      <a href="/stats">Статистика</a>
+                  </li>
+              </ul>
+          </div>
+          <div class="footer__menu-block">
+              <h3 class="footer__menu-title">Разработчики</h3>
+              <ul class="footer__menu-items">
+                  <li class="footer__menu-item">
+                      <a href="https://github.com/Mrdoker1/" target="_blank">Mrdoker1</a>
+                  </li>
+                  <li class="footer__menu-item">
+                      <a href="https://github.com/GeoBo/" target="_blank">GeoBo</a>
+                  </li>
+                  <li class="footer__menu-item">
+                  <a href="https://github.com/makrakvladislav/" target="_blank">makrakvladislav</a>
+                  </li>
+              </ul>
+          </div>
         </div>
-        <div class="footer__menu-block">
-            <h3 class="footer__menu-title">Разработчики</h3>
-            <ul class="footer__menu-items">
-                <li class="footer__menu-item">
-                    <a href="https://github.com/Mrdoker1/" target="_blank">Mrdoker1</a>
-                </li>
-                <li class="footer__menu-item">
-                    <a href="https://github.com/GeoBo/" target="_blank">GeoBo</a>
-                </li>
-                <li class="footer__menu-item">
-                <a href="https://github.com/makrakvladislav/" target="_blank">makrakvladislav</a>
-                </li>
-            </ul>
+        <div class="footer__copyright">
+            ©2022 RS LANG.<a href="https://rs.school/js/" class="rs-icon" target="_blank"></a>
         </div>
         `;
         return footer;
@@ -216,11 +227,78 @@ export default class Render {
     pageBook() {
         const pageBook = document.createElement('div');
         pageBook.classList.add('page__book');
+        pageBook.classList.add('page');
         const pageBookContainer = document.createElement('div');
         pageBookContainer.classList.add('container');
         pageBookContainer.appendChild(pageBook);
-        pageBook.innerHTML += `<h2>Учебник</h2>`;
+        pageBook.innerHTML += `<h2 class="page__title">Учебник</h2>`;
+        const wordsList = document.createElement('div');
+        wordsList.classList.add('words__list');
+        pageBook.append(wordsList);
+        const wordLevels = document.createElement('div');
+        wordLevels.classList.add('word-levels');
+        wordLevels.innerHTML += `
+            <div class="word-levels__list">
+                Уровни
+            </div>
+        `;
+        pageBook.append(wordLevels);
+        const bookPagination = document.createElement('div');
+        bookPagination.classList.add('pagination');
+        pageBook.append(bookPagination);
         return pageBookContainer;
+    }
+
+    wordLevels(levelNumber: number) {
+        const wordLevels = `  
+            <a href="/book/${levelNumber}/0" class="word-levels__item">
+                Уровень ${levelNumber}
+            </a>
+        `;
+        return wordLevels;
+    }
+
+    bookPagination(levelNumber: number, paginationNumber: number) {
+        const pagination = `
+            <a href="/book/${levelNumber}/${paginationNumber}" class="pagination__item">
+                ${paginationNumber}
+            </a>
+        `;
+        return pagination;
+    }
+
+    cardWord(data: IWord) {
+        const card = `
+          <div class="card card-word">
+              <img src="https://rslang-learnwords-app.herokuapp.com/${data.image}" class="card__image">
+              <div class="card__title">
+                  <div class="card-word__translate">
+                      ${data.word} - ${data.wordTranslate} - ${data.transcription}
+                  </div>
+                  <div class="card-word__audio">
+                      <audio controls src="https://rslang-learnwords-app.herokuapp.com/${data.audioExample}">
+                        Your browser does not support the
+                        <code>audio</code> element.
+                      </audio>
+                  </div
+              </div>
+              <div class="card-word__text-example">
+                  <span>Пример</span>
+                  <p>${data.textExample}</p>
+              </div>
+              <div class="card-word__text-translate">
+                  <p>${data.textExampleTranslate}</p>
+              </div>
+              <div class="card-word__text-meaning">
+                  <span>Значение</span>
+                  <p>${data.textMeaning}</p>
+              </div>
+              <div class="card-word__text-meaning-translate">
+                  <p>${data.textMeaningTranslate}</p>
+              </div>
+          </div>
+        `;
+        return card;
     }
 
     pageGames() {
@@ -325,5 +403,19 @@ export default class Render {
             </div>`;
         modal.innerHTML = html;
         return modal;
+    }
+
+    //Current link highlighting
+    static currentLink(path: string) {
+        const linksList = document.querySelectorAll('.header__menu-item');
+        const dropdownList = document.querySelectorAll('.dropdown__menu-item');
+        const linkActive = getHTMLElement(document.querySelector(`a[href='${path}']`));
+        linksList.forEach((item) => {
+            item.children[0].classList.remove('active');
+        });
+        dropdownList.forEach((item) => {
+            item.children[0].classList.remove('active');
+        });
+        linkActive.classList.add('active');
     }
 }

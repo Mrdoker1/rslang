@@ -3,9 +3,14 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
+html {
+    height: 100%;
+}
+
 * {
     padding: 0; 
     margin:0;
+    box-sizing: border-box;
 }
 
 ul, ol {
@@ -15,6 +20,9 @@ ul, ol {
 }
 
 body {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
     font: $roboto;
 }
 
@@ -22,6 +30,10 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 10px;
+}
+
+.main {
+    flex: 1 1 auto;
 }
 
 section {
@@ -57,7 +69,45 @@ button {
 
 .rs-icon{
     width: 60px;
-    height: 94px;
-    background: url("./assets/img/rs_school.svg") no-repeat;
+    height: 30px;
+    background: url("./assets/img/rs_school.svg") no-repeat center;
+}
+
+.page {
+    margin: 3rem 0;
+
+    &__title {
+        margin-bottom: 2rem;
+        font: $roboto-xl;
+    }
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    flex-basis: calc(100% / 3 - 1rem);
+    padding: 1rem;
+    box-shadow: $shadow-1;
+    border-radius: 5px;
+
+    &__image {
+        width: 100%;
+    }
+}
+
+.pagination {
+    display: flex;
+    gap: 1rem;
+    order: 3;
+
+    &__item {
+        color: $color-primary;
+        border: 1px solid;
+        text-decoration: none;
+
+        &.active {
+            color: red;
+        }
+    }
 }
 

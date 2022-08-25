@@ -3,6 +3,11 @@
 
 .header {
     padding: 1.5rem 0;
+    box-shadow: $shadow-1;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: $color-background-white;
 
     .container {
         width: 100%;
@@ -13,6 +18,7 @@
 
     &__logo {
         text-decoration: none;
+        color: $color-link;
     }
 
     &__menu-items {
@@ -23,17 +29,55 @@
     &__menu-item {
         padding: 0 1rem;
         a {
+            padding-bottom: 2px;
+            border-bottom: 2px solid transparent;
             color: $color-link;
             text-decoration: none;
+            &.active {
+              border-color: initial;
+            }
         }
     }
 
     .dropdown {
-        &__menu {
-            display: none;
+        position: relative;
+
+        span {
+          color: $color-link;
+
+          &:after {
+            content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3C!--! Font Awesome Pro 6.1.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --%3E%3Cpath d='M224 416c-8.188 0-16.38-3.125-22.62-9.375l-192-192c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0L224 338.8l169.4-169.4c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25l-192 192C240.4 412.9 232.2 416 224 416z'/%3E%3C/svg%3E");
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            padding: 0 5px;
+          }
         }
+
+        &__menu {
+            min-width: 185px;
+            padding: 1rem 0.5rem;
+            position: absolute;
+            top: 2rem;
+            left: 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: $transition-2;
+            background-color: $color-background-secondary;
+            box-shadow: $shadow-1;
+            border-radius: 5px;
+            
+            &-item {
+                margin-bottom: 0.5rem;
+                a {
+                    color: $color-secondary;
+                }
+            }
+        }
+
         &:hover .dropdown__menu {
-            display: block;
+            opacity: 1;
+            visibility: visible;
         }
     }
 }
