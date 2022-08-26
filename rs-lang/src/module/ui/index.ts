@@ -4,7 +4,7 @@ import IWord from '../interface/IWord';
 export default class Render {
     constructor() {}
 
-    header() {
+    header(userName: string) {
         const header = document.createElement('header');
         header.classList.add('header');
         const headerContainer = document.createElement('div');
@@ -35,6 +35,7 @@ export default class Render {
                     <a href="/stats">Статистика</a>
                 </li>
                 <li class="header__menu-item">
+                    <span>${userName}</span>
                     <a href="#" class="js-signin-modal-trigger" data-signin="login">Войти</a>
                     <a href="#" data-signin="logout">Выйти</a>
                 </li>
@@ -259,6 +260,15 @@ export default class Render {
         return wordLevels;
     }
 
+    hardWords() {
+        const hardWords = `
+            <a href="/book/7/0" class="word-levels__item">
+                Сложные слова
+            </a>
+        `;
+        return hardWords;
+    }
+
     bookPagination(levelNumber: number, paginationNumber: number) {
         const pagination = `
             <a href="/book/${levelNumber}/${paginationNumber}" class="pagination__item">
@@ -268,7 +278,11 @@ export default class Render {
         return pagination;
     }
 
-    cardWord(data: IWord) {
+    cardWord(data: IWord, loginStatus: Boolean) {
+        let bttnAddToHard;
+        if (loginStatus) {
+            bttnAddToHard = `<button class="bttn" data-handle="add-to-hard" data-id="${data.id}">Добавить в сложные</button>`;
+        }
         const card = `
           <div class="card card-word">
               <img src="https://rslang-learnwords-app.herokuapp.com/${data.image}" class="card__image">
@@ -297,6 +311,7 @@ export default class Render {
               <div class="card-word__text-meaning-translate">
                   <p>${data.textMeaningTranslate}</p>
               </div>
+              ${bttnAddToHard}
           </div>
         `;
         return card;
