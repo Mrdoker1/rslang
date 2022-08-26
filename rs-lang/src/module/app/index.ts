@@ -21,6 +21,7 @@ import '../ui/styles/sectionGames.scss';
 import '../ui/styles/footer.scss';
 import '../ui/styles/login.scss';
 import '../ui/styles/pageBook.scss';
+import '../ui/styles/games.scss';
 
 //Router
 import { createRouter, Router } from 'routerjs';
@@ -76,28 +77,40 @@ export default class App {
             .get('/', (req) => {
                 this.showMain();
                 Render.currentLink(req.path);
-                // console.log('!!!');
             })
             .get('/book', (req) => {
                 this.showBook(0);
                 Render.currentLink(req.path);
             })
-            .get('/book/:group/:page', (url, req) => {
-                const group = Number(url.params.group);
-                const page = Number(url.params.page);
+            .get('/book/:group/:page', (req) => {
+                const group = Number(req.params.group);
+                const page = Number(req.params.page);
                 this.showBookPage(group, page);
+                Render.currentLink(req.path);
             })
             .get('/games', (req) => {
                 this.showGames();
                 Render.currentLink(req.path);
             })
             .get('/games/sprint', (req) => {
-                this.showSprint();
-                const render = new Render();
+                this.showGameDifficulty('sprint');
+                Render.currentLink(req.path);
+            })
+            .get('/games/sprint/:group/:page', (req) => {
+                //console.log(req.path.split('/').reverse());
+                const group = Number(req.params.group);
+                const page = Number(req.params.page);
+                this.showSprint(group, page);
                 Render.currentLink(req.path);
             })
             .get('/games/audio-call', (req) => {
-                this.showAudioCall();
+                this.showGameDifficulty('audio-call');
+                Render.currentLink(req.path);
+            })
+            .get('/games/audio-call/:group/:page', (req) => {
+                const group = Number(req.params.group);
+                const page = Number(req.params.page);
+                this.showAudioCall(group, page);
                 Render.currentLink(req.path);
             })
             .get('/stats', (req) => {
@@ -201,23 +214,29 @@ export default class App {
         main.appendChild(pageStats);
     }
 
-    showSprint() {
+    showGameDifficulty(type: string) {
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
-        const gameSprint = this.render.gameSprint();
+        const gameDifficulty = this.render.gameDifficulty(type);
+        main.append(gameDifficulty);
+    }
+
+    showSprint(group: number, page: number) {
+        const main = getHTMLElement(document.querySelector('.main'));
+        main.innerHTML = '';
+        const gameSprint = this.render.gameSprint(group, page);
         main.appendChild(gameSprint);
     }
 
-    showAudioCall() {
+    showAudioCall(group: number, page: number) {
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
-        const gameAudioCall = this.render.gameAudioCall();
+        const gameAudioCall = this.render.gameAudioCall(group, page);
         main.appendChild(gameAudioCall);
     }
 
     createLogin() {
-        const render = new Render();
-        const modal = render.modalLogin();
+        const modal = this.render.modalLogin();
         document.body.append(modal);
         new ModalLogin(modal);
 

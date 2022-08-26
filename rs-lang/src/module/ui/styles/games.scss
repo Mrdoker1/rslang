@@ -1,0 +1,40 @@
+.game {
+  // width: 100%;
+  // min-height: 100vh;
+  display: flex;
+  box-sizing: border-box;
+  //background-color: gray;
+
+  &__wrapper {
+      margin: auto;   
+  }
+
+  &__window {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    min-width: 300px;
+    min-height: 350px;
+    border-radius: 40px;
+    padding: 30px;
+    max-width: 650px;
+  }
+  &__desc {
+    padding-top: 20px;
+  }
+}
+
+.levels {
+  display: flex;
+  flex-direction: column;
+  padding-top: 10px;
+
+  &__link {
+    padding: 10px;
+    text-decoration: none;
+    display: block;
+    //color: #000;
+  }
+
+}
+
