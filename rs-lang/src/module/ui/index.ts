@@ -323,25 +323,88 @@ export default class Render {
     }
 
     //Games
-    gameSprint() {
-        const gameSprint = document.createElement('div');
-        gameSprint.classList.add('game__sprint');
-        const gameSprintContainer = document.createElement('div');
-        gameSprintContainer.classList.add('container');
-        gameSprintContainer.appendChild(gameSprint);
-        gameSprint.innerHTML += `<h2>Игра спринт</h2>`;
-        return gameSprintContainer;
+
+    gameDifficulty(type: string) {
+        const container = document.createElement('div');
+        container.classList.add('container');
+        let levels = '';
+        let title;
+        let desc;
+
+        if (type === 'audio-call') {
+            title = 'Аудиовызов';
+            desc = '«Аудиовызов» - эта игра улучшает восприятие речи на слух.';
+        } else if (type === 'sprint') {
+            title = 'Спринт';
+            desc = '«Спринт» - это игра для повторения выученных слов из вашего словаря.';
+        }
+
+        for (let i = 1; i <= 6; i += 1) {
+            levels += `<li class="levels__item">
+                <a class="levels__link" href="/games/${type}/${i}/0">Уровень ${i}</a>
+            </li>`;
+        }
+
+        const html = `<div class="game">
+            <div class="game__wrapper">
+                <div class="game__window">
+                    <h2 class="game__title">${title}</h2>
+                    <p class="game__desc">${desc}</p>
+                    <p>Выберите уровень сложности:</p>
+                    <ul class="game__levels levels">${levels}</ul>
+                </div>
+            </div>
+        </div>`;
+
+        container.innerHTML = html;
+        return container;
     }
 
-    gameAudioCall() {
-        const gameAudioCall = document.createElement('div');
-        gameAudioCall.classList.add('game__audio-call');
-        const gameAudioCallContainer = document.createElement('div');
-        gameAudioCallContainer.classList.add('container');
-        gameAudioCallContainer.appendChild(gameAudioCall);
-        gameAudioCall.innerHTML += `<h2>Игра аудио-вызов</h2>`;
-        return gameAudioCallContainer;
+    gameSprint(group: number, page: number) {
+        const container = document.createElement('div');
+        container.classList.add('container');
+        //container.innerHTML = Render.gameLevels(page, 'sprint');
+        return container;
     }
+
+    gameAudioCall(group: number, page: number) {
+        const container = document.createElement('div');
+        container.classList.add('container');
+        //container.innerHTML = Render.gameLevels(page, 'audio-call');
+        return container;
+    }
+
+    // static gameLevels(type: string) {
+    //     let levels = '';
+    //     let title;
+    //     let desc;
+
+    //     if (type === 'audio-call') {
+    //         title = 'Аудиовызов';
+    //         desc = '«Аудиовызов» - эта игра улучшает восприятие речи на слух.';
+    //     } else if (type === 'sprint') {
+    //         title = 'Спринт';
+    //         desc = '«Спринт» - это игра для повторения выученных слов из вашего словаря.';
+    //     }
+
+    //     for (let i = 1; i <= 6; i += 1) {
+    //         levels += `<li class="levels__item">
+    //             <a class="levels__link" href="/games/${type}/${i}/0">Уровень ${i}</a>
+    //         </li>`;
+    //     }
+
+    //     const html = `<div class="game">
+    //         <div class="game__wrapper">
+    //             <div class="game__window">
+    //                 <h2 class="game__title">${title}</h2>
+    //                 <p class="game__desc">${desc}</p>
+    //                 <p>Выберите уровень сложности:</p>
+    //                 <ul class="game__levels levels">${levels}</ul>
+    //             </div>
+    //         </div>
+    //     </div>`;
+    //     return html;
+    // }
 
     modalLogin() {
         const modal = document.createElement('div');
