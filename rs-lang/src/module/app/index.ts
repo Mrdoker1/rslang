@@ -86,6 +86,7 @@ export default class App {
                 const group = Number(req.params.group);
                 const page = Number(req.params.page);
                 this.showBookPage(group, page);
+                Render.currentLink(req.path);
             })
             .get('/games', (req) => {
                 this.showGames();
@@ -96,10 +97,11 @@ export default class App {
                 Render.currentLink(req.path);
             })
             .get('/games/sprint/:group/:page', (req) => {
+                //console.log(req.path.split('/').reverse());
                 const group = Number(req.params.group);
                 const page = Number(req.params.page);
                 this.showSprint(group, page);
-                //Render.currentLink(req.path);
+                Render.currentLink(req.path);
             })
             .get('/games/audio-call', (req) => {
                 this.showGameDifficulty('audio-call');
@@ -109,7 +111,7 @@ export default class App {
                 const group = Number(req.params.group);
                 const page = Number(req.params.page);
                 this.showAudioCall(group, page);
-                //Render.currentLink(req.path);
+                Render.currentLink(req.path);
             })
             .get('/stats', (req) => {
                 this.showStats();

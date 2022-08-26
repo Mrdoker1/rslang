@@ -363,48 +363,16 @@ export default class Render {
     gameSprint(group: number, page: number) {
         const container = document.createElement('div');
         container.classList.add('container');
-        //container.innerHTML = Render.gameLevels(page, 'sprint');
+        container.innerHTML = '<h2>Игра Спринт</h2>';
         return container;
     }
 
     gameAudioCall(group: number, page: number) {
         const container = document.createElement('div');
         container.classList.add('container');
-        //container.innerHTML = Render.gameLevels(page, 'audio-call');
+        container.innerHTML = '<h2>Игра Аудио-вызов</h2>';
         return container;
     }
-
-    // static gameLevels(type: string) {
-    //     let levels = '';
-    //     let title;
-    //     let desc;
-
-    //     if (type === 'audio-call') {
-    //         title = 'Аудиовызов';
-    //         desc = '«Аудиовызов» - эта игра улучшает восприятие речи на слух.';
-    //     } else if (type === 'sprint') {
-    //         title = 'Спринт';
-    //         desc = '«Спринт» - это игра для повторения выученных слов из вашего словаря.';
-    //     }
-
-    //     for (let i = 1; i <= 6; i += 1) {
-    //         levels += `<li class="levels__item">
-    //             <a class="levels__link" href="/games/${type}/${i}/0">Уровень ${i}</a>
-    //         </li>`;
-    //     }
-
-    //     const html = `<div class="game">
-    //         <div class="game__wrapper">
-    //             <div class="game__window">
-    //                 <h2 class="game__title">${title}</h2>
-    //                 <p class="game__desc">${desc}</p>
-    //                 <p>Выберите уровень сложности:</p>
-    //                 <ul class="game__levels levels">${levels}</ul>
-    //             </div>
-    //         </div>
-    //     </div>`;
-    //     return html;
-    // }
 
     modalLogin() {
         const modal = document.createElement('div');
@@ -470,16 +438,35 @@ export default class Render {
     }
 
     //Current link highlighting
+    // static currentLink(path: string) {
+    //     const linksList = document.querySelectorAll('.header__menu-item');
+    //     const dropdownList = document.querySelectorAll('.dropdown__menu-item');
+    //     const linkActive = getHTMLElement(document.querySelector(`a[href='${path}']`));
+    //     linksList.forEach((item) => {
+    //         item.children[0].classList.remove('active');
+    //     });
+    //     dropdownList.forEach((item) => {
+    //         item.children[0].classList.remove('active');
+    //     });
+    //     linkActive.classList.add('active');
+    // }
+
     static currentLink(path: string) {
-        const linksList = document.querySelectorAll('.header__menu-item');
-        const dropdownList = document.querySelectorAll('.dropdown__menu-item');
-        const linkActive = getHTMLElement(document.querySelector(`a[href='${path}']`));
-        linksList.forEach((item) => {
-            item.children[0].classList.remove('active');
-        });
-        dropdownList.forEach((item) => {
-            item.children[0].classList.remove('active');
-        });
-        linkActive.classList.add('active');
+        const navLinks = document.querySelectorAll('.header__menu a:not([href^="#"])');
+        const parts = path.split('/').reverse();
+
+        for (let link of navLinks) {
+            link.classList.remove('active');
+        }
+
+        for (let item of parts) {
+            for (let link of navLinks) {
+                const href = link.getAttribute('href');
+                if (href?.indexOf(item) !== -1) {
+                    link.classList.add('active');
+                    return;
+                }
+            }
+        }
     }
 }
