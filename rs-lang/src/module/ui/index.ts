@@ -296,6 +296,8 @@ export default class Render {
         let bttnAddToHard;
         if (loginStatus) {
             bttnAddToHard = `<button class="bttn" data-handle="add-to-hard" data-id="${data.id}">Добавить в сложные</button>`;
+        } else {
+            bttnAddToHard = '';
         }
         const card = `
           <div class="card card-word">
