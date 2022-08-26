@@ -86,7 +86,7 @@ export default class App {
                 const group = Number(url.params.group);
                 const page = Number(url.params.page);
                 console.log(group);
-                if (group === 7) {
+                if (group === 6) {
                     this.showBookPageHard();
                 }
                 this.showBookPage(group, page);
@@ -143,20 +143,16 @@ export default class App {
                 return this.render.cardWord(item, loginStatus);
             });
 
-            for (let i = 0; i <= 5; i++) {
-                const wordLevels = this.render.wordLevels(i);
-                getHTMLElement(pageBook.querySelector('.word-levels__list')).innerHTML += wordLevels;
-            }
+            const wordLevels = this.render.wordLevels();
+            getHTMLElement(pageBook.querySelector('.page__book')).append(wordLevels);
 
             if (state.token) {
                 const hardWords = this.render.hardWords();
                 getHTMLElement(pageBook.querySelector('.word-levels__list')).innerHTML += hardWords;
             }
 
-            for (let i = 0; i <= 29; i++) {
-                const pagination = this.render.bookPagination(group, i);
-                getHTMLElement(pageBook.querySelector('.pagination')).innerHTML += pagination;
-            }
+            const pagination = this.render.bookPagination(group);
+            getHTMLElement(pageBook.querySelector('.page__book')).append(pagination);
 
             cardsArr.forEach((card) => {
                 getHTMLElement(pageBook.querySelector('.words__list')).innerHTML += card;
@@ -183,6 +179,14 @@ export default class App {
             const pageBook = this.render.pageBook();
             const state = new State();
             const loginStatus = state.token ? true : false;
+
+            const wordLevels = this.render.wordLevels();
+            getHTMLElement(pageBook.querySelector('.page__book')).append(wordLevels);
+
+            if (state.token) {
+                const hardWords = this.render.hardWords();
+                getHTMLElement(pageBook.querySelector('.word-levels__list')).innerHTML += hardWords;
+            }
 
             const cardsArr = Object.values(dataWords).map((item) => {
                 return item.paginatedResults.map((item: IWord) => {
@@ -213,20 +217,16 @@ export default class App {
                 return this.render.cardWord(item, loginStatus);
             });
 
-            for (let i = 0; i <= 5; i++) {
-                const wordLevels = this.render.wordLevels(i);
-                getHTMLElement(pageBook.querySelector('.word-levels__list')).innerHTML += wordLevels;
-            }
+            const wordLevels = this.render.wordLevels();
+            getHTMLElement(pageBook.querySelector('.page__book')).append(wordLevels);
 
             if (state.token) {
                 const hardWords = this.render.hardWords();
                 getHTMLElement(pageBook.querySelector('.word-levels__list')).innerHTML += hardWords;
             }
 
-            for (let i = 0; i <= 29; i++) {
-                const pagination = this.render.bookPagination(group, i);
-                getHTMLElement(pageBook.querySelector('.pagination')).innerHTML += pagination;
-            }
+            const pagination = this.render.bookPagination(group);
+            getHTMLElement(pageBook.querySelector('.page__book')).append(pagination);
 
             const linkActive = pageBook.querySelectorAll(`a[href='/book/${group}/${page}']`);
             linkActive[0].classList.add('active');

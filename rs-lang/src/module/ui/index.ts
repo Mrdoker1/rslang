@@ -234,9 +234,11 @@ export default class Render {
         pageBookContainer.classList.add('container');
         pageBookContainer.appendChild(pageBook);
         pageBook.innerHTML += `<h2 class="page__title">Учебник</h2>`;
+
         const wordsList = document.createElement('div');
         wordsList.classList.add('words__list');
         pageBook.append(wordsList);
+        /*
         const wordLevels = document.createElement('div');
         wordLevels.classList.add('word-levels');
         wordLevels.innerHTML += `
@@ -245,37 +247,49 @@ export default class Render {
             </div>
         `;
         pageBook.append(wordLevels);
+       
         const bookPagination = document.createElement('div');
         bookPagination.classList.add('pagination');
         pageBook.append(bookPagination);
+         */
         return pageBookContainer;
     }
 
-    wordLevels(levelNumber: number) {
-        const wordLevels = `  
-            <a href="/book/${levelNumber}/0" class="word-levels__item">
-                Уровень ${levelNumber}
-            </a>
-        `;
-        return wordLevels;
+    wordLevels() {
+        const wordLevelsList = document.createElement('div');
+        wordLevelsList.classList.add('word-levels__list');
+        for (let i = 0; i <= 5; i++) {
+            const wordLevels = `  
+                <a href="/book/${i}/0" class="word-levels__item">
+                    Уровень ${i}
+                </a>
+            `;
+            wordLevelsList.innerHTML += wordLevels;
+        }
+        return wordLevelsList;
     }
 
     hardWords() {
         const hardWords = `
-            <a href="/book/7/0" class="word-levels__item">
+            <a href="/book/6/0" class="word-levels__item">
                 Сложные слова
             </a>
         `;
         return hardWords;
     }
 
-    bookPagination(levelNumber: number, paginationNumber: number) {
-        const pagination = `
-            <a href="/book/${levelNumber}/${paginationNumber}" class="pagination__item">
-                ${paginationNumber}
-            </a>
-        `;
-        return pagination;
+    bookPagination(levelNumber: number) {
+        const bookPagination = document.createElement('div');
+        bookPagination.classList.add('pagination');
+        for (let i = 0; i <= 29; i++) {
+            const pagination = `
+                <a href="/book/${levelNumber}/${i}" class="pagination__item">
+                    ${i}
+                </a>
+            `;
+            bookPagination.innerHTML += pagination;
+        }
+        return bookPagination;
     }
 
     cardWord(data: IWord, loginStatus: Boolean) {
