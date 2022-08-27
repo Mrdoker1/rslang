@@ -31,6 +31,7 @@ import ModalLogin from '../login';
 //State
 import State from './state';
 import IWord from '../interface/IWord';
+import IAggregatedWord from '../interface/IAggregatedWord';
 
 export default class App {
     data: Data;
@@ -87,7 +88,7 @@ export default class App {
                 const page = Number(url.params.page);
                 console.log(group);
                 if (group === 6) {
-                    this.showBookPageHard();
+                    this.showBookPageHard(group, page);
                 }
                 this.showBookPage(group, page);
             })
@@ -140,7 +141,7 @@ export default class App {
             const state = new State();
             const loginStatus = state.token ? true : false;
             const cardsArr = Object.values(dataWords).map((item) => {
-                return this.render.cardWord(item, loginStatus);
+                return this.render.cardWord(item, loginStatus, item.id);
             });
 
             const wordLevels = this.render.wordLevels();
@@ -151,7 +152,7 @@ export default class App {
                 getHTMLElement(pageBook.querySelector('.word-levels__list')).innerHTML += hardWords;
             }
 
-            const pagination = this.render.bookPagination(group);
+            const pagination = this.render.bookPagination(group, 29);
             getHTMLElement(pageBook.querySelector('.page__book')).append(pagination);
 
             cardsArr.forEach((card) => {
@@ -162,15 +163,20 @@ export default class App {
         }
     }
 
-    async showBookPageHard() {
+    async showBookPageHard(group: number, page: number) {
         let state = new State();
         const userId = state.userId;
         const token = state.token;
-        const dataWords = await this.data.getUserAggregatedWord(
+        console.log(page);
+        const dataWords = await this.data.getUserAggregatedWords(
             userId,
-            '?filter=%7B%22%24and%22%3A%5B%7B%22userWord.difficulty%22%3A%22hard%22%7D%5D%7D',
+            '',
+            `${page}`,
+            '20',
+            '%7B%22%24and%22%3A%5B%7B%22userWord.difficulty%22%3A%22hard%22%7D%5D%7D',
             token
         );
+        // userId,`?page=${page - 1}&wordsPerPage=20&filter=%7B%22%24and%22%3A%5B%7B%22userWord.difficulty%22%3A%22hard%22%7D%5D%7D`,token
         if (typeof dataWords === 'number') {
             console.log('error');
         } else {
@@ -188,14 +194,24 @@ export default class App {
                 getHTMLElement(pageBook.querySelector('.word-levels__list')).innerHTML += hardWords;
             }
 
-            const cardsArr = Object.values(dataWords).map((item) => {
-                return item.paginatedResults.map((item: IWord) => {
-                    getHTMLElement(pageBook.querySelector('.words__list')).innerHTML += this.render.cardWord(
+            let wordsCount = 0;
+            Object.values(dataWords).map((item) => {
+                const wordsArray = Object.values(item);
+                wordsCount = Object.values(item)[1][0].count;
+
+                wordsArray[0].forEach((item: IWord) => {
+                    return (getHTMLElement(pageBook.querySelector('.words__list')).innerHTML += this.render.cardWord(
                         item,
-                        loginStatus
-                    );
+                        loginStatus,
+                        item._id
+                    ));
                 });
             });
+
+            const pagesCount = Math.ceil(wordsCount / 20);
+            console.log(pagesCount, page);
+            const pagination = this.render.bookPagination(6, pagesCount);
+            getHTMLElement(pageBook.querySelector('.page__book')).append(pagination);
 
             main.appendChild(pageBook);
         }
@@ -214,7 +230,7 @@ export default class App {
             const loginStatus = state.token ? true : false;
 
             const cardsArr = Object.values(dataWords).map((item) => {
-                return this.render.cardWord(item, loginStatus);
+                return this.render.cardWord(item, loginStatus, item.id);
             });
 
             const wordLevels = this.render.wordLevels();
@@ -225,7 +241,7 @@ export default class App {
                 getHTMLElement(pageBook.querySelector('.word-levels__list')).innerHTML += hardWords;
             }
 
-            const pagination = this.render.bookPagination(group);
+            const pagination = this.render.bookPagination(group, 29);
             getHTMLElement(pageBook.querySelector('.page__book')).append(pagination);
 
             const linkActive = pageBook.querySelectorAll(`a[href='/book/${group}/${page}']`);

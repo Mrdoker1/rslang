@@ -278,13 +278,13 @@ export default class Render {
         return hardWords;
     }
 
-    bookPagination(levelNumber: number) {
+    bookPagination(levelNumber: number, pagesNumber: number) {
         const bookPagination = document.createElement('div');
         bookPagination.classList.add('pagination');
-        for (let i = 0; i <= 29; i++) {
+        for (let i = 0; i < pagesNumber; i++) {
             const pagination = `
                 <a href="/book/${levelNumber}/${i}" class="pagination__item">
-                    ${i}
+                    ${i + 1}
                 </a>
             `;
             bookPagination.innerHTML += pagination;
@@ -292,10 +292,10 @@ export default class Render {
         return bookPagination;
     }
 
-    cardWord(data: IWord, loginStatus: Boolean) {
+    cardWord(data: IWord, loginStatus: Boolean, id: string) {
         let bttnAddToHard;
         if (loginStatus) {
-            bttnAddToHard = `<button class="bttn" data-handle="add-to-hard" data-id="${data.id}">Добавить в сложные</button>`;
+            bttnAddToHard = `<button class="bttn" data-handle="add-to-hard" data-id="${id}">Добавить в сложные</button>`;
         } else {
             bttnAddToHard = '';
         }
