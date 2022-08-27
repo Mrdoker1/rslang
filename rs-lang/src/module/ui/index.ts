@@ -35,8 +35,8 @@ export default class Render {
                     <a href="/stats">Статистика</a>
                 </li>
                 <li class="header__menu-item">
-                    <a href="#" data-routerjs-ignore class="js-signin-modal-trigger" data-signin="login">Войти</a>
-                    <a href="#" data-routerjs-ignore data-signin="logout">Выйти</a>
+                    <a href="#" class="js-signin-modal-trigger" data-signin="login">Войти</a>
+                    <a href="#" data-signin="logout">Выйти</a>
                 </li>
             </ul>
         </div>
@@ -233,9 +233,11 @@ export default class Render {
         pageBookContainer.classList.add('container');
         pageBookContainer.appendChild(pageBook);
         pageBook.innerHTML += `<h2 class="page__title">Учебник</h2>`;
+
         const wordsList = document.createElement('div');
         wordsList.classList.add('words__list');
         pageBook.append(wordsList);
+        /*
         const wordLevels = document.createElement('div');
         wordLevels.classList.add('word-levels');
         wordLevels.innerHTML += `
@@ -244,31 +246,58 @@ export default class Render {
             </div>
         `;
         pageBook.append(wordLevels);
+       
         const bookPagination = document.createElement('div');
         bookPagination.classList.add('pagination');
         pageBook.append(bookPagination);
+         */
         return pageBookContainer;
     }
 
-    wordLevels(levelNumber: number) {
-        const wordLevels = `  
-            <a href="/book/${levelNumber}/0" class="word-levels__item">
-                Уровень ${levelNumber}
-            </a>
-        `;
-        return wordLevels;
+    wordLevels() {
+        const wordLevelsList = document.createElement('div');
+        wordLevelsList.classList.add('word-levels__list');
+        for (let i = 0; i <= 5; i++) {
+            const wordLevels = `  
+                <a href="/book/${i}/0" class="word-levels__item">
+                    Уровень ${i}
+                </a>
+            `;
+            wordLevelsList.innerHTML += wordLevels;
+        }
+        return wordLevelsList;
     }
 
-    bookPagination(levelNumber: number, paginationNumber: number) {
-        const pagination = `
-            <a href="/book/${levelNumber}/${paginationNumber}" class="pagination__item">
-                ${paginationNumber}
+    hardWords() {
+        const hardWords = `
+            <a href="/book/6/0" class="word-levels__item">
+                Сложные слова
             </a>
         `;
-        return pagination;
+        return hardWords;
     }
 
-    cardWord(data: IWord) {
+    bookPagination(levelNumber: number, pagesNumber: number) {
+        const bookPagination = document.createElement('div');
+        bookPagination.classList.add('pagination');
+        for (let i = 0; i < pagesNumber; i++) {
+            const pagination = `
+                <a href="/book/${levelNumber}/${i}" class="pagination__item">
+                    ${i + 1}
+                </a>
+            `;
+            bookPagination.innerHTML += pagination;
+        }
+        return bookPagination;
+    }
+
+    cardWord(data: IWord, loginStatus: Boolean, id: string) {
+        let bttnAddToHard;
+        if (loginStatus) {
+            bttnAddToHard = `<button class="bttn" data-handle="add-to-hard" data-id="${id}">Добавить в сложные</button>`;
+        } else {
+            bttnAddToHard = '';
+        }
         const card = `
           <div class="card card-word">
               <img src="https://rslang-learnwords-app.herokuapp.com/${data.image}" class="card__image">
@@ -297,6 +326,7 @@ export default class Render {
               <div class="card-word__text-meaning-translate">
                   <p>${data.textMeaningTranslate}</p>
               </div>
+              ${bttnAddToHard}
           </div>
         `;
         return card;
