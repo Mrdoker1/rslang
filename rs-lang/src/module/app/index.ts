@@ -21,9 +21,10 @@ import '../ui/styles/sectionGames.scss';
 import '../ui/styles/footer.scss';
 import '../ui/styles/login.scss';
 import '../ui/styles/pageBook.scss';
+import '../ui/styles/games.scss';
 
 //Router
-import { createRouter } from 'routerjs';
+import { createRouter, Router } from 'routerjs';
 
 //Login
 import ModalLogin from '../login';
@@ -36,12 +37,12 @@ import IAggregatedWord from '../interface/IAggregatedWord';
 export default class App {
     data: Data;
     render: Render;
-    state: State;
+    router: Router;
 
     constructor(base: string) {
         this.data = new Data(base);
         this.render = new Render();
-        this.state = new State();
+        this.router = createRouter();
     }
 
     async start() {
@@ -63,18 +64,18 @@ export default class App {
 
     createPage() {
         const render = new Render();
-        const header = render.header(this.state.name);
+        const header = render.header();
         const main = render.main();
         const footer = render.footer();
         const body = getHTMLElement(document.body);
-        console.log(this.state.name);
+
         body.appendChild(header);
         body.appendChild(main);
         body.appendChild(footer);
     }
 
     initRouter() {
-        const router = createRouter()
+        this.router
             .get('/', (req) => {
                 this.showMain();
                 Render.currentLink(req.path);
@@ -83,26 +84,39 @@ export default class App {
                 this.showBook(0);
                 Render.currentLink(req.path);
             })
-            .get('/book/:group/:page', (url, req) => {
-                const group = Number(url.params.group);
-                const page = Number(url.params.page);
+            .get('/book/:group/:page', (req) => {
+                const group = Number(req.params.group);
+                const page = Number(req.params.page);
                 console.log(group);
                 if (group === 6) {
                     this.showBookPageHard(group, page);
                 }
                 this.showBookPage(group, page);
+                Render.currentLink(req.path);
             })
             .get('/games', (req) => {
                 this.showGames();
                 Render.currentLink(req.path);
             })
             .get('/games/sprint', (req) => {
-                this.showSprint();
-                const render = new Render();
+                this.showGameDifficulty('sprint');
+                Render.currentLink(req.path);
+            })
+            .get('/games/sprint/:group/:page', (req) => {
+                //console.log(req.path.split('/').reverse());
+                const group = Number(req.params.group);
+                const page = Number(req.params.page);
+                this.showSprint(group, page);
                 Render.currentLink(req.path);
             })
             .get('/games/audio-call', (req) => {
-                this.showAudioCall();
+                this.showGameDifficulty('audio-call');
+                Render.currentLink(req.path);
+            })
+            .get('/games/audio-call/:group/:page', (req) => {
+                const group = Number(req.params.group);
+                const page = Number(req.params.page);
+                this.showAudioCall(group, page);
                 Render.currentLink(req.path);
             })
             .get('/stats', (req) => {
@@ -111,7 +125,7 @@ export default class App {
             })
             .error(404, () => {
                 //this.show404();
-                router.navigate('/');
+                this.router.navigate('/');
             })
             .run();
     }
@@ -288,23 +302,29 @@ export default class App {
         main.appendChild(pageStats);
     }
 
-    showSprint() {
+    showGameDifficulty(type: string) {
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
-        const gameSprint = this.render.gameSprint();
+        const gameDifficulty = this.render.gameDifficulty(type);
+        main.append(gameDifficulty);
+    }
+
+    showSprint(group: number, page: number) {
+        const main = getHTMLElement(document.querySelector('.main'));
+        main.innerHTML = '';
+        const gameSprint = this.render.gameSprint(group, page);
         main.appendChild(gameSprint);
     }
 
-    showAudioCall() {
+    showAudioCall(group: number, page: number) {
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
-        const gameAudioCall = this.render.gameAudioCall();
+        const gameAudioCall = this.render.gameAudioCall(group, page);
         main.appendChild(gameAudioCall);
     }
 
     createLogin() {
-        const render = new Render();
-        const modal = render.modalLogin();
+        const modal = this.render.modalLogin();
         document.body.append(modal);
         new ModalLogin(modal);
 
@@ -319,11 +339,13 @@ export default class App {
 
         const loginLink = getHTMLElement(document.querySelector('[data-signin="login"]'));
         const logoutLink = getHTMLElement(document.querySelector('[data-signin="logout"]'));
-        logoutLink.addEventListener('click', () => {
+        logoutLink.addEventListener('click', (e) => {
+            e.preventDefault();
             state.token = '';
             localStorage.setItem('state', JSON.stringify(state));
             logoutLink.classList.add('hidden');
             loginLink.classList.remove('hidden');
+            this.router.run();
         });
 
         if (state.token) {
@@ -339,10 +361,10 @@ export default class App {
             if (typeof login != 'number') {
                 state.token = login.token;
                 state.userId = login.userId;
-                state.name = login.name;
                 loginLink.classList.add('hidden');
                 logoutLink.classList.remove('hidden');
                 modal.classList.remove('cd-signin-modal--is-visible');
+                this.router.run();
             } else {
                 loginMessage.textContent = 'Неверный пароль или почта';
             }
@@ -361,10 +383,10 @@ export default class App {
                 if (typeof login != 'number') {
                     state.token = login.token;
                     state.userId = login.userId;
-                    state.name = login.name;
                     loginLink.classList.add('hidden');
                     logoutLink.classList.remove('hidden');
                     modal.classList.remove('cd-signin-modal--is-visible');
+                    this.router.run();
                 }
             } else {
                 if (user === 422) signupMessage.textContent = 'Неверный пароль, имя или почта';

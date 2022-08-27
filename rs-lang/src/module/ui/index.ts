@@ -4,7 +4,7 @@ import IWord from '../interface/IWord';
 export default class Render {
     constructor() {}
 
-    header(userName: string) {
+    header() {
         const header = document.createElement('header');
         header.classList.add('header');
         const headerContainer = document.createElement('div');
@@ -35,7 +35,6 @@ export default class Render {
                     <a href="/stats">Статистика</a>
                 </li>
                 <li class="header__menu-item">
-                    <span>${userName}</span>
                     <a href="#" class="js-signin-modal-trigger" data-signin="login">Войти</a>
                     <a href="#" data-signin="logout">Выйти</a>
                 </li>
@@ -354,24 +353,55 @@ export default class Render {
     }
 
     //Games
-    gameSprint() {
-        const gameSprint = document.createElement('div');
-        gameSprint.classList.add('game__sprint');
-        const gameSprintContainer = document.createElement('div');
-        gameSprintContainer.classList.add('container');
-        gameSprintContainer.appendChild(gameSprint);
-        gameSprint.innerHTML += `<h2>Игра спринт</h2>`;
-        return gameSprintContainer;
+
+    gameDifficulty(type: string) {
+        const container = document.createElement('div');
+        container.classList.add('container');
+        let levels = '';
+        let title;
+        let desc;
+
+        if (type === 'audio-call') {
+            title = 'Аудиовызов';
+            desc = '«Аудиовызов» - эта игра улучшает восприятие речи на слух.';
+        } else if (type === 'sprint') {
+            title = 'Спринт';
+            desc = '«Спринт» - это игра для повторения выученных слов из вашего словаря.';
+        }
+
+        for (let i = 1; i <= 6; i += 1) {
+            levels += `<li class="levels__item">
+                <a class="levels__link" href="/games/${type}/${i}/0">Уровень ${i}</a>
+            </li>`;
+        }
+
+        const html = `<div class="game">
+            <div class="game__wrapper">
+                <div class="game__window">
+                    <h2 class="game__title">${title}</h2>
+                    <p class="game__desc">${desc}</p>
+                    <p>Выберите уровень сложности:</p>
+                    <ul class="game__levels levels">${levels}</ul>
+                </div>
+            </div>
+        </div>`;
+
+        container.innerHTML = html;
+        return container;
     }
 
-    gameAudioCall() {
-        const gameAudioCall = document.createElement('div');
-        gameAudioCall.classList.add('game__audio-call');
-        const gameAudioCallContainer = document.createElement('div');
-        gameAudioCallContainer.classList.add('container');
-        gameAudioCallContainer.appendChild(gameAudioCall);
-        gameAudioCall.innerHTML += `<h2>Игра аудио-вызов</h2>`;
-        return gameAudioCallContainer;
+    gameSprint(group: number, page: number) {
+        const container = document.createElement('div');
+        container.classList.add('container');
+        container.innerHTML = '<h2>Игра Спринт</h2>';
+        return container;
+    }
+
+    gameAudioCall(group: number, page: number) {
+        const container = document.createElement('div');
+        container.classList.add('container');
+        container.innerHTML = '<h2>Игра Аудио-вызов</h2>';
+        return container;
     }
 
     modalLogin() {
@@ -380,8 +410,8 @@ export default class Render {
         const html = `
             <div class="cd-signin-modal__container">
                 <ul class="cd-signin-modal__switcher js-signin-modal-switcher js-signin-modal-trigger">
-                    <li><a href="#0" data-signin="login" data-type="login">Вход</a></li>
-                    <li><a href="#0" data-signin="signup" data-type="signup">Регистрация</a></li>
+                    <li><a href="#0" data-routerjs-ignore data-signin="login" data-type="login">Вход</a></li>
+                    <li><a href="#0" data-routerjs-ignore data-signin="signup" data-type="signup">Регистрация</a></li>
                 </ul>
     
                 <div class="cd-signin-modal__block js-signin-modal-block" data-type="login">
@@ -395,7 +425,7 @@ export default class Render {
                         <p class="cd-signin-modal__fieldset">
                             <label class="cd-signin-modal__label cd-signin-modal__label--password cd-signin-modal__label--image-replace" for="signin-password">Пароль</label>
                             <input class="cd-signin-modal__input cd-signin-modal__input--full-width cd-signin-modal__input--has-padding cd-signin-modal__input--has-border" minlength="8" required id="signin-password" type="text" placeholder="Введите пароль" autocomplete="false">
-                            <a href="#0" class="cd-signin-modal__hide-password js-hide-password">Скрыть</a>
+                            <a href="#0" data-routerjs-ignore class="cd-signin-modal__hide-password js-hide-password">Скрыть</a>
                             <span class="cd-signin-modal__error">Error message here!</span>
                         </p>
                         <p class="cd-signin-modal__message js-signin-modal__message"></p>
@@ -422,7 +452,7 @@ export default class Render {
                         <p class="cd-signin-modal__fieldset">
                             <label class="cd-signin-modal__label cd-signin-modal__label--password cd-signin-modal__label--image-replace" for="signup-password">Пароль</label>
                             <input class="cd-signin-modal__input cd-signin-modal__input--full-width cd-signin-modal__input--has-padding cd-signin-modal__input--has-border" minlength="8" required id="signup-password" type="text" placeholder="Введите пароль" autocomplete="false">
-                            <a href="#0" class="cd-signin-modal__hide-password js-hide-password">Скрыть</a>
+                            <a href="#0" class="cd-signin-modal__hide-password js-hide-password" data-routerjs-ignore>Скрыть</a>
                             <span class="cd-signin-modal__error">Error message here!</span>
                         </p>
                         <p class="cd-signin-modal__message js-signin-modal__message"></p>
@@ -431,23 +461,42 @@ export default class Render {
                         </p>
                     </form>
                 </div>
-                <a href="#0" class="cd-signin-modal__close js-close">Close</a>
+                <a href="#0" data-routerjs-ignore class="cd-signin-modal__close js-close">Close</a>
             </div>`;
         modal.innerHTML = html;
         return modal;
     }
 
     //Current link highlighting
+    // static currentLink(path: string) {
+    //     const linksList = document.querySelectorAll('.header__menu-item');
+    //     const dropdownList = document.querySelectorAll('.dropdown__menu-item');
+    //     const linkActive = getHTMLElement(document.querySelector(`a[href='${path}']`));
+    //     linksList.forEach((item) => {
+    //         item.children[0].classList.remove('active');
+    //     });
+    //     dropdownList.forEach((item) => {
+    //         item.children[0].classList.remove('active');
+    //     });
+    //     linkActive.classList.add('active');
+    // }
+
     static currentLink(path: string) {
-        const linksList = document.querySelectorAll('.header__menu-item');
-        const dropdownList = document.querySelectorAll('.dropdown__menu-item');
-        const linkActive = getHTMLElement(document.querySelector(`a[href='${path}']`));
-        linksList.forEach((item) => {
-            item.children[0].classList.remove('active');
-        });
-        dropdownList.forEach((item) => {
-            item.children[0].classList.remove('active');
-        });
-        linkActive.classList.add('active');
+        const navLinks = document.querySelectorAll('.header__menu a:not([href^="#"])');
+        const parts = path.split('/').reverse();
+
+        for (let link of navLinks) {
+            link.classList.remove('active');
+        }
+
+        for (let item of parts) {
+            for (let link of navLinks) {
+                const href = link.getAttribute('href');
+                if (href?.indexOf(item) !== -1) {
+                    link.classList.add('active');
+                    return;
+                }
+            }
+        }
     }
 }
