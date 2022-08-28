@@ -63,7 +63,7 @@ export default class Render {
         return splash;
     }
 
-    sectionDevelovers() {
+    sectionDevelopers() {
         const developers = document.createElement('section');
         const developersContainer = document.createElement('div');
         developersContainer.classList.add('container');
@@ -544,9 +544,14 @@ export default class Render {
         const chart = document.createElement('div');
         chart.classList.add('chart');
 
+        let opacity = 100;
         const roundRadius = chartSize / 2;
         const roundCircum = 2 * roundRadius * Math.PI;
         const roundDraw = (percent * roundCircum) / 100;
+
+        if (percent <= 0) {
+            opacity = 0;
+        }
 
         chart.innerHTML = `
         <div class="chart-wrapper">
@@ -558,7 +563,7 @@ export default class Render {
             <svg class="chart-percentage" viewbox="0 0 ${chartSize} ${chartSize}" width="${chartSize}" height="${chartSize}" data-percent="0" stroke=${color} stroke-width="${strokeSize}">
                 <circle cx="${roundRadius}" cy="${roundRadius}" r="${
             roundRadius - strokeSize / 2
-        }" stroke-dasharray="${roundDraw}"/>
+        }" stroke-opacity="${opacity}" stroke-dasharray="${roundDraw} ${roundCircum}"/>
             </svg>
         </div>
         `;

@@ -24,7 +24,7 @@ export default class Sprint {
         const main = getHTMLElement(document.querySelector('main'));
         const div = document.createElement('div');
         div.innerHTML = `<div>counter = ${this.multiplier}</div>`;
-        const chart = this.render.chart(500, 8, 96, '#2B788B', '#C3DCE3');
+        const chart = this.render.chart(500, 8, 0, '#2B788B', '#C3DCE3');
         main.appendChild(chart);
     }
 }
