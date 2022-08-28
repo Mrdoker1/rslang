@@ -322,10 +322,15 @@ export default class App {
         });
     }
 
-    showSprint(group: number, page: number) {
+    async showSprint(group: number, page: number) {
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
-        const sprint = new Sprint(group, page);
+        const words = await this.data.getWords(group, page);
+        if (typeof words === 'number') {
+            console.log(`error ${words}`);
+            return;
+        }
+        const sprint = new Sprint(words, group, page);
         sprint.start();
         //const gameSprint = this.render.gameSprint(group, page);
         //main.appendChild(gameSprint);
