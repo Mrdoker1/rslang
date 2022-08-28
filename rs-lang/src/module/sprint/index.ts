@@ -10,14 +10,18 @@ export default class Sprint {
     page: number;
     multiplier: number;
     counter: number;
+    speed: number;
     points: number;
+    strike: number;
     render: Render;
     constructor(group: number, page: number) {
         this.group = group;
         this.page = page;
         this.multiplier = 1;
         this.counter = 100;
+        this.speed = 0.1;
         this.points = 0;
+        this.strike = 0;
         this.render = new Render();
     }
 
@@ -27,8 +31,12 @@ export default class Sprint {
 
         const interval = window.setInterval(() => {
             try {
+                if (this.counter <= 0) {
+                    window.clearInterval(interval);
+                    console.log('Sprint Game Finished!');
+                }
                 const oldChart = getHTMLElement(document.querySelector('.chart'));
-                const newChart = this.render.chart(500, 8, (this.counter -= 0.01), '#2B788B', '#C3DCE3');
+                const newChart = this.render.chart(500, 8, (this.counter -= this.speed), '#2B788B', '#C3DCE3');
                 playZone.replaceChild(newChart, oldChart);
             } catch {
                 window.clearInterval(interval);
@@ -39,7 +47,7 @@ export default class Sprint {
     setPlayZone() {
         const main = getHTMLElement(document.querySelector('main'));
         const chart = this.render.chart(500, 8, this.counter, '#2B788B', '#C3DCE3');
-        const sprintBody = this.render.gameSprint(2, 30, 2, 'English Word', 'Перевод');
+        const sprintBody = this.render.gameSprint(this.multiplier, this.points, this.strike, 'English Word', 'Перевод');
 
         const wrapper = document.createElement('div');
         wrapper.classList.add('sprint-game-wrapper');
