@@ -9,10 +9,12 @@ import IStatistics from '../interface/IStatistics';
 import IAggregatedWord from '../interface/IAggregatedWord';
 
 export default class Data {
+    base: string;
     private words: string;
     private users: string;
     private sign: string;
     constructor(base: string) {
+        this.base = base;
         this.words = `${base}/words`;
         this.users = `${base}/users`;
         this.sign = `${base}/signin`;
