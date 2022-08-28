@@ -17,6 +17,7 @@
         transform: translate(-50%, -50%);
         display: flex;
         flex-direction: column;
+        gap: 40px;
         &-info{
             display: flex;
             justify-content: space-between;
@@ -24,6 +25,7 @@
         &-strike{
             display: flex;
             justify-content: space-between;
+            padding-bottom: 10px;
         }
         &-words{
             display: flex;
