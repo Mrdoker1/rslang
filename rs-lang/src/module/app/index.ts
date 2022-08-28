@@ -26,6 +26,8 @@ import '../ui/styles/footer.scss';
 import '../ui/styles/login.scss';
 import '../ui/styles/pageBook.scss';
 import '../ui/styles/games.scss';
+import '../ui/styles/sprint.scss';
+import '../ui/styles/chart.scss';
 
 //Router
 import { createRouter, Router } from 'routerjs';
