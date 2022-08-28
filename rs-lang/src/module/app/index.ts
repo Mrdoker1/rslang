@@ -29,6 +29,9 @@ import { createRouter, Router } from 'routerjs';
 //Login
 import ModalLogin from '../login';
 
+//Games
+import Sprint from '../sprint';
+
 //State
 import State from './state';
 import IWord from '../interface/IWord';
@@ -312,8 +315,10 @@ export default class App {
     showSprint(group: number, page: number) {
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
-        const gameSprint = this.render.gameSprint(group, page);
-        main.appendChild(gameSprint);
+        const sprint = new Sprint(group, page);
+        sprint.start();
+        //const gameSprint = this.render.gameSprint(group, page);
+        //main.appendChild(gameSprint);
     }
 
     showAudioCall(group: number, page: number) {
