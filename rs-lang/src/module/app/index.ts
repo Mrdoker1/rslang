@@ -25,6 +25,8 @@ import '../ui/styles/footer.scss';
 import '../ui/styles/login.scss';
 import '../ui/styles/pageBook.scss';
 import '../ui/styles/games.scss';
+import '../ui/styles/sprint.scss';
+import '../ui/styles/chart.scss';
 
 //Router
 import { createRouter, Router } from 'routerjs';
@@ -138,11 +140,11 @@ export default class App {
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
         const sectionSplash = this.render.sectionSplash();
-        const sectionDevelovers = this.render.sectionDevelovers();
+        const sectionDevelopers = this.render.sectionDevelopers();
         const sectionBenefits = this.render.sectionBenefits();
         const sectionGames = this.render.sectionGames();
         main.appendChild(sectionSplash);
-        main.appendChild(sectionDevelovers);
+        main.appendChild(sectionDevelopers);
         main.appendChild(sectionBenefits);
         main.appendChild(sectionGames);
     }

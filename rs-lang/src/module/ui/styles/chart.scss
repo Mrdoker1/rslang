@@ -1,0 +1,12 @@
+.chart {
+    position: relative;
+}
+
+.chart-wrapper {
+    position: absolute;
+    fill: none;
+    .chart-percentage {
+    transform: rotate(-90deg);
+    stroke-linecap: round;
+    }
+}
