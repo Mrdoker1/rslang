@@ -13,6 +13,7 @@ import { getRandom, shuffle } from '../../utils/helpers';
 //Interface
 import IUserBody from '../interface/IUserBody';
 import IWord from '../interface/IWord';
+import IAggregatedWord from '../interface/IAggregatedWord';
 
 //Style
 import '../../global.scss';
@@ -31,6 +32,9 @@ import { createRouter, Router } from 'routerjs';
 
 //Login
 import ModalLogin from '../login';
+
+//Games
+import Sprint from '../sprint';
 
 //State
 import State from './state';
@@ -88,6 +92,10 @@ export default class App {
             .get('/book/:group/:page', (req) => {
                 const group = Number(req.params.group);
                 const page = Number(req.params.page);
+                console.log(group);
+                if (group === 6) {
+                    this.showBookPageHard(group, page);
+                }
                 this.showBookPage(group, page);
                 Render.currentLink(req.path);
             })
@@ -149,23 +157,80 @@ export default class App {
         if (typeof dataWords === 'number') {
             console.log('error');
         } else {
+            const state = new State();
+            const loginStatus = state.token ? true : false;
             const cardsArr = Object.values(dataWords).map((item) => {
-                return this.render.cardWord(item);
+                return this.render.cardWord(item, loginStatus, item.id);
             });
-            console.log(dataWords);
-            for (let i = 0; i <= 5; i++) {
-                const wordLevels = this.render.wordLevels(i);
-                getHTMLElement(pageBook.querySelector('.word-levels__list')).innerHTML += wordLevels;
+
+            const wordLevels = this.render.wordLevels();
+            getHTMLElement(pageBook.querySelector('.page__book')).append(wordLevels);
+
+            if (state.token) {
+                const hardWords = this.render.hardWords();
+                getHTMLElement(pageBook.querySelector('.word-levels__list')).innerHTML += hardWords;
             }
 
-            for (let i = 0; i <= 29; i++) {
-                const pagination = this.render.bookPagination(group, i);
-                getHTMLElement(pageBook.querySelector('.pagination')).innerHTML += pagination;
-            }
+            const pagination = this.render.bookPagination(group, 29);
+            getHTMLElement(pageBook.querySelector('.page__book')).append(pagination);
 
             cardsArr.forEach((card) => {
                 getHTMLElement(pageBook.querySelector('.words__list')).innerHTML += card;
             });
+
+            main.appendChild(pageBook);
+        }
+    }
+
+    async showBookPageHard(group: number, page: number) {
+        let state = new State();
+        const userId = state.userId;
+        const token = state.token;
+        console.log(page);
+        const dataWords = await this.data.getUserAggregatedWords(
+            userId,
+            '',
+            `${page}`,
+            '20',
+            '%7B%22%24and%22%3A%5B%7B%22userWord.difficulty%22%3A%22hard%22%7D%5D%7D',
+            token
+        );
+        // userId,`?page=${page - 1}&wordsPerPage=20&filter=%7B%22%24and%22%3A%5B%7B%22userWord.difficulty%22%3A%22hard%22%7D%5D%7D`,token
+        if (typeof dataWords === 'number') {
+            console.log('error');
+        } else {
+            const main = getHTMLElement(document.querySelector('.main'));
+            main.innerHTML = '';
+            const pageBook = this.render.pageBook();
+            const state = new State();
+            const loginStatus = state.token ? true : false;
+
+            const wordLevels = this.render.wordLevels();
+            getHTMLElement(pageBook.querySelector('.page__book')).append(wordLevels);
+
+            if (state.token) {
+                const hardWords = this.render.hardWords();
+                getHTMLElement(pageBook.querySelector('.word-levels__list')).innerHTML += hardWords;
+            }
+
+            let wordsCount = 0;
+            Object.values(dataWords).map((item) => {
+                const wordsArray = Object.values(item);
+                wordsCount = Object.values(item)[1][0].count;
+
+                wordsArray[0].forEach((item: IWord) => {
+                    return (getHTMLElement(pageBook.querySelector('.words__list')).innerHTML += this.render.cardWord(
+                        item,
+                        loginStatus,
+                        item._id
+                    ));
+                });
+            });
+
+            const pagesCount = Math.ceil(wordsCount / 20);
+            console.log(pagesCount, page);
+            const pagination = this.render.bookPagination(6, pagesCount);
+            getHTMLElement(pageBook.querySelector('.page__book')).append(pagination);
 
             main.appendChild(pageBook);
         }
@@ -180,23 +245,48 @@ export default class App {
         if (typeof dataWords === 'number') {
             console.log('error');
         } else {
+            const state = new State();
+            const loginStatus = state.token ? true : false;
+
             const cardsArr = Object.values(dataWords).map((item) => {
-                return this.render.cardWord(item);
+                return this.render.cardWord(item, loginStatus, item.id);
             });
-            console.log(dataWords);
-            for (let i = 0; i <= 5; i++) {
-                const wordLevels = this.render.wordLevels(i);
-                getHTMLElement(pageBook.querySelector('.word-levels__list')).innerHTML += wordLevels;
+
+            const wordLevels = this.render.wordLevels();
+            getHTMLElement(pageBook.querySelector('.page__book')).append(wordLevels);
+
+            if (state.token) {
+                const hardWords = this.render.hardWords();
+                getHTMLElement(pageBook.querySelector('.word-levels__list')).innerHTML += hardWords;
             }
 
-            for (let i = 0; i <= 29; i++) {
-                const pagination = this.render.bookPagination(group, i);
-                getHTMLElement(pageBook.querySelector('.pagination')).innerHTML += pagination;
-            }
+            const pagination = this.render.bookPagination(group, 29);
+            getHTMLElement(pageBook.querySelector('.page__book')).append(pagination);
+
             const linkActive = pageBook.querySelectorAll(`a[href='/book/${group}/${page}']`);
             linkActive[0].classList.add('active');
             cardsArr.forEach((card) => {
                 getHTMLElement(pageBook.querySelector('.words__list')).innerHTML += card;
+            });
+
+            const bttn = pageBook.querySelectorAll('[data-handle="add-to-hard"]');
+            bttn.forEach((item) => {
+                item.addEventListener('click', async (e) => {
+                    const target = getHTMLElement(e.target);
+                    const wordId = target.getAttribute('data-id');
+                    console.log(wordId);
+                    const dataWords = await this.data.createUserWord(
+                        state.userId,
+                        wordId!,
+                        { difficulty: 'hard' },
+                        state.token
+                    );
+                    if (typeof dataWords === 'number') {
+                        console.log('error');
+                    } else {
+                        console.log('ok');
+                    }
+                });
             });
 
             main.appendChild(pageBook);
@@ -234,8 +324,10 @@ export default class App {
     showSprint(group: number, page: number) {
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
-        const gameSprint = this.render.gameSprint(group, page);
-        main.append(gameSprint);
+        const sprint = new Sprint(group, page);
+        sprint.start();
+        //const gameSprint = this.render.gameSprint(group, page);
+        //main.appendChild(gameSprint);
     }
 
     async showAudioCall(group: number, page: number) {
@@ -405,6 +497,7 @@ export default class App {
             const login = await this.data.login({ email, password });
             if (typeof login != 'number') {
                 state.token = login.token;
+                state.userId = login.userId;
                 loginLink.classList.add('hidden');
                 logoutLink.classList.remove('hidden');
                 modal.classList.remove('cd-signin-modal--is-visible');
@@ -426,6 +519,7 @@ export default class App {
                 const login = await this.data.login({ email, password });
                 if (typeof login != 'number') {
                     state.token = login.token;
+                    state.userId = login.userId;
                     loginLink.classList.add('hidden');
                     logoutLink.classList.remove('hidden');
                     modal.classList.remove('cd-signin-modal--is-visible');
