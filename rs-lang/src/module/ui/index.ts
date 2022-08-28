@@ -423,10 +423,39 @@ export default class Render {
         return container;
     }
 
-    gameSprint(group: number, page: number) {
+    gameSprint(multiplier: number, points: number, strike: number, word: string, translatedWord: string) {
         const container = document.createElement('div');
-        container.classList.add('container');
-        container.innerHTML = '<h2>Игра Спринт</h2>';
+        let strikesHTML = '';
+        let maxStrike = 3;
+        for (let i = strike; i > 0; i--) {
+            strikesHTML += `<div class="sprint-game__normal-strike">✦</div>`;
+        }
+        for (let i = maxStrike - strike; i > 0; i--) {
+            strikesHTML += `<div class="sprint-game__empty-strike">✦</div>`;
+        }
+        container.classList.add('sprint-game');
+        container.innerHTML = `
+            <div class="sprint-game__body">
+                <div class="sprint-game__body-info">
+                    <div class="sprint-game__multiplier">
+                        <span>x${multiplier}</span>
+                        <span>Множитель</span>
+                    </div>
+                    <div class="sprint-game__points">
+                        <span>${points}</span>
+                        <span>Очки</span>
+                    </div>
+                </div>
+                <div class="sprint-game__body-strike">
+                    ${strikesHTML}
+                    <div class="sprint-game__word">${word}</div>
+                    <div class="sprint-game__translatedWord">${translatedWord}</div>
+                </div>
+                <div class="sprint-game__body-actions">
+                    <button class="sprint-game__true-button">Верно</button> <button class="sprint-game__false-button">Неверно</button>
+                </div>
+            </div>
+        `;
         return container;
     }
 

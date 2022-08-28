@@ -22,9 +22,15 @@ export default class Sprint {
     start() {
         console.log('Game Started!');
         const main = getHTMLElement(document.querySelector('main'));
-        const div = document.createElement('div');
-        div.innerHTML = `<div>counter = ${this.multiplier}</div>`;
-        const chart = this.render.chart(500, 8, 0, '#2B788B', '#C3DCE3');
-        main.appendChild(chart);
+        let counter = 100;
+        const chart = this.render.chart(500, 8, counter, '#2B788B', '#C3DCE3');
+        const sprint = this.render.gameSprint(2, 30, 2, 'genocide', 'потерять');
+        main.appendChild(sprint);
+
+        // const interval = window.setInterval(() => {
+        //     const oldChart = getHTMLElement(document.querySelector('.chart'));
+        //     const newChart = this.render.chart(500, 8, (counter -= 0.01), '#2B788B', '#C3DCE3');
+        //     main.replaceChild(newChart, oldChart);
+        // }, 10);
     }
 }
