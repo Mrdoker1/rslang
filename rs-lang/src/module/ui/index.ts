@@ -330,28 +330,61 @@ export default class Render {
         let levels = '';
         let title;
         let desc;
+        let skill;
 
         if (type === 'audio-call') {
             title = 'Аудиовызов';
-            desc = '«Аудиовызов» - эта игра улучшает восприятие речи на слух.';
+            desc =
+                '«Аудиовызов» - Тренировка Аудиовызов развивает словарный запаса и улучшает восприятие речи на слух.';
+            skill = 'на слух';
         } else if (type === 'sprint') {
             title = 'Спринт';
-            desc = '«Спринт» - это игра для повторения выученных слов из вашего словаря.';
+            desc =
+                '«Спринт» - Тренирует навык быстрого перевода с английского языка на русский. Вам нужно выбрать соответствует ли перевод предложенному слову.';
+            skill = 'на скорость';
         }
 
+        let checked;
+        let letter;
+        let n;
         for (let i = 1; i <= 6; i += 1) {
+            if (i > 1) checked = '';
+            else checked = 'checked';
+            if (i % 2 !== 0) n = 1;
+            else n = 2;
+            switch (i) {
+                case 1:
+                case 2:
+                    letter = 'A';
+                    break;
+                case 3:
+                case 4:
+                    letter = 'B';
+                    break;
+                case 5:
+                case 6:
+                    letter = 'C';
+                    break;
+            }
             levels += `<li class="levels__item">
-                <a class="levels__link" href="/games/${type}/${i}/0">Уровень ${i}</a>
+                <input id="level-${i}" type="radio" name="radio" value="${i}" ${checked}>
+                <label class="levels__btn" for="level-${i}">${letter}${n}</label>
             </li>`;
+            checked = '';
         }
 
         const html = `<div class="game">
             <div class="game__wrapper">
                 <div class="game__window">
-                    <h2 class="game__title">${title}</h2>
-                    <p class="game__desc">${desc}</p>
-                    <p>Выберите уровень сложности:</p>
-                    <ul class="game__levels levels">${levels}</ul>
+                    <img src="../assets/img/${type}.svg"/>
+                    <div class="game__block">
+                        <h2 class="game__title">${title}</h2>
+                        <p class="game__desc">${desc}</p>
+                        <p class="game__text">Выберите уровень:</p>
+                        <ul class="game__levels levels">${levels}</ul>
+                        <button class="game__start">Начать</button>
+                        <div class="game__skill">${skill}</div>
+                    </div>
                 </div>
             </div>
         </div>`;
@@ -367,10 +400,50 @@ export default class Render {
         return container;
     }
 
-    gameAudioCall(group: number, page: number) {
+    gameAudioCall() {
         const container = document.createElement('div');
         container.classList.add('container');
-        container.innerHTML = '<h2>Игра Аудио-вызов</h2>';
+
+        const html = `<div class="game">
+            <div class="game__wrapper">
+                <div class="game__window audio">
+                    <div class="audio__main">
+                        <button class="audio__question js-play-word">
+                            <img src="../assets/img/music.svg">
+                            <span class="audio__text-play">Play</span>
+                        </button>   
+                        <div class="audio__answer answer hidden">
+                            <img class="answer__photo">
+                            <div class="answer__word">
+                                <button class="answer__play js-play-word">
+                                    <img class="answer__icon-music" src="../assets/img/music-mini.svg">
+                                </button>
+                                <span class="answer__text"></span>
+                            </div>   
+                        </div>  
+                        <div class="audio__attempts">
+                            <span class="audio__icon-heart"></span>
+                            <span class="audio__icon-heart"></span>
+                            <span class="audio__icon-heart"></span>
+                            <span class="audio__icon-heart"></span>
+                            <span class="audio__icon-heart"></span>
+                        </div>
+                    </div>
+                    <div class="audio__choices">
+                        <button class="audio__choice"></button>  
+                        <button class="audio__choice"></button>  
+                        <button class="audio__choice"></button>  
+                        <button class="audio__choice"></button>  
+                        <button class="audio__choice"></button>  
+                    </div>
+                    <div class="audio__next">
+                        <button class="audio__know-btn">Не знаю</button>  
+                        <button class="audio__next-btn hidden">Дальше</button>  
+                    </div>
+                </div>
+            </div>
+        </div>`;
+        container.innerHTML = html;
         return container;
     }
 
@@ -436,20 +509,6 @@ export default class Render {
         modal.innerHTML = html;
         return modal;
     }
-
-    //Current link highlighting
-    // static currentLink(path: string) {
-    //     const linksList = document.querySelectorAll('.header__menu-item');
-    //     const dropdownList = document.querySelectorAll('.dropdown__menu-item');
-    //     const linkActive = getHTMLElement(document.querySelector(`a[href='${path}']`));
-    //     linksList.forEach((item) => {
-    //         item.children[0].classList.remove('active');
-    //     });
-    //     dropdownList.forEach((item) => {
-    //         item.children[0].classList.remove('active');
-    //     });
-    //     linkActive.classList.add('active');
-    // }
 
     static currentLink(path: string) {
         const navLinks = document.querySelectorAll('.header__menu a:not([href^="#"])');
