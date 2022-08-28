@@ -433,27 +433,28 @@ export default class Render {
         for (let i = maxStrike - strike; i > 0; i--) {
             strikesHTML += `<div class="sprint-game__empty-strike">✦</div>`;
         }
-        container.classList.add('sprint-game');
+        container.classList.add('sprint-game__body');
         container.innerHTML = `
-            <div class="sprint-game__body">
-                <div class="sprint-game__body-info">
-                    <div class="sprint-game__multiplier">
-                        <span>x${multiplier}</span>
-                        <span>Множитель</span>
-                    </div>
-                    <div class="sprint-game__points">
-                        <span>${points}</span>
-                        <span>Очки</span>
-                    </div>
+            <div class="sprint-game__body-info">
+                <div class="sprint-game__multiplier">
+                    <span>x${multiplier}</span>
+                    <span>Множитель</span>
                 </div>
-                <div class="sprint-game__body-strike">
-                    ${strikesHTML}
+                <div class="divider"></div>
+                <div class="sprint-game__points">
+                    <span>${points}</span>
+                    <span>Очки</span>
+                </div>
+            </div>
+            <div>
+                <div class="sprint-game__body-strike">${strikesHTML}</div>
+                <div class="sprint-game__body-words">
                     <div class="sprint-game__word">${word}</div>
                     <div class="sprint-game__translatedWord">${translatedWord}</div>
                 </div>
-                <div class="sprint-game__body-actions">
-                    <button class="sprint-game__true-button">Верно</button> <button class="sprint-game__false-button">Неверно</button>
-                </div>
+            </div>
+            <div class="sprint-game__body-actions">
+                <button class="sprint-game__true-button">Верно</button> <button class="sprint-game__false-button">Неверно</button>
             </div>
         `;
         return container;
@@ -572,7 +573,8 @@ export default class Render {
     chart(chartSize: number, strokeSize: number, percent: number, color: string, backgroundColor: string) {
         const chart = document.createElement('div');
         chart.classList.add('chart');
-
+        chart.style.width = `${chartSize}px`;
+        chart.style.height = `${chartSize}px`;
         let opacity = 100;
         const roundRadius = chartSize / 2;
         const roundCircum = 2 * roundRadius * Math.PI;
