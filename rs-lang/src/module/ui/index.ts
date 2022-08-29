@@ -2,9 +2,11 @@
 import getHTMLElement from '../../utils/getHTMLElement';
 import IWord from '../interface/IWord';
 
+//Interface
+import IResultChart from '../interface/IResultChart';
+
 //Enums
 import { gameChart, gameType } from '../../utils/enums';
-import IResultChart from '../interface/IResultChart';
 
 export default class Render {
     constructor() {}
@@ -624,7 +626,7 @@ export default class Render {
                     buttomLabel = 'жизнь';
                 } else if (currentValue > 1 && currentValue < 5) {
                     buttomLabel = 'жизни';
-                } else if (currentValue < 1 && currentValue > 4) {
+                } else if (currentValue < 1 || currentValue > 4) {
                     buttomLabel = 'жизней';
                 }
                 break;
@@ -636,7 +638,7 @@ export default class Render {
                     buttomLabel = 'слово';
                 } else if (currentValue > 1 && currentValue < 5) {
                     buttomLabel = 'слова';
-                } else if (currentValue < 1 && currentValue > 4) {
+                } else if (currentValue < 1 || currentValue > 4) {
                     buttomLabel = 'слов';
                 }
                 break;
@@ -648,11 +650,12 @@ export default class Render {
                     buttomLabel = 'очко';
                 } else if (currentValue > 1 && currentValue < 5) {
                     buttomLabel = 'очка';
-                } else if (currentValue < 1 && currentValue > 4) {
+                } else if (currentValue < 1 || currentValue > 4) {
                     buttomLabel = 'очков';
                 }
                 break;
         }
+
         const chart = this.chart(120, 5, percent, color, backgroundColor);
         const gameResultChart = document.createElement('div');
         const gameResultChartBody = document.createElement('div');
@@ -672,11 +675,16 @@ export default class Render {
         return gameResultChart;
     }
 
-    gameResult(type: gameType, message: string, chart: Array<IResultChart>) {
+    gameResult(type: gameType, message: string, chartList: Array<IResultChart>) {
         const container = document.createElement('div');
+        const charts = document.createElement('div');
         let header = '';
         let resultMessage = message;
-        container.classList.add('container');
+        chartList.forEach((chart) => {
+            let node = this.gameResultChart(chart.type, chart.maxValue, chart.currentValue);
+            charts.appendChild(node);
+        });
+        container.classList.add('gameresult');
 
         switch (type) {
             case gameType.AudioCall:
@@ -686,6 +694,22 @@ export default class Render {
                 header = 'Ваш Спринт';
                 break;
         }
+
+        container.innerHTML = `
+        <div class="gameresult__info">
+            <img src="../assets/img/result.svg">
+            <div class="gameresult__info-body">
+                <div class="gameresult__header">${header}</div>
+                <div class="gameresult__message">${resultMessage}</div>
+                <div class="gameresult__charts">${charts.innerHTML}</div>
+            </div>
+        </div>
+        <div class="gameresult__actions">
+            <button class="gameresult__button-replay">Сыграть еще раз</button>
+            <button class="gameresult__button-tobook">Перейти в учебник</button>  
+        </div>
+        `;
+        return container;
     }
 
     gameResultWords() {}

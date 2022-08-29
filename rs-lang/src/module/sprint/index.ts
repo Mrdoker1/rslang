@@ -10,6 +10,9 @@ import ISprintState from '../interface/ISprintState';
 //UI
 import Render from '../ui';
 
+//Enums
+import { gameChart, gameType } from '../../utils/enums';
+
 export default class Sprint {
     group: number;
     page: number;
@@ -92,6 +95,24 @@ export default class Sprint {
         const buttonFalse = getHTMLButtonElement(document.querySelector('.sprint-game__false-button'));
 
         buttonTrue.addEventListener('click', () => {
+            const chart1 = {
+                type: gameChart.Healths,
+                maxValue: 1500,
+                currentValue: 800,
+            };
+
+            const chart2 = {
+                type: gameChart.Words,
+                maxValue: 20,
+                currentValue: 10,
+            };
+
+            const main = getHTMLElement(document.querySelector('main'));
+
+            let charts = [chart1, chart2];
+
+            main.appendChild(this.render.gameResult(gameType.Sprint, 'test message', charts));
+
             if (this.counter > 0) {
                 if (this.gameState.possibleTranslation == this.gameState.wordTranslation) {
                     console.log('Right Answer!');

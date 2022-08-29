@@ -1,0 +1,28 @@
+// Variables
+@import '../../../variables.scss';
+
+.gameresult{
+    display: flex;
+    padding: 20px;
+    background: white;
+    flex-direction: column;
+    max-width: fit-content;
+    align-items: center;
+    &__info{
+        display: flex;
+        flex-direction: row;
+        &-body{
+            display: flex;
+            flex-direction: column;
+        }
+    }
+    &__header{}
+    &__message{}
+    &__charts{
+        display: flex;
+        flex-direction: row;
+    }
+    &__actions{}
+    &__button-replay{}
+    &__button-tobook{}
+}

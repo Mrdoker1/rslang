@@ -1,5 +1,8 @@
 .chart {
-    position: relative;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .chart-wrapper {
@@ -13,6 +16,8 @@
 
 .gameresult-chart{
     position: relative;
+    width: 120px;
+    height: 120px;
     &__body{
         position: absolute;
         top: 50%;
