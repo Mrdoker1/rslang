@@ -1,6 +1,11 @@
 //Utils
 import getHTMLElement from '../../utils/getHTMLElement';
 import IWord from '../interface/IWord';
+
+//Enums
+import { gameChart, gameType } from '../../utils/enums';
+import IResultChart from '../interface/IResultChart';
+
 export default class Render {
     constructor() {}
 
@@ -600,6 +605,90 @@ export default class Render {
 
         return chart;
     }
+
+    gameResultChart(type: gameChart, maxValue: number, currentValue: number) {
+        let color = '';
+        let backgroundColor = '';
+        let upperLabel = '';
+        let value = `${currentValue}`;
+        let buttomLabel = '';
+        let percent = (currentValue / maxValue) * 100;
+
+        switch (type) {
+            case gameChart.Healths:
+                color = '#945069';
+                backgroundColor = '#F2D4DC';
+                upperLabel = 'осталось';
+                value = `<span class="gameresult-chart__heart">♥</span> ${currentValue}`;
+                if (currentValue == 1) {
+                    buttomLabel = 'жизнь';
+                } else if (currentValue > 1 && currentValue < 5) {
+                    buttomLabel = 'жизни';
+                } else if (currentValue < 1 && currentValue > 4) {
+                    buttomLabel = 'жизней';
+                }
+                break;
+            case gameChart.Words:
+                color = '#639B6D';
+                backgroundColor = '#B1CDB6';
+                upperLabel = `${maxValue}/`;
+                if (currentValue == 1) {
+                    buttomLabel = 'слово';
+                } else if (currentValue > 1 && currentValue < 5) {
+                    buttomLabel = 'слова';
+                } else if (currentValue < 1 && currentValue > 4) {
+                    buttomLabel = 'слов';
+                }
+                break;
+            case gameChart.Points:
+                color = '#2B788B';
+                backgroundColor = '#C3DCE3';
+                upperLabel = 'получено';
+                if (currentValue == 1) {
+                    buttomLabel = 'очко';
+                } else if (currentValue > 1 && currentValue < 5) {
+                    buttomLabel = 'очка';
+                } else if (currentValue < 1 && currentValue > 4) {
+                    buttomLabel = 'очков';
+                }
+                break;
+        }
+        const chart = this.chart(120, 5, percent, color, backgroundColor);
+        const gameResultChart = document.createElement('div');
+        const gameResultChartBody = document.createElement('div');
+
+        gameResultChart.classList.add('gameresult-chart');
+        gameResultChartBody.classList.add('gameresult-chart__body');
+
+        gameResultChartBody.innerHTML = `
+            <div class="gameresult-chart__body-upper">${upperLabel}</div>
+            <div class="gameresult-chart__body-value">${value}</div>
+            <div class="gameresult-chart__body-buttom">${buttomLabel}</div>
+        `;
+
+        gameResultChart.appendChild(chart);
+        gameResultChart.appendChild(gameResultChartBody);
+
+        return gameResultChart;
+    }
+
+    gameResult(type: gameType, message: string, chart: Array<IResultChart>) {
+        const container = document.createElement('div');
+        let header = '';
+        let resultMessage = message;
+        container.classList.add('container');
+
+        switch (type) {
+            case gameType.AudioCall:
+                header = 'Ваш Аудиовызов';
+                break;
+            case gameType.Sprint:
+                header = 'Ваш Спринт';
+                break;
+        }
+    }
+
+    gameResultWords() {}
 
     static currentLink(path: string) {
         const navLinks = document.querySelectorAll('.header__menu a:not([href^="#"])');
