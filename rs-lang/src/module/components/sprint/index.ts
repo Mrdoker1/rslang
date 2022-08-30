@@ -1,17 +1,17 @@
 //Utils
-import getHTMLElement from '../../utils/getHTMLElement';
-import getHTMLButtonElement from '../../utils/getHTMLButtonElement';
-import { shuffle, getRandom } from '../../utils/helpers';
+import getHTMLElement from '../../../utils/getHTMLElement';
+import getHTMLButtonElement from '../../../utils/getHTMLButtonElement';
+import { shuffle, getRandom } from '../../../utils/helpers';
 
 //Interfaces
-import IWord from '../interface/IWord';
-import ISprintState from '../interface/ISprintState';
+import IWord from '../../interface/IWord';
+import ISprintState from '../../interface/ISprintState';
 
 //UI
-import Render from '../ui';
+import Render from '../../ui';
 
 //Enums
-import { gameChart, gameType } from '../../utils/enums';
+import { gameChart, gameType } from '../../../utils/enums';
 
 export default class Sprint {
     group: number;
