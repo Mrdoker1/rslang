@@ -331,7 +331,7 @@ export default class App {
             console.log(`error ${words}`);
             return;
         }
-        const sprint = new Sprint(words, group, page);
+        const sprint = new Sprint(this.data.base, words, group, page);
         sprint.start();
         //const gameSprint = this.render.gameSprint(group, page);
         //main.appendChild(gameSprint);

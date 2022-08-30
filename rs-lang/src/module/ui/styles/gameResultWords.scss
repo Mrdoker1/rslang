@@ -1,0 +1,32 @@
+// Variables
+@import '../../../variables.scss';
+
+.gameresultwords{
+    display: flex;
+    flex-direction: row;
+    &__list{
+        
+    }
+}
+
+.knowingwords{
+    &__container{
+        display: flex;
+        flex-direction: column;
+    }
+    &__header{
+        display: flex;
+        flex-direction: row;
+    }
+}
+
+.unknowingwords{
+    &__container{
+        display: flex;
+        flex-direction: column;
+    }
+    &__header{
+        display: flex;
+        flex-direction: row;
+    }
+}

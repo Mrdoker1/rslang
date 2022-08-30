@@ -712,7 +712,81 @@ export default class Render {
         return container;
     }
 
-    gameResultWords() {}
+    gameResultWord(word: IWord, base: string) {
+        const gameResultWord = document.createElement('div');
+        gameResultWord.classList.add('gameresultword');
+        gameResultWord.innerHTML = `
+        <div class="gameresultword__icon">
+            <div class="play-icon"></div>
+        </div>
+        <div class="gameresultword__body">
+            <div class="gameresultword__body-word">${word.word}</div>
+            <span>-</span>
+            <div class="gameresultword__body-translation">${word.transcription}</div>
+        </div>
+        `;
+        gameResultWord.firstChild?.addEventListener('click', () => {
+            const audio = new Audio();
+            audio.loop = false;
+            audio.src = `${base}/${word.audio}`;
+            audio.autoplay = true;
+        });
+
+        return gameResultWord;
+    }
+
+    gameResultWords(knowingWords: Array<IWord>, unknowingWords: Array<IWord>, base: string) {
+        const gameResultWords = document.createElement('div');
+        const knowingWordsList = document.createElement('div');
+        const unknowingWordsList = document.createElement('div');
+
+        gameResultWords.classList.add('gameresultwords');
+        knowingWordsList.classList.add('gameresultwords__list');
+        unknowingWordsList.classList.add('gameresultwords__list');
+
+        knowingWords.forEach((knowingWord) => {
+            const word = this.gameResultWord(knowingWord, base);
+            knowingWordsList.appendChild(word);
+        });
+
+        unknowingWords.forEach((unknowingWord) => {
+            const word = this.gameResultWord(unknowingWord, base);
+            unknowingWordsList.appendChild(word);
+        });
+
+        const knowingWordsContainer = document.createElement('div');
+        const unknowingWordsContainer = document.createElement('div');
+
+        knowingWordsContainer.classList.add('knowingwords__container');
+        unknowingWordsContainer.classList.add('unknowingwords__container');
+
+        const knowingWordsHeader = document.createElement('div');
+        const unknowingWordsHeader = document.createElement('div');
+
+        knowingWordsHeader.classList.add('knowingwords__header');
+        unknowingWordsHeader.classList.add('unknowingwords__header');
+
+        knowingWordsHeader.innerHTML = `
+        <div class="unknowingwords__header-title">Я знаю</div>
+        <div class="unknowingwords__header-label">${knowingWords.length}</div>
+        `;
+
+        unknowingWordsHeader.innerHTML = `
+        <div class="unknowingwords__header-title">Я не знаю</div>
+        <div class="unknowingwords__header-label">${unknowingWords.length}</div>
+        `;
+
+        knowingWordsContainer.appendChild(knowingWordsHeader);
+        knowingWordsContainer.appendChild(knowingWordsList);
+
+        unknowingWordsContainer.appendChild(unknowingWordsHeader);
+        unknowingWordsContainer.appendChild(unknowingWordsList);
+
+        gameResultWords.appendChild(knowingWordsContainer);
+        gameResultWords.appendChild(unknowingWordsContainer);
+
+        return gameResultWords;
+    }
 
     static currentLink(path: string) {
         const navLinks = document.querySelectorAll('.header__menu a:not([href^="#"])');

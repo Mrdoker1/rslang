@@ -18,20 +18,22 @@ export default class Sprint {
     page: number;
     counter: number;
     speed: number;
+    base: string;
     words: IWord[];
     gameState: ISprintState;
     result: {};
     render: Render;
-    constructor(words: IWord[], group: number, page: number) {
+    constructor(base: string, words: IWord[], group: number, page: number) {
         this.group = group;
         this.page = page;
         this.counter = 100;
         this.speed = 0.1;
         this.words = words;
+        this.base = base;
         shuffle(this.words);
         this.result = {
-            knowingWords: [],
-            unknowingWords: [],
+            knowingWords: Array<IWord>,
+            unknowingWords: Array<IWord>,
         };
         this.gameState = {
             word: null,
@@ -95,23 +97,26 @@ export default class Sprint {
         const buttonFalse = getHTMLButtonElement(document.querySelector('.sprint-game__false-button'));
 
         buttonTrue.addEventListener('click', () => {
-            const chart1 = {
-                type: gameChart.Healths,
-                maxValue: 1500,
-                currentValue: 800,
-            };
-
-            const chart2 = {
-                type: gameChart.Words,
-                maxValue: 20,
-                currentValue: 10,
-            };
 
             const main = getHTMLElement(document.querySelector('main'));
 
-            let charts = [chart1, chart2];
+            // const chart1 = {
+            //     type: gameChart.Healths,
+            //     maxValue: 1500,
+            //     currentValue: 800,
+            // };
 
-            main.appendChild(this.render.gameResult(gameType.Sprint, 'test message', charts));
+            // const chart2 = {
+            //     type: gameChart.Words,
+            //     maxValue: 20,
+            //     currentValue: 10,
+            // };
+
+            // let charts = [chart1, chart2];
+
+            // main.appendChild(this.render.gameResult(gameType.Sprint, 'test message', charts));
+
+            main.appendChild(this.render.gameResultWords(this.words, this.words, this.base));
 
             if (this.counter > 0) {
                 if (this.gameState.possibleTranslation == this.gameState.wordTranslation) {
