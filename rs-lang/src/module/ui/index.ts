@@ -403,7 +403,7 @@ export default class Render {
                     break;
             }
             levels += `<li class="levels__item">
-                <input id="level-${i}" type="radio" name="radio" value="${i}" ${checked}>
+                <input id="level-${i}" type="radio" name="radio" value="${i - 1}" ${checked}>
                 <label class="levels__btn" for="level-${i}">${letter}${n}</label>
             </li>`;
             checked = '';

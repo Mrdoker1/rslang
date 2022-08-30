@@ -1,4 +1,4 @@
-interface ISts {
+interface IStatisticsDay {
     date: string;
     sprint: {
         new: number;
@@ -20,4 +20,4 @@ interface ISts {
     };
 }
 
-export default ISts;
+export default IStatisticsDay;
