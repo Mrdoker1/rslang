@@ -4,8 +4,15 @@
 .gameresultwords{
     display: flex;
     flex-direction: row;
+    background: white;
+    width: fit-content;
+    padding: 40px;
     &__list{
-        
+        display: flex;
+        height: 200px;
+        overflow: auto;
+        gap: 10px;
+        flex-direction: column;
     }
 }
 
@@ -28,5 +35,20 @@
     &__header{
         display: flex;
         flex-direction: row;
+    }
+}
+
+.gameresultword{
+    display: flex;
+    flex-direction: row;
+    &__icon{
+        svg{
+            filter: invert(89%) sepia(7%) saturate(31%) hue-rotate(339deg) brightness(86%) contrast(83%);
+        }
+    }
+    &__body{
+        display: flex;
+        flex-direction: row;
+        gap: 8px;
     }
 }

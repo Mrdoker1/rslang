@@ -722,10 +722,10 @@ export default class Render {
         <div class="gameresultword__body">
             <div class="gameresultword__body-word">${word.word}</div>
             <span>-</span>
-            <div class="gameresultword__body-translation">${word.transcription}</div>
+            <div class="gameresultword__body-translation">${word.wordTranslate}</div>
         </div>
         `;
-        gameResultWord.firstChild?.addEventListener('click', () => {
+        gameResultWord.addEventListener('click', () => {
             const audio = new Audio();
             audio.loop = false;
             audio.src = `${base}/${word.audio}`;
