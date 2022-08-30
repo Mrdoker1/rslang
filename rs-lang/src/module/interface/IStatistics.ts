@@ -1,6 +1,6 @@
-import ISts from './ISts';
+import IStatisticsDay from './IStatisticsDay';
 
 export default interface IStatistics {
     learnedWords: number;
-    optional: ISts[];
+    optional: IStatisticsDay[];
 }
