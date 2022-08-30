@@ -37,7 +37,7 @@ import { createRouter, Router } from 'routerjs';
 import ModalLogin from '../login';
 
 //Games
-import Sprint from '../sprint';
+import Sprint from '../components/sprint';
 import AudioCall from '../audio-call';
 
 //State
