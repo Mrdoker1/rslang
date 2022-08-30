@@ -1,6 +1,13 @@
 //Utils
 import getHTMLElement from '../../utils/getHTMLElement';
 import IWord from '../interface/IWord';
+
+//Interface
+import IResultChart from '../interface/IResultChart';
+
+//Enums
+import { gameChart, gameType } from '../../utils/enums';
+
 export default class Render {
     constructor() {}
 
@@ -364,13 +371,12 @@ export default class Render {
 
         if (type === 'audio-call') {
             title = 'Аудиовызов';
-            desc =
-                '«Аудиовызов» - Тренировка Аудиовызов развивает словарный запаса и улучшает восприятие речи на слух.';
+            desc = 'Тренировка Аудиовызов развивает словарный запас и улучшает восприятие речи на слух.';
             skill = 'на слух';
         } else if (type === 'sprint') {
             title = 'Спринт';
             desc =
-                '«Спринт» - Тренирует навык быстрого перевода с английского языка на русский. Вам нужно выбрать соответствует ли перевод предложенному слову.';
+                'Тренирует навык быстрого перевода с английского языка на русский. Вам нужно выбрать соответствует ли перевод предложенному слову.';
             skill = 'на скорость';
         }
 
@@ -423,10 +429,40 @@ export default class Render {
         return container;
     }
 
-    gameSprint(group: number, page: number) {
+    gameSprint(multiplier: number, points: number, strike: number, word: string, translatedWord: string) {
         const container = document.createElement('div');
-        container.classList.add('container');
-        container.innerHTML = '<h2>Игра Спринт</h2>';
+        let strikesHTML = '';
+        let maxStrike = 3;
+        for (let i = strike; i > 0; i--) {
+            strikesHTML += `<div class="sprint-game__normal-strike">✦</div>`;
+        }
+        for (let i = maxStrike - strike; i > 0; i--) {
+            strikesHTML += `<div class="sprint-game__empty-strike">✦</div>`;
+        }
+        container.classList.add('sprint-game__body');
+        container.innerHTML = `
+            <div class="sprint-game__body-info">
+                <div class="sprint-game__multiplier">
+                    <span>x${multiplier}</span>
+                    <span>Множитель</span>
+                </div>
+                <div class="divider"></div>
+                <div class="sprint-game__points">
+                    <span>${points}</span>
+                    <span>Очки</span>
+                </div>
+            </div>
+            <div>
+                <div class="sprint-game__body-strike">${strikesHTML}</div>
+                <div class="sprint-game__body-words">
+                    <div class="sprint-game__word">${word}</div>
+                    <div class="sprint-game__translatedWord">${translatedWord}</div>
+                </div>
+            </div>
+            <div class="sprint-game__body-actions">
+                <button class="sprint-game__true-button">Верно</button> <button class="sprint-game__false-button">Неверно</button>
+            </div>
+        `;
         return container;
     }
 
@@ -543,7 +579,8 @@ export default class Render {
     chart(chartSize: number, strokeSize: number, percent: number, color: string, backgroundColor: string) {
         const chart = document.createElement('div');
         chart.classList.add('chart');
-
+        chart.style.width = `${chartSize}px`;
+        chart.style.height = `${chartSize}px`;
         let opacity = 100;
         const roundRadius = chartSize / 2;
         const roundCircum = 2 * roundRadius * Math.PI;
@@ -569,6 +606,186 @@ export default class Render {
         `;
 
         return chart;
+    }
+
+    gameResultChart(type: gameChart, maxValue: number, currentValue: number) {
+        let color = '';
+        let backgroundColor = '';
+        let upperLabel = '';
+        let value = `${currentValue}`;
+        let buttomLabel = '';
+        let percent = (currentValue / maxValue) * 100;
+
+        switch (type) {
+            case gameChart.Healths:
+                color = '#945069';
+                backgroundColor = '#F2D4DC';
+                upperLabel = 'осталось';
+                value = `<span class="gameresult-chart__heart">♥</span> ${currentValue}`;
+                if (currentValue == 1) {
+                    buttomLabel = 'жизнь';
+                } else if (currentValue > 1 && currentValue < 5) {
+                    buttomLabel = 'жизни';
+                } else if (currentValue < 1 || currentValue > 4) {
+                    buttomLabel = 'жизней';
+                }
+                break;
+            case gameChart.Words:
+                color = '#639B6D';
+                backgroundColor = '#B1CDB6';
+                upperLabel = `${maxValue}/`;
+                if (currentValue == 1) {
+                    buttomLabel = 'слово';
+                } else if (currentValue > 1 && currentValue < 5) {
+                    buttomLabel = 'слова';
+                } else if (currentValue < 1 || currentValue > 4) {
+                    buttomLabel = 'слов';
+                }
+                break;
+            case gameChart.Points:
+                color = '#2B788B';
+                backgroundColor = '#C3DCE3';
+                upperLabel = 'получено';
+                if (currentValue == 1) {
+                    buttomLabel = 'очко';
+                } else if (currentValue > 1 && currentValue < 5) {
+                    buttomLabel = 'очка';
+                } else if (currentValue < 1 || currentValue > 4) {
+                    buttomLabel = 'очков';
+                }
+                break;
+        }
+
+        const chart = this.chart(120, 5, percent, color, backgroundColor);
+        const gameResultChart = document.createElement('div');
+        const gameResultChartBody = document.createElement('div');
+
+        gameResultChart.classList.add('gameresult-chart');
+        gameResultChartBody.classList.add('gameresult-chart__body');
+
+        gameResultChartBody.innerHTML = `
+            <div class="gameresult-chart__body-upper">${upperLabel}</div>
+            <div class="gameresult-chart__body-value">${value}</div>
+            <div class="gameresult-chart__body-buttom">${buttomLabel}</div>
+        `;
+
+        gameResultChart.appendChild(chart);
+        gameResultChart.appendChild(gameResultChartBody);
+
+        return gameResultChart;
+    }
+
+    gameResult(type: gameType, message: string, chartList: Array<IResultChart>) {
+        const container = document.createElement('div');
+        const charts = document.createElement('div');
+        let header = '';
+        let resultMessage = message;
+        chartList.forEach((chart) => {
+            let node = this.gameResultChart(chart.type, chart.maxValue, chart.currentValue);
+            charts.appendChild(node);
+        });
+        container.classList.add('gameresult');
+
+        switch (type) {
+            case gameType.AudioCall:
+                header = 'Ваш Аудиовызов';
+                break;
+            case gameType.Sprint:
+                header = 'Ваш Спринт';
+                break;
+        }
+
+        container.innerHTML = `
+        <div class="gameresult__info">
+            <img src="../assets/img/result.svg">
+            <div class="gameresult__info-body">
+                <div class="gameresult__header">${header}</div>
+                <div class="gameresult__message">${resultMessage}</div>
+                <div class="gameresult__charts">${charts.innerHTML}</div>
+            </div>
+        </div>
+        <div class="gameresult__actions">
+            <button class="gameresult__button-replay">Сыграть еще раз</button>
+            <button class="gameresult__button-tobook">Перейти в учебник</button>  
+        </div>
+        `;
+        return container;
+    }
+
+    gameResultWord(word: IWord, base: string) {
+        const gameResultWord = document.createElement('div');
+        gameResultWord.classList.add('gameresultword');
+        gameResultWord.innerHTML = `
+        <div class="gameresultword__icon">
+            <div class="play-icon"></div>
+        </div>
+        <div class="gameresultword__body">
+            <div class="gameresultword__body-word">${word.word}</div>
+            <span>-</span>
+            <div class="gameresultword__body-translation">${word.wordTranslate}</div>
+        </div>
+        `;
+        gameResultWord.addEventListener('click', () => {
+            const audio = new Audio();
+            audio.loop = false;
+            audio.src = `${base}/${word.audio}`;
+            audio.autoplay = true;
+        });
+
+        return gameResultWord;
+    }
+
+    gameResultWords(knowingWords: Array<IWord>, unknowingWords: Array<IWord>, base: string) {
+        const gameResultWords = document.createElement('div');
+        const knowingWordsList = document.createElement('div');
+        const unknowingWordsList = document.createElement('div');
+
+        gameResultWords.classList.add('gameresultwords');
+        knowingWordsList.classList.add('gameresultwords__list');
+        unknowingWordsList.classList.add('gameresultwords__list');
+
+        knowingWords.forEach((knowingWord) => {
+            const word = this.gameResultWord(knowingWord, base);
+            knowingWordsList.appendChild(word);
+        });
+
+        unknowingWords.forEach((unknowingWord) => {
+            const word = this.gameResultWord(unknowingWord, base);
+            unknowingWordsList.appendChild(word);
+        });
+
+        const knowingWordsContainer = document.createElement('div');
+        const unknowingWordsContainer = document.createElement('div');
+
+        knowingWordsContainer.classList.add('knowingwords__container');
+        unknowingWordsContainer.classList.add('unknowingwords__container');
+
+        const knowingWordsHeader = document.createElement('div');
+        const unknowingWordsHeader = document.createElement('div');
+
+        knowingWordsHeader.classList.add('knowingwords__header');
+        unknowingWordsHeader.classList.add('unknowingwords__header');
+
+        knowingWordsHeader.innerHTML = `
+        <div class="unknowingwords__header-title">Я знаю</div>
+        <div class="unknowingwords__header-label">${knowingWords.length}</div>
+        `;
+
+        unknowingWordsHeader.innerHTML = `
+        <div class="unknowingwords__header-title">Я не знаю</div>
+        <div class="unknowingwords__header-label">${unknowingWords.length}</div>
+        `;
+
+        knowingWordsContainer.appendChild(knowingWordsHeader);
+        knowingWordsContainer.appendChild(knowingWordsList);
+
+        unknowingWordsContainer.appendChild(unknowingWordsHeader);
+        unknowingWordsContainer.appendChild(unknowingWordsList);
+
+        gameResultWords.appendChild(knowingWordsContainer);
+        gameResultWords.appendChild(unknowingWordsContainer);
+
+        return gameResultWords;
     }
 
     static currentLink(path: string) {

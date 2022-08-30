@@ -27,6 +27,8 @@ import '../ui/styles/pageBook.scss';
 import '../ui/styles/games.scss';
 import '../ui/styles/sprint.scss';
 import '../ui/styles/chart.scss';
+import '../ui/styles/gameResult.scss';
+import '../ui/styles/gameResultWords.scss';
 
 //Router
 import { createRouter, Router } from 'routerjs';
@@ -322,10 +324,15 @@ export default class App {
         });
     }
 
-    showSprint(group: number, page: number) {
+    async showSprint(group: number, page: number) {
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
-        const sprint = new Sprint(group, page);
+        const words = await this.data.getWords(group, page);
+        if (typeof words === 'number') {
+            console.log(`error ${words}`);
+            return;
+        }
+        const sprint = new Sprint(this.data.base, words, group, page);
         sprint.start();
         //const gameSprint = this.render.gameSprint(group, page);
         //main.appendChild(gameSprint);
