@@ -97,7 +97,6 @@ export default class Sprint {
         const buttonFalse = getHTMLButtonElement(document.querySelector('.sprint-game__false-button'));
 
         buttonTrue.addEventListener('click', () => {
-
             const main = getHTMLElement(document.querySelector('main'));
 
             // const chart1 = {
