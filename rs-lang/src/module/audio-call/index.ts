@@ -5,6 +5,7 @@ import { shuffle } from '../../utils/helpers';
 
 //Interfaces
 import IWord from '../interface/IWord';
+import IStatistics from '../interface/IStatistics';
 
 //API
 import Data from '../../module/api';
@@ -12,16 +13,28 @@ import Data from '../../module/api';
 //UI
 import Render from '../ui';
 
+//State
+import State from '../app/state';
+import IUserWord from '../interface/IUserWord';
+
 export default class AudioCall {
     group: number;
     page: number;
     data: Data;
     render: Render;
+    result: Record<string, IWord[]>;
+    series: number = 0;
+    record: number = 0;
+    state = new State();
     constructor(base: string, group: number, page: number) {
         this.group = group;
         this.page = page;
         this.data = new Data(base);
         this.render = new Render();
+        this.result = {
+            knowingWords: [],
+            unknowingWords: [],
+        };
     }
 
     async start() {
@@ -53,6 +66,12 @@ export default class AudioCall {
                     const hearts = document.querySelectorAll('.audio__icon-heart');
                     hearts[attempt].classList.add('audio__icon-heart_miss');
                     attempt -= 1;
+                    this.result.unknowingWords.push(words[count]);
+                    if (this.series > this.record) this.record = this.series;
+                    this.series = 0;
+                } else {
+                    this.result.knowingWords.push(words[count]);
+                    this.series += 1;
                 }
             });
         });
@@ -61,6 +80,9 @@ export default class AudioCall {
         nextBtn.addEventListener('click', () => {
             const len = words.length - 1;
             if (count === len || attempt === -1) {
+                if (this.series > this.record) this.record = this.series;
+                //console.log(this.state.token);
+                if (this.state.token) this.saveStatistics();
                 this.showResult();
                 return;
             }
@@ -149,5 +171,197 @@ export default class AudioCall {
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
         main.innerHTML = '<h2>Результаты игры</h2>';
+    }
+
+    async saveStatistics() {
+        const knowingWords = this.result.knowingWords;
+        const unknowingWords = this.result.unknowingWords;
+
+        const userWords = await this.data.getUserWords(this.state.userId, this.state.token);
+        if (typeof userWords === 'number') {
+            console.log(`Ошибка getUserWords ${userWords}`);
+            return;
+        }
+
+        const stsAll: IStatistics | number = await this.data.getUserStatistics(this.state.userId, this.state.token);
+        if (typeof stsAll === 'number') {
+            console.log(`Ошибка getUserStatistics ${stsAll}`);
+            return;
+        }
+
+        let sts;
+        let isNewEntry = true;
+        let opt = stsAll.optional;
+
+        if (!opt || !Array.isArray(opt)) opt = [];
+        if (opt.length) {
+            const len = opt.length;
+            const lastSts = opt[len - 1];
+            if (!this.isNewDay(lastSts.date)) {
+                sts = lastSts;
+                isNewEntry = false;
+            }
+        }
+
+        if (!sts || isNewEntry) {
+            sts = this.createEntry();
+        }
+
+        let newCount = sts.audio.new;
+        let total = sts.audio.total;
+        let right = sts.audio.right;
+        let learned = sts.audio.learned;
+        let record = sts.audio.record;
+        if (!record || this.record > record) record = this.record;
+
+        knowingWords.forEach(async (word, i) => {
+            let learnedInGame = 0;
+
+            const matchedUserWord = userWords.find((userWord) => userWord.wordId === word.id);
+            if (matchedUserWord) {
+                learnedInGame = (await this.updateUserWord(word, matchedUserWord, true)) || 0;
+            } else {
+                this.createUserWord(word, true);
+                newCount += 1;
+            }
+
+            total += 1;
+            right += 1;
+            learned += learnedInGame;
+        });
+
+        unknowingWords.forEach((word) => {
+            const matchedUserWord = userWords.find((userWord) => userWord.wordId === word.id);
+            if (matchedUserWord) {
+                this.updateUserWord(word, matchedUserWord, false);
+            } else {
+                this.createUserWord(word, false);
+                newCount += 1;
+            }
+
+            total += 1;
+        });
+
+        sts.audio.new = newCount;
+        sts.audio.total = total;
+        sts.audio.right = right;
+        sts.audio.learned = learned;
+        sts.audio.record = record;
+
+        if (isNewEntry) stsAll.optional.push(sts);
+        else stsAll.optional[stsAll.optional.length - 1] = sts;
+
+        const updateUserStatistics = this.data.updateUserStatistics(this.state.userId, stsAll, this.state.token);
+        if (typeof updateUserStatistics === 'number') {
+            console.log(`Ошибка updateUserStatistics ${updateUserStatistics}`);
+            return;
+        }
+    }
+
+    createEntry() {
+        const curDate = new Date();
+        const date = curDate.toString();
+        return {
+            date,
+            sprint: {
+                new: 0,
+                total: 0,
+                right: 0,
+                record: 0,
+                learned: 0,
+            },
+            audio: {
+                new: 0,
+                total: 0,
+                right: 0,
+                record: 0,
+                learned: 0,
+            },
+            book: {
+                new: 0,
+                learned: 0,
+            },
+        };
+    }
+
+    isNewDay(date: string): boolean {
+        const prevDate = new Date(date);
+        const currDate = new Date();
+        return (
+            currDate.getDate() !== prevDate.getDate() ||
+            currDate.getMonth() !== prevDate.getMonth() ||
+            currDate.getFullYear() !== prevDate.getFullYear()
+        );
+    }
+
+    async createUserWord(word: IWord, isRight: boolean) {
+        let newUserWord;
+        if (isRight) {
+            newUserWord = {
+                difficulty: 'normal',
+                optional: {
+                    total: 1,
+                    right: 1,
+                    series: 1,
+                },
+            };
+        } else {
+            newUserWord = {
+                difficulty: 'normal',
+                optional: {
+                    total: 1,
+                    right: 0,
+                    series: 0,
+                },
+            };
+        }
+        const resp = await this.data.createUserWord(this.state.userId, word.id, newUserWord, this.state.token);
+        if (typeof resp != 'number') {
+        } else {
+            console.log(`Ошибка createUserWord ${resp}`);
+        }
+    }
+
+    async updateUserWord(word: IWord, userWord: IUserWord, isRight: boolean) {
+        let isLearned;
+        let updUserWord;
+        let difficulty;
+        let total;
+        let right;
+        let series;
+
+        if (isRight) {
+            difficulty = userWord.difficulty;
+            total = userWord.optional?.total ? userWord.optional?.total + 1 : 1;
+            right = userWord.optional?.right ? userWord.optional?.right + 1 : 1;
+            series = userWord.optional?.series ? userWord.optional?.series + 1 : 1;
+
+            if ((series === 3 && difficulty === 'normal') || (series === 5 && difficulty === 'hard')) {
+                difficulty = 'easy';
+                isLearned = 1;
+            } else isLearned = 0;
+        } else {
+            difficulty = userWord.difficulty === 'easy' ? 'normal' : difficulty;
+            if (!difficulty) difficulty = 'normal';
+            total = userWord.optional?.total ? userWord.optional?.total + 1 : 1;
+            right = userWord.optional?.right ? userWord.optional?.right : 0;
+            series = 0;
+        }
+
+        updUserWord = {
+            difficulty,
+            optional: {
+                total,
+                right,
+                series,
+            },
+        };
+
+        const resp = await this.data.updateUserWord(this.state.userId, word.id, updUserWord, this.state.token);
+        if (typeof resp !== 'number') {
+            return isLearned;
+        } else {
+            console.log(`Ошибка ${resp}`);
+        }
     }
 }
