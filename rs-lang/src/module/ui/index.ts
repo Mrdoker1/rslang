@@ -352,19 +352,21 @@ export default class Render {
 
     //Statistics
     pageStatistics(statistics: IStatistics) {
-        return this.stats(statisticType.Daily, statistics);
+        return this.stats(statisticType.Total, statistics);
     }
 
     stats(type: statisticType, statistics: IStatistics) {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        let wordLearnedTotal = 0;
-        let rightAnswersTotal = 0;
-        let wordLearnedTotalSprint = 0;
-        let rightAnswersTotalSprint = 0;
-        let wordLearnedTotalAudiocall = 0;
-        let rightAnswersTotalAudiocall = 0;
+        let wordLearned = 0;
+        let rightAnswers = 0;
+        let wordLearnedSprint = 0;
+        let rightAnswersSprint = 0;
+        let recordSprint = 0;
+        let recordAudioCall = 0;
+        let wordLearnedAudiocall = 0;
+        let rightAnswersAudiocall = 0;
         let header = 'Default Header';
         let subtitle = 'Ваша статистика по всем активностям';
 
@@ -390,12 +392,18 @@ export default class Render {
         }
 
         function updateData(statisticDay: IStatisticsDay) {
-            wordLearnedTotal += statisticDay.sprint.learned + statisticDay.audio.learned + statisticDay.book.learned;
-            rightAnswersTotal += statisticDay.sprint.right + statisticDay.audio.right;
-            wordLearnedTotalSprint += statisticDay.sprint.learned;
-            wordLearnedTotalAudiocall += statisticDay.audio.learned;
-            rightAnswersTotalSprint += statisticDay.sprint.right;
-            rightAnswersTotalAudiocall += statisticDay.audio.right;
+            wordLearned += statisticDay.sprint.learned + statisticDay.audio.learned + statisticDay.book.learned;
+            rightAnswers += statisticDay.sprint.right + statisticDay.audio.right;
+            wordLearnedSprint += statisticDay.sprint.learned;
+            wordLearnedAudiocall += statisticDay.audio.learned;
+            rightAnswersSprint += statisticDay.sprint.right;
+            rightAnswersAudiocall += statisticDay.audio.right;
+            if (recordSprint < statisticDay.sprint.record) {
+                recordSprint = statisticDay.sprint.record;
+            }
+            if (recordAudioCall < statisticDay.audio.record) {
+                recordAudioCall = statisticDay.audio.record;
+            }
         }
 
         const stats = document.createElement('div');
@@ -409,13 +417,13 @@ export default class Render {
             </div>
             <div class="statistics__body-info">
                 <div class="statistics__wordLearnedTotal">
-                    <div class="statistics__wordLearnedTotal-number">${wordLearnedTotal}<span>+</span></div>
+                    <div class="statistics__wordLearnedTotal-number">${wordLearned}<span>+</span></div>
                     <div class="statistics__wordLearnedTotal-subtitle">слов изучено</div>
                 </div>
                 <div class="divider vertical"></div>
                 <div class="statistics__rightAnswersTotal">
                     <div class="statistics__rightAnswersTotal-number">
-                        ${(rightAnswersTotal / wordLearnedTotal) * 100}<span>%</span>
+                        ${((rightAnswers / wordLearned) * 100).toFixed(2)}<span>%</span>
                     </div>
                     <div class="statistics__rightAnswersTotal-subtitle">правильных ответов</div>
                 </div>
@@ -423,7 +431,31 @@ export default class Render {
             <div class="statistics__sprint">
                 <div class="statistics__sprint sprint-image"></div>
                 <div class="statistics__sprint-body">
-                    
+                    <div class="statistics__sprint-heading">
+                        <div class="statistics__sprint-header">Спринт</div>
+                        <div class="statistics__sprint-label">на скорость</div>
+                    </div>
+                    <div class="statistics__sprint-info">
+                        <span>${wordLearnedSprint} слов изучено</span>
+                        <span>${((rightAnswersSprint / wordLearnedSprint) * 100).toFixed(2)}% правильных ответов</span>
+                        <span>${recordSprint} лучшая серия правильных ответов</span>
+                    </div>
+                </div>
+            </div>
+            <div class="statistics__audiocall">
+            <div class="statistics__audiocall audiocall-image"></div>
+                <div class="statistics__audiocall-body">
+                    <div class="statistics__audiocall-heading">
+                        <div class="statistics__audiocall-header">Аудиовызов</div>
+                        <div class="statistics__audiocall-label">на слух</div>
+                    </div>
+                    <div class="statistics__audiocall-info">
+                        <span><b>${wordLearnedAudiocall}</b> слов изучено</span>
+                        <span><b>${((rightAnswersAudiocall / wordLearnedAudiocall) * 100).toFixed(
+                            2
+                        )}%</b> правильных ответов</span>
+                        <span><b>${recordAudioCall}</b> лучшая серия правильных ответов</span>
+                    </div>
                 </div>
             </div>
         </div>

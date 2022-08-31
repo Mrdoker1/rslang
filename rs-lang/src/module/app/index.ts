@@ -27,6 +27,7 @@ import '../ui/styles/sprint.scss';
 import '../ui/styles/chart.scss';
 import '../ui/styles/gameResult.scss';
 import '../ui/styles/gameResultWords.scss';
+import '../ui/styles/statistics.scss';
 
 //Router
 import { createRouter, Router } from 'routerjs';

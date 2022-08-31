@@ -1,3 +1,51 @@
 // Variables
 @import '../../../variables.scss';
 
+.statistics{
+    padding: 40px;
+    background: white;
+    width: fit-content;
+    &__body{
+        &-heading{}
+        &-info{
+            display: flex;
+            justify-content: space-between;
+        }
+    }
+    &__header{}
+    &__subtitle{}
+    &__wordLearnedTotal{
+        &-number{}
+        &-subtitle{}
+    }
+    &__rightAnswersTotal{
+        &-number{}
+        &-subtitle{}
+    }
+    &__sprint{
+        display: flex;
+        flex-direction: row;
+        & .sprint-image{}
+        &-body{}
+        &-heading{
+            display: flex;
+        }
+        &-info{
+            display: flex;
+            flex-direction: column;
+        }
+    }
+    &__audiocall{
+        display: flex;
+        flex-direction: row;
+        & .sprint-image{}
+        &-body{}
+        &-heading{
+            display: flex;
+        }
+        &-info{
+            display: flex;
+            flex-direction: column;
+        }
+    }
+}
