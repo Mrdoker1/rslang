@@ -1,6 +1,6 @@
 # RSlang 2022Q1 Command Task
 
-![Preview](https://user-images.githubusercontent.com/26232484/187566351-02bba32a-3d20-4709-9d08-3b11d93fd422.png)
+![Preview](https://user-images.githubusercontent.com/26232484/187568790-3b118f50-f773-4d1d-9100-4cc970a84dee.png)
 
 About
 * [Task Description](https://github.com/rolling-scopes-school/tasks/blob/master/tasks/stage-2/rs-lang/rslang.md)
