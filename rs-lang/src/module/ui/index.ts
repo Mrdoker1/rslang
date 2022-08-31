@@ -4,9 +4,11 @@ import IWord from '../interface/IWord';
 
 //Interface
 import IResultChart from '../interface/IResultChart';
+import IStatistics from '../interface/IStatistics';
+import IStatisticsDay from '../interface/IStatisticsDay';
 
 //Enums
-import { gameChart, gameType } from '../../utils/enums';
+import { gameChart, gameType, statisticType } from '../../utils/enums';
 
 export default class Render {
     constructor() {}
@@ -349,14 +351,22 @@ export default class Render {
         return pageGamesContainer;
     }
 
-    pageStats() {
-        const pageStats = document.createElement('div');
-        pageStats.classList.add('page__stats');
-        const pageStatsContainer = document.createElement('div');
-        pageStatsContainer.classList.add('container');
-        pageStatsContainer.appendChild(pageStats);
-        pageStats.innerHTML += `<h2>Статистика</h2>`;
-        return pageStatsContainer;
+    pageStatistics(statistics: IStatistics | IStatisticsDay) {
+        return this.stats(statisticType.Daily, statistics);
+    }
+
+    stats(type: statisticType, statistics: IStatistics | IStatisticsDay) {
+        const stats = document.createElement('div');
+        stats.classList.add('statistics');
+
+        switch (type) {
+            case statisticType.Daily:
+                break;
+            case statisticType.Total:
+                break;
+        }
+
+        return stats;
     }
 
     //Games

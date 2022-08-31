@@ -128,7 +128,7 @@ export default class App {
                 Render.currentLink(req.path);
             })
             .get('/stats', (req) => {
-                this.showStats();
+                this.showStatistics();
                 Render.currentLink(req.path);
             })
             .error(404, () => {
@@ -303,10 +303,33 @@ export default class App {
         main.appendChild(pageGames);
     }
 
-    showStats() {
+    showStatistics() {
         const main = getHTMLElement(document.querySelector('.main'));
+
+        const statistics = {
+            date: '01.01.2022',
+            sprint: {
+                new: 10,
+                total: 20,
+                right: 5,
+                record: 5,
+                learned: 5,
+            },
+            audio: {
+                new: 20,
+                total: 30,
+                right: 15,
+                record: 5,
+                learned: 10,
+            },
+            book: {
+                new: 10,
+                learned: 10,
+            },
+        };
+
         main.innerHTML = '';
-        const pageStats = this.render.pageStats();
+        const pageStats = this.render.pageStatistics(statistics);
         main.appendChild(pageStats);
     }
 
