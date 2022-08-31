@@ -42,8 +42,8 @@ export default class Render {
                     <a href="/stats">Статистика</a>
                 </li>
                 <li class="header__menu-item">
-                    <a href="#" class="js-signin-modal-trigger" data-signin="login">Войти</a>
-                    <a href="#" data-signin="logout">Выйти</a>
+                    <a href="#" class="js-signin-modal-trigger" data-routerjs-ignore data-signin="login">Войти</a>
+                    <a href="#" data-routerjs-ignore data-signin="logout">Выйти</a>
                 </li>
             </ul>
         </div>

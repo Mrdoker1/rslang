@@ -34,11 +34,11 @@ import '../ui/styles/gameResultWords.scss';
 import { createRouter, Router } from 'routerjs';
 
 //Login
-import ModalLogin from '../login';
+import ModalLogin from '../components/login';
 
 //Games
 import Sprint from '../components/sprint';
-import AudioCall from '../audio-call';
+import AudioCall from '../components/audio-call';
 
 //State
 import State from './state';
@@ -346,72 +346,6 @@ export default class App {
     createLogin() {
         const modal = this.render.modalLogin();
         document.body.append(modal);
-        new ModalLogin(modal);
-
-        let state = new State();
-        const loginForm = getHTMLElement(modal.querySelector('[data-type="login"] form'));
-        const loginMessage = getHTMLElement(loginForm.querySelector('.js-signin-modal__message'));
-        const loginEmailBox = getHTMLInputElement(loginForm.querySelector('#signin-email'));
-        const loginPasswordBox = getHTMLInputElement(loginForm.querySelector('#signin-password'));
-
-        const signupForm = getHTMLElement(modal.querySelector('[data-type="signup"] form'));
-        const signupMessage = getHTMLElement(signupForm.querySelector('.js-signin-modal__message'));
-
-        const loginLink = getHTMLElement(document.querySelector('[data-signin="login"]'));
-        const logoutLink = getHTMLElement(document.querySelector('[data-signin="logout"]'));
-        logoutLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            state.token = '';
-            localStorage.setItem('state', JSON.stringify(state));
-            logoutLink.classList.add('hidden');
-            loginLink.classList.remove('hidden');
-            this.router.run();
-        });
-
-        if (state.token) {
-            loginLink.classList.add('hidden');
-        } else logoutLink.classList.add('hidden');
-
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = loginEmailBox.value;
-            const password = loginPasswordBox.value;
-
-            const login = await this.data.login({ email, password });
-            if (typeof login != 'number') {
-                state.token = login.token;
-                state.userId = login.userId;
-                loginLink.classList.add('hidden');
-                logoutLink.classList.remove('hidden');
-                modal.classList.remove('cd-signin-modal--is-visible');
-                this.router.run();
-            } else {
-                loginMessage.textContent = 'Неверный пароль или почта';
-            }
-        });
-
-        signupForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const name = getHTMLInputElement(signupForm.querySelector('#signup-username')).value;
-            const email = getHTMLInputElement(signupForm.querySelector('#signup-email')).value;
-            const password = getHTMLInputElement(signupForm.querySelector('#signup-password')).value;
-
-            const user = await this.data.createUser({ name, email, password });
-            if (typeof user != 'number') {
-                const login = await this.data.login({ email, password });
-                if (typeof login != 'number') {
-                    state.token = login.token;
-                    state.userId = login.userId;
-                    loginLink.classList.add('hidden');
-                    logoutLink.classList.remove('hidden');
-                    modal.classList.remove('cd-signin-modal--is-visible');
-                    this.router.run();
-                }
-            } else {
-                if (user === 422) signupMessage.textContent = 'Неверный пароль, имя или почта';
-                else if (user === 417) signupMessage.textContent = 'Аккаунт уже существует';
-            }
-        });
+        new ModalLogin(modal, this.data.base, this.router);
     }
 }
