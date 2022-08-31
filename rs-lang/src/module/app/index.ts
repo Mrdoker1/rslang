@@ -11,8 +11,6 @@ import { getRandom } from '../../utils/helpers';
 
 //Interface
 import IUserBody from '../interface/IUserBody';
-import IWord from '../interface/IWord';
-import IAggregatedWord from '../interface/IAggregatedWord';
 
 //Style
 import '../../global.scss';
@@ -42,6 +40,9 @@ import AudioCall from '../components/audio-call';
 
 //State
 import State from './state';
+import IWord from '../interface/IWord';
+import IAggregatedWord from '../interface/IAggregatedWord';
+import IUserWord from '../interface/IUserWord';
 
 export default class App {
     data: Data;
@@ -90,17 +91,25 @@ export default class App {
                 Render.currentLink(req.path);
             })
             .get('/book', (req) => {
-                this.showBook(0);
+                this.showBook(0, 0);
                 Render.currentLink(req.path);
             })
             .get('/book/:group/:page', (req) => {
+                const state = new State();
+                const userId = state.userId;
+                const token = state.token;
+                const loginStatus = state.token ? true : false;
+
                 const group = Number(req.params.group);
                 const page = Number(req.params.page);
-                console.log(group);
                 if (group === 6) {
                     this.showBookPageHard(group, page);
+                } else if (!loginStatus) {
+                    this.showBook(group, page);
+                } else {
+                    this.showBookPage(group, page);
                 }
-                this.showBookPage(group, page);
+
                 Render.currentLink(req.path);
             })
             .get('/games', (req) => {
@@ -151,19 +160,26 @@ export default class App {
         main.appendChild(sectionGames);
     }
 
-    async showBook(group: number) {
+    async showBook(group: number, page: number) {
+        const state = new State();
+        const userId = state.userId;
+        const token = state.token;
+        const loginStatus = state.token ? true : false;
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
         const pageBook = this.render.pageBook();
+        const dataWords = await this.data.getWords(group, page);
 
-        const dataWords = await this.data.getWords(0);
         if (typeof dataWords === 'number') {
             console.log('error');
         } else {
-            const state = new State();
-            const loginStatus = state.token ? true : false;
-            const cardsArr = Object.values(dataWords).map((item) => {
-                return this.render.cardWord(item, loginStatus, item.id);
+            const arr = [...dataWords];
+            const cards = arr.map((item) => {
+                if (item.difficulty === 'hard') {
+                    return this.render.cardWord(item, loginStatus, item.id, true);
+                } else {
+                    return this.render.cardWord(item, loginStatus, item.id, false);
+                }
             });
 
             const wordLevels = this.render.wordLevels();
@@ -177,34 +193,38 @@ export default class App {
             const pagination = this.render.bookPagination(group, 29);
             getHTMLElement(pageBook.querySelector('.page__book')).append(pagination);
 
-            cardsArr.forEach((card) => {
+            cards.forEach((card) => {
                 getHTMLElement(pageBook.querySelector('.words__list')).innerHTML += card;
             });
+
+            const linkActive = pageBook.querySelectorAll(`a[href='/book/${group}/${page}']`);
+            linkActive[0].classList.add('active');
 
             main.appendChild(pageBook);
         }
     }
 
     async showBookPageHard(group: number, page: number) {
+        const main = getHTMLElement(document.querySelector('.main'));
+        main.innerHTML = '';
+        const pageBook = this.render.pageBook();
+
         let state = new State();
         const userId = state.userId;
         const token = state.token;
-        console.log(page);
+
         const dataWords = await this.data.getUserAggregatedWords(
             userId,
             '',
             `${page}`,
             '20',
-            '%7B%22%24and%22%3A%5B%7B%22userWord.difficulty%22%3A%22hard%22%7D%5D%7D',
+            '{"$and":[{"userWord.difficulty":"hard"}]}',
             token
         );
-        // userId,`?page=${page - 1}&wordsPerPage=20&filter=%7B%22%24and%22%3A%5B%7B%22userWord.difficulty%22%3A%22hard%22%7D%5D%7D`,token
+
         if (typeof dataWords === 'number') {
             console.log('error');
         } else {
-            const main = getHTMLElement(document.querySelector('.main'));
-            main.innerHTML = '';
-            const pageBook = this.render.pageBook();
             const state = new State();
             const loginStatus = state.token ? true : false;
 
@@ -217,82 +237,263 @@ export default class App {
             }
 
             let wordsCount = 0;
-            Object.values(dataWords).map((item) => {
-                const wordsArray = Object.values(item);
-                wordsCount = Object.values(item)[1][0].count;
+            let paginatedResults = 0;
+            let totalLength = 0;
 
-                wordsArray[0].forEach((item: IWord) => {
-                    return (getHTMLElement(pageBook.querySelector('.words__list')).innerHTML += this.render.cardWord(
-                        item,
-                        loginStatus,
-                        item._id
-                    ));
-                });
+            Object.values(dataWords).map((item) => {
+                paginatedResults = Object.values(item)[0].length;
+                const wordsArray = Object.values(item);
+                totalLength = Object.values(item)[1].length;
+
+                if (totalLength > 0) {
+                    wordsCount = Object.values(item)[1][0].count;
+                    wordsArray[0].forEach((item: IWord) => {
+                        getHTMLElement(pageBook.querySelector('.words__list')).innerHTML += this.render.cardWord(
+                            item,
+                            loginStatus,
+                            item._id,
+                            true
+                        );
+                    });
+                }
             });
 
-            const pagesCount = Math.ceil(wordsCount / 20);
-            console.log(pagesCount, page);
-            const pagination = this.render.bookPagination(6, pagesCount);
-            getHTMLElement(pageBook.querySelector('.page__book')).append(pagination);
+            if (totalLength > 0) {
+                const pagesCount = Math.ceil(wordsCount / 20);
+                const pagination = this.render.bookPagination(6, pagesCount);
+                getHTMLElement(pageBook.querySelector('.page__book')).append(pagination);
 
-            main.appendChild(pageBook);
+                const bttn = pageBook.querySelectorAll('[data-handle]');
+
+                bttn.forEach((item) => {
+                    item.addEventListener('click', async (e) => {
+                        const target = getHTMLElement(e.target);
+
+                        const wordId = target.getAttribute('data-id');
+                        const dataWords = await this.data.deleteUserWord(state.userId, wordId!, state.token);
+
+                        if (typeof dataWords === 'number') {
+                            console.log('error');
+                        } else {
+                            if (target.getAttribute('data-handle') === 'delete-from-hard') {
+                                const dataWords = await this.data.deleteUserWord(state.userId, wordId!, token);
+                                if (typeof dataWords === 'number') {
+                                    console.log('error');
+                                } else {
+                                    const parent = target.parentElement!.parentElement!.closest('.card-word');
+                                    parent!.remove();
+                                    this.showBookPageHard(group, page);
+                                }
+                            } else if (target.getAttribute('data-handle') === 'add-to-easy') {
+                                const dataWords = await this.data.createUserWord(
+                                    state.userId,
+                                    wordId!,
+                                    { difficulty: 'easy' },
+                                    state.token
+                                );
+                                if (typeof dataWords === 'number') {
+                                    console.log('error');
+                                } else {
+                                    const parent = target.parentElement!.parentElement!.closest('.card-word');
+                                    parent!.remove();
+                                    this.showBookPageHard(group, page);
+                                }
+                            }
+                        }
+                    });
+                });
+                if (paginatedResults === 0 && page != 0) {
+                    this.router.navigate(`/book/${group}/${page - 1}`);
+                }
+                main.appendChild(pageBook);
+            } else {
+                main.innerHTML = '<div class="container">Пусто</div>';
+            }
         }
     }
 
     async showBookPage(group: number, page: number) {
+        const state = new State();
+        const userId = state.userId;
+        const token = state.token;
+        const loginStatus = state.token ? true : false;
+
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
         const pageBook = this.render.pageBook();
 
         const dataWords = await this.data.getWords(group, page);
-        if (typeof dataWords === 'number') {
+        const userWords = await this.data.getUserWords(userId, token);
+
+        const easyWords = await this.data.getUserAggregatedWordsTest(
+            userId,
+            '20',
+            `{"$and":[{"userWord.difficulty":"easy"}, {"page": ${page}}, {"group": ${group}}]}`,
+            token
+        );
+
+        const hardWords = await this.data.getUserAggregatedWordsTest(
+            userId,
+            '20',
+            `{"$and":[{"userWord.difficulty":"hard"}, {"page": ${page}}, {"group": ${group}}]}`,
+            token
+        );
+        if (typeof hardWords === 'number' || typeof easyWords === 'number') {
             console.log('error');
         } else {
-            const state = new State();
-            const loginStatus = state.token ? true : false;
+            const dataWords = await this.data.getWords(group, page);
+            let hardWordsArr: IWord[] = [];
+            let easyWordsArr: IWord[] = [];
 
-            const cardsArr = Object.values(dataWords).map((item) => {
-                return this.render.cardWord(item, loginStatus, item.id);
-            });
-
-            const wordLevels = this.render.wordLevels();
-            getHTMLElement(pageBook.querySelector('.page__book')).append(wordLevels);
-
-            if (state.token) {
-                const hardWords = this.render.hardWords();
-                getHTMLElement(pageBook.querySelector('.word-levels__list')).innerHTML += hardWords;
-            }
-
-            const pagination = this.render.bookPagination(group, 29);
-            getHTMLElement(pageBook.querySelector('.page__book')).append(pagination);
-
-            const linkActive = pageBook.querySelectorAll(`a[href='/book/${group}/${page}']`);
-            linkActive[0].classList.add('active');
-            cardsArr.forEach((card) => {
-                getHTMLElement(pageBook.querySelector('.words__list')).innerHTML += card;
-            });
-
-            const bttn = pageBook.querySelectorAll('[data-handle="add-to-hard"]');
-            bttn.forEach((item) => {
-                item.addEventListener('click', async (e) => {
-                    const target = getHTMLElement(e.target);
-                    const wordId = target.getAttribute('data-id');
-                    console.log(wordId);
-                    const dataWords = await this.data.createUserWord(
-                        state.userId,
-                        wordId!,
-                        { difficulty: 'hard' },
-                        state.token
-                    );
-                    if (typeof dataWords === 'number') {
-                        console.log('error');
-                    } else {
-                        console.log('ok');
-                    }
+            hardWords.forEach((hardWord) => {
+                easyWords.forEach((easyWord) => {
+                    const hardWordsArray = Object.values(hardWord);
+                    const easyWordsArray = Object.values(easyWord);
+                    hardWordsArr = [...hardWordsArray[0]];
+                    easyWordsArr = [...easyWordsArray[0]];
                 });
             });
 
-            main.appendChild(pageBook);
+            if (typeof dataWords === 'number') {
+            } else {
+                const arr = [...dataWords];
+                let cards: string[] = [];
+
+                cards = arr.map((item) => {
+                    const hard = hardWordsArr.findIndex((x) => x._id === item.id);
+                    const easy = easyWordsArr.findIndex((x) => x._id === item.id);
+                    const hardWord: IWord = hardWordsArr[hard];
+                    const easyWord: IWord = easyWordsArr[easy];
+                    if (
+                        hardWord !== undefined &&
+                        hardWord._id === item.id &&
+                        Object.values(hardWord.userWord!).join() === 'hard'
+                    ) {
+                        return this.render.cardWord(item, loginStatus, item.id, true, false);
+                    } else if (
+                        easyWord !== undefined &&
+                        easyWord._id === item.id &&
+                        Object.values(easyWord.userWord!).join() === 'easy'
+                    ) {
+                        return this.render.cardWord(item, loginStatus, item.id, false, true);
+                    } else {
+                        return this.render.cardWord(item, loginStatus, item.id, false);
+                    }
+                });
+
+                cards.forEach((card) => {
+                    getHTMLElement(pageBook.querySelector('.words__list')).innerHTML += card;
+                });
+
+                const bttn = pageBook.querySelectorAll('[data-handle]');
+                bttn.forEach((item) => {
+                    item.addEventListener('click', async (e) => {
+                        const userWords = await this.data.getUserWords(userId, token);
+                        const target = getHTMLElement(e.target);
+
+                        const wordId = target.getAttribute('data-id');
+                        const dataWords = await this.data.deleteUserWord(state.userId, wordId!, state.token);
+
+                        if (typeof dataWords === 'number') {
+                            console.log('error');
+                        } else {
+                            if (target.getAttribute('data-handle') === 'delete-from-hard') {
+                                const dataWords = await this.data.deleteUserWord(state.userId, wordId!, state.token);
+
+                                if (typeof dataWords === 'number') {
+                                    console.log('error');
+                                } else {
+                                    const parent = target.parentElement!.parentElement!.closest('.card-word');
+                                    target.innerHTML = 'Добавить в сложные';
+                                    parent!.className = 'card card-word';
+                                    target.setAttribute('data-handle', 'add-to-hard');
+                                    console.log('delete from hard');
+                                }
+                            } else if (target.getAttribute('data-handle') === 'add-to-hard') {
+                                const dataWords = await this.data.createUserWord(
+                                    state.userId,
+                                    wordId!,
+                                    { difficulty: 'hard' },
+                                    state.token
+                                );
+
+                                if (typeof dataWords === 'number') {
+                                    console.log(userWords);
+                                    console.log('error');
+                                } else {
+                                    const parent = target.parentElement!.parentElement!.closest('.card-word');
+                                    target.innerHTML = 'Удалить из сложных';
+                                    target.setAttribute('data-handle', 'delete-from-hard');
+                                    parent!.className = 'card card-word hard';
+
+                                    const bttn = target.parentElement;
+                                    if (bttn!.querySelector('[data-handle="delete-from-easy"]')) {
+                                        bttn!.querySelector('[data-handle="delete-from-easy"]')!.innerHTML =
+                                            'Добавить в изученные';
+                                        bttn!
+                                            .querySelector('[data-handle="delete-from-easy"]')!
+                                            .setAttribute('data-handle', 'add-to-easy');
+                                    }
+
+                                    console.log('add to hard');
+                                }
+                            } else if (target.getAttribute('data-handle') === 'add-to-easy') {
+                                const dataWords = await this.data.createUserWord(
+                                    state.userId,
+                                    wordId!,
+                                    { difficulty: 'easy' },
+                                    state.token
+                                );
+                                if (typeof dataWords === 'number') {
+                                    console.log('error');
+                                } else {
+                                    const parent = target.parentElement!.parentElement!.closest('.card-word');
+                                    target.innerHTML = 'Удалить из изученных';
+                                    target.setAttribute('data-handle', 'delete-from-easy');
+                                    parent!.classList.add('easy');
+                                    console.log('add to easy');
+
+                                    const bttn = target.parentElement;
+                                    if (bttn!.querySelector('[data-handle="delete-from-hard"]')) {
+                                        bttn!
+                                            .querySelector('[data-handle="delete-from-hard"]')!
+                                            .setAttribute('data-handle', 'add-to-hard');
+                                        bttn!.querySelector('[data-handle="add-to-hard"]')!.innerHTML =
+                                            'Добавить в сложные';
+                                    }
+                                }
+                            } else if (target.getAttribute('data-handle') === 'delete-from-easy') {
+                                const dataWords = await this.data.deleteUserWord(state.userId, wordId!, state.token);
+
+                                if (typeof dataWords === 'number') {
+                                    console.log('error');
+                                } else {
+                                    const parent = target.parentElement!.parentElement!.closest('.card-word');
+                                    target.innerHTML = 'Добавить в изученные';
+                                    parent!.className = 'card card-word';
+                                    target.setAttribute('data-handle', 'add-to-easy');
+
+                                    console.log('delete from easy');
+                                }
+                            }
+                        }
+                    });
+                });
+                const wordLevels = this.render.wordLevels();
+                getHTMLElement(pageBook.querySelector('.page__book')).append(wordLevels);
+
+                if (state.token) {
+                    const hardWords = this.render.hardWords();
+                    getHTMLElement(pageBook.querySelector('.word-levels__list')).innerHTML += hardWords;
+                }
+
+                const pagination = this.render.bookPagination(group, 29);
+                getHTMLElement(pageBook.querySelector('.page__book')).append(pagination);
+
+                const linkActive = pageBook.querySelectorAll(`a[href='/book/${group}/${page}']`);
+                linkActive[0].classList.add('active');
+                main.appendChild(pageBook);
+            }
         }
     }
 
