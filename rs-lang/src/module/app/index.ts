@@ -306,8 +306,14 @@ export default class App {
     showStatistics() {
         const main = getHTMLElement(document.querySelector('.main'));
 
-        const statistics = {
-            date: '01.01.2022',
+        const date1 = new Date();
+        date1.setHours(0, 0, 0, 0);
+
+        const date2 = new Date(2022, 7, 10);
+        date2.setHours(0, 0, 0, 0);
+
+        const statisticsDay1 = {
+            date: date1.toString(),
             sprint: {
                 new: 10,
                 total: 20,
@@ -325,6 +331,36 @@ export default class App {
             book: {
                 new: 10,
                 learned: 10,
+            },
+        };
+
+        const statisticsDay2 = {
+            date: date2.toString(),
+            sprint: {
+                new: 4,
+                total: 30,
+                right: 3,
+                record: 10,
+                learned: 5,
+            },
+            audio: {
+                new: 9,
+                total: 21,
+                right: 5,
+                record: 3,
+                learned: 5,
+            },
+            book: {
+                new: 5,
+                learned: 10,
+            },
+        };
+
+        const statistics = {
+            learnedWords: 0,
+            optional: {
+                1: statisticsDay1,
+                2: statisticsDay2,
             },
         };
 

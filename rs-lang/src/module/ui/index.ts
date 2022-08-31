@@ -351,26 +351,89 @@ export default class Render {
         return pageGamesContainer;
     }
 
-    pageStatistics(statistics: IStatistics | IStatisticsDay) {
+    //Statistics
+    pageStatistics(statistics: IStatistics) {
         return this.stats(statisticType.Daily, statistics);
     }
 
-    stats(type: statisticType, statistics: IStatistics | IStatisticsDay) {
-        const stats = document.createElement('div');
-        stats.classList.add('statistics');
+    stats(type: statisticType, statistics: IStatistics) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        let wordLearnedTotal = 0;
+        let rightAnswersTotal = 0;
+        let wordLearnedTotalSprint = 0;
+        let rightAnswersTotalSprint = 0;
+        let wordLearnedTotalAudiocall = 0;
+        let rightAnswersTotalAudiocall = 0;
+        let header = 'Default Header';
+        let subtitle = 'Ваша статистика по всем активностям';
 
         switch (type) {
             case statisticType.Daily:
+                header = 'Статистика  за  сегодня';
+                for (let day in statistics.optional) {
+                    const statisticDay = statistics.optional[day];
+                    if (today.getTime() == new Date(statisticDay.date).getTime()) {
+                        updateData(statisticDay);
+                    } else {
+                        console.log('false');
+                    }
+                }
                 break;
             case statisticType.Total:
+                header = 'Статистика  за все время';
+                for (let day in statistics.optional) {
+                    const statisticDay = statistics.optional[day];
+                    updateData(statisticDay);
+                }
                 break;
         }
+
+        function updateData(statisticDay: IStatisticsDay) {
+            wordLearnedTotal += statisticDay.sprint.learned + statisticDay.audio.learned + statisticDay.book.learned;
+            rightAnswersTotal += statisticDay.sprint.right + statisticDay.audio.right;
+            wordLearnedTotalSprint += statisticDay.sprint.learned;
+            wordLearnedTotalAudiocall += statisticDay.audio.learned;
+            rightAnswersTotalSprint += statisticDay.sprint.right;
+            rightAnswersTotalAudiocall += statisticDay.audio.right;
+        }
+
+        const stats = document.createElement('div');
+        stats.classList.add('statistics');
+
+        stats.innerHTML = `
+        <div class="statistics__body">
+            <div class="statistics__body-heading">
+                <div class="statistics__header">${header}</div>
+                <div class="statistics__subtitle">${subtitle}</div>
+            </div>
+            <div class="statistics__body-info">
+                <div class="statistics__wordLearnedTotal">
+                    <div class="statistics__wordLearnedTotal-number">${wordLearnedTotal}<span>+</span></div>
+                    <div class="statistics__wordLearnedTotal-subtitle">слов изучено</div>
+                </div>
+                <div class="divider vertical"></div>
+                <div class="statistics__rightAnswersTotal">
+                    <div class="statistics__rightAnswersTotal-number">
+                        ${(rightAnswersTotal / wordLearnedTotal) * 100}<span>%</span>
+                    </div>
+                    <div class="statistics__rightAnswersTotal-subtitle">правильных ответов</div>
+                </div>
+            </div>
+            <div class="statistics__sprint">
+                <div class="statistics__sprint sprint-image"></div>
+                <div class="statistics__sprint-body">
+                    
+                </div>
+            </div>
+        </div>
+        `;
 
         return stats;
     }
 
     //Games
-
     gameDifficulty(type: string) {
         const container = document.createElement('div');
         container.classList.add('container');
