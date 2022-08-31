@@ -72,6 +72,7 @@ export default class AudioCall {
                 } else {
                     this.result.knowingWords.push(words[count]);
                     this.series += 1;
+                    //console.log(this.series);
                 }
             });
         });
@@ -183,22 +184,27 @@ export default class AudioCall {
             return;
         }
 
-        const stsAll: IStatistics | number = await this.data.getUserStatistics(this.state.userId, this.state.token);
-        if (typeof stsAll === 'number') {
+        let stsAll = await this.data.getUserStatistics(this.state.userId, this.state.token);
+        if (stsAll === 404)
+            stsAll = {
+                learnedWords: 0,
+                optional: {},
+            };
+        else if (typeof stsAll === 'number') {
             console.log(`Ошибка getUserStatistics ${stsAll}`);
             return;
         }
 
         let sts;
         let isNewEntry = true;
-        let opt = stsAll.optional;
+        const keys = Object.keys(stsAll.optional);
+        let lastKey = 0;
 
-        if (!opt || !Array.isArray(opt)) opt = [];
-        if (opt.length) {
-            const len = opt.length;
-            const lastSts = opt[len - 1];
+        if (keys.length) {
+            lastKey = Number(keys[keys.length - 1]);
+            const lastSts = stsAll.optional[lastKey];
             if (!this.isNewDay(lastSts.date)) {
-                sts = lastSts;
+                sts = lastSts; //key?
                 isNewEntry = false;
             }
         }
@@ -248,10 +254,12 @@ export default class AudioCall {
         sts.audio.learned = learned;
         sts.audio.record = record;
 
-        if (isNewEntry) stsAll.optional.push(sts);
-        else stsAll.optional[stsAll.optional.length - 1] = sts;
+        if (isNewEntry) stsAll.optional[lastKey + 1] = sts;
+        else stsAll.optional[lastKey] = sts;
 
-        const updateUserStatistics = this.data.updateUserStatistics(this.state.userId, stsAll, this.state.token);
+        // console.log(stsAll);
+        delete stsAll.id;
+        const updateUserStatistics = await this.data.updateUserStatistics(this.state.userId, stsAll, this.state.token);
         if (typeof updateUserStatistics === 'number') {
             console.log(`Ошибка updateUserStatistics ${updateUserStatistics}`);
             return;
@@ -287,6 +295,7 @@ export default class AudioCall {
     isNewDay(date: string): boolean {
         const prevDate = new Date(date);
         const currDate = new Date();
+        // return true; //Тест
         return (
             currDate.getDate() !== prevDate.getDate() ||
             currDate.getMonth() !== prevDate.getMonth() ||

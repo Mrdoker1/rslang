@@ -319,7 +319,7 @@ export default class App {
         const start = getHTMLElement(game.querySelector('.game__start'));
         start.addEventListener('click', (e) => {
             const checked = getHTMLInputElement(game.querySelector('[type="radio"]:checked'));
-            const href = `/games/${type}/${checked.value}/${getRandom(1, 30)}`;
+            const href = `/games/${type}/${checked.value}/${getRandom(0, 29)}`;
             this.router.navigate(href);
         });
     }
