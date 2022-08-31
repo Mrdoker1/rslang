@@ -1,4 +1,7 @@
+import IStatisticsDay from './IStatisticsDay';
+
 export default interface IStatistics {
+    id?: string;
     learnedWords: number;
-    optional: {};
+    optional: { [key: string]: IStatisticsDay };
 }

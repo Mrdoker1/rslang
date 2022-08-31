@@ -7,6 +7,7 @@ import Render from '../ui';
 //Utils
 import getHTMLElement from '../../utils/getHTMLElement';
 import getHTMLInputElement from '../../utils/getHTMLInputElement';
+import { getRandom } from '../../utils/helpers';
 
 //Interface
 import IUserBody from '../interface/IUserBody';
@@ -22,12 +23,20 @@ import '../ui/styles/footer.scss';
 import '../ui/styles/login.scss';
 import '../ui/styles/pageBook.scss';
 import '../ui/styles/games.scss';
+import '../ui/styles/sprint.scss';
+import '../ui/styles/chart.scss';
+import '../ui/styles/gameResult.scss';
+import '../ui/styles/gameResultWords.scss';
 
 //Router
 import { createRouter, Router } from 'routerjs';
 
 //Login
-import ModalLogin from '../login';
+import ModalLogin from '../components/login';
+
+//Games
+import Sprint from '../components/sprint';
+import AudioCall from '../components/audio-call';
 
 //State
 import State from './state';
@@ -112,7 +121,6 @@ export default class App {
                 Render.currentLink(req.path);
             })
             .get('/games/sprint/:group/:page', (req) => {
-                //console.log(req.path.split('/').reverse());
                 const group = Number(req.params.group);
                 const page = Number(req.params.page);
                 this.showSprint(group, page);
@@ -129,7 +137,7 @@ export default class App {
                 Render.currentLink(req.path);
             })
             .get('/stats', (req) => {
-                this.showStats();
+                this.showStatistics();
                 Render.currentLink(req.path);
             })
             .error(404, () => {
@@ -143,11 +151,11 @@ export default class App {
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
         const sectionSplash = this.render.sectionSplash();
-        const sectionDevelovers = this.render.sectionDevelovers();
+        const sectionDevelopers = this.render.sectionDevelopers();
         const sectionBenefits = this.render.sectionBenefits();
         const sectionGames = this.render.sectionGames();
         main.appendChild(sectionSplash);
-        main.appendChild(sectionDevelovers);
+        main.appendChild(sectionDevelopers);
         main.appendChild(sectionBenefits);
         main.appendChild(sectionGames);
     }
@@ -496,103 +504,108 @@ export default class App {
         main.appendChild(pageGames);
     }
 
-    showStats() {
+    showStatistics() {
         const main = getHTMLElement(document.querySelector('.main'));
+
+        const date1 = new Date();
+        date1.setHours(0, 0, 0, 0);
+
+        const date2 = new Date(2022, 7, 10);
+        date2.setHours(0, 0, 0, 0);
+
+        const statisticsDay1 = {
+            date: date1.toString(),
+            sprint: {
+                new: 10,
+                total: 20,
+                right: 5,
+                record: 5,
+                learned: 5,
+            },
+            audio: {
+                new: 20,
+                total: 30,
+                right: 15,
+                record: 5,
+                learned: 10,
+            },
+            book: {
+                new: 10,
+                learned: 10,
+            },
+        };
+
+        const statisticsDay2 = {
+            date: date2.toString(),
+            sprint: {
+                new: 4,
+                total: 30,
+                right: 3,
+                record: 10,
+                learned: 5,
+            },
+            audio: {
+                new: 9,
+                total: 21,
+                right: 5,
+                record: 3,
+                learned: 5,
+            },
+            book: {
+                new: 5,
+                learned: 10,
+            },
+        };
+
+        const statistics = {
+            learnedWords: 0,
+            optional: {
+                1: statisticsDay1,
+                2: statisticsDay2,
+            },
+        };
+
         main.innerHTML = '';
-        const pageStats = this.render.pageStats();
+        const pageStats = this.render.pageStatistics(statistics);
         main.appendChild(pageStats);
     }
 
     showGameDifficulty(type: string) {
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
-        const gameDifficulty = this.render.gameDifficulty(type);
-        main.append(gameDifficulty);
+        const game = this.render.gameDifficulty(type);
+        main.append(game);
+
+        const start = getHTMLElement(game.querySelector('.game__start'));
+        start.addEventListener('click', (e) => {
+            const checked = getHTMLInputElement(game.querySelector('[type="radio"]:checked'));
+            const href = `/games/${type}/${checked.value}/${getRandom(0, 29)}`;
+            this.router.navigate(href);
+        });
     }
 
-    showSprint(group: number, page: number) {
+    async showSprint(group: number, page: number) {
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
-        const gameSprint = this.render.gameSprint(group, page);
-        main.appendChild(gameSprint);
+        const words = await this.data.getWords(group, page);
+        if (typeof words === 'number') {
+            console.log(`error ${words}`);
+            return;
+        }
+        const sprint = new Sprint(this.data.base, words, group, page);
+        sprint.start();
+        //const gameSprint = this.render.gameSprint(group, page);
+        //main.appendChild(gameSprint);
     }
 
-    showAudioCall(group: number, page: number) {
-        const main = getHTMLElement(document.querySelector('.main'));
-        main.innerHTML = '';
-        const gameAudioCall = this.render.gameAudioCall(group, page);
-        main.appendChild(gameAudioCall);
+    async showAudioCall(group: number, page: number) {
+        const audioCall = new AudioCall(this.data.base, group, page);
+        audioCall.start();
     }
 
     createLogin() {
         const modal = this.render.modalLogin();
         document.body.append(modal);
-        new ModalLogin(modal);
-
-        let state = new State();
-        const loginForm = getHTMLElement(modal.querySelector('[data-type="login"] form'));
-        const loginMessage = getHTMLElement(loginForm.querySelector('.js-signin-modal__message'));
-        const loginEmailBox = getHTMLInputElement(loginForm.querySelector('#signin-email'));
-        const loginPasswordBox = getHTMLInputElement(loginForm.querySelector('#signin-password'));
-
-        const signupForm = getHTMLElement(modal.querySelector('[data-type="signup"] form'));
-        const signupMessage = getHTMLElement(signupForm.querySelector('.js-signin-modal__message'));
-
-        const loginLink = getHTMLElement(document.querySelector('[data-signin="login"]'));
-        const logoutLink = getHTMLElement(document.querySelector('[data-signin="logout"]'));
-        logoutLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            state.token = '';
-            localStorage.setItem('state', JSON.stringify(state));
-            logoutLink.classList.add('hidden');
-            loginLink.classList.remove('hidden');
-            this.router.run();
-        });
-
-        if (state.token) {
-            loginLink.classList.add('hidden');
-        } else logoutLink.classList.add('hidden');
-
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = loginEmailBox.value;
-            const password = loginPasswordBox.value;
-
-            const login = await this.data.login({ email, password });
-            if (typeof login != 'number') {
-                state.token = login.token;
-                state.userId = login.userId;
-                loginLink.classList.add('hidden');
-                logoutLink.classList.remove('hidden');
-                modal.classList.remove('cd-signin-modal--is-visible');
-                this.router.run();
-            } else {
-                loginMessage.textContent = 'Неверный пароль или почта';
-            }
-        });
-
-        signupForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const name = getHTMLInputElement(signupForm.querySelector('#signup-username')).value;
-            const email = getHTMLInputElement(signupForm.querySelector('#signup-email')).value;
-            const password = getHTMLInputElement(signupForm.querySelector('#signup-password')).value;
-
-            const user = await this.data.createUser({ name, email, password });
-            if (typeof user != 'number') {
-                const login = await this.data.login({ email, password });
-                if (typeof login != 'number') {
-                    state.token = login.token;
-                    state.userId = login.userId;
-                    loginLink.classList.add('hidden');
-                    logoutLink.classList.remove('hidden');
-                    modal.classList.remove('cd-signin-modal--is-visible');
-                    this.router.run();
-                }
-            } else {
-                if (user === 422) signupMessage.textContent = 'Неверный пароль, имя или почта';
-                else if (user === 417) signupMessage.textContent = 'Аккаунт уже существует';
-            }
-        });
+        new ModalLogin(modal, this.data.base, this.router);
     }
 }

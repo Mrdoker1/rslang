@@ -1,0 +1,37 @@
+.chart {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.chart-wrapper {
+    position: absolute;
+    fill: none;
+    .chart-percentage {
+        transform: rotate(-90deg);
+        stroke-linecap: round;
+    }
+}
+
+.gameresult-chart{
+    position: relative;
+    width: 120px;
+    height: 120px;
+    &__body{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        flex-direction: column;
+        &-upper{}
+        &-value{
+            padding-bottom: 4px;
+        }
+        &-buttom{}
+    }
+    &__heart{
+
+    }
+}

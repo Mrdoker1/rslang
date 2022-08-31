@@ -1,6 +1,15 @@
 //Utils
 import getHTMLElement from '../../utils/getHTMLElement';
 import IWord from '../interface/IWord';
+
+//Interface
+import IResultChart from '../interface/IResultChart';
+import IStatistics from '../interface/IStatistics';
+import IStatisticsDay from '../interface/IStatisticsDay';
+
+//Enums
+import { gameChart, gameType, statisticType } from '../../utils/enums';
+
 export default class Render {
     constructor() {}
 
@@ -35,8 +44,8 @@ export default class Render {
                     <a href="/stats">Статистика</a>
                 </li>
                 <li class="header__menu-item">
-                    <a href="#" class="js-signin-modal-trigger" data-signin="login">Войти</a>
-                    <a href="#" data-signin="logout">Выйти</a>
+                    <a href="#" class="js-signin-modal-trigger" data-routerjs-ignore data-signin="login">Войти</a>
+                    <a href="#" data-routerjs-ignore data-signin="logout">Выйти</a>
                 </li>
             </ul>
         </div>
@@ -63,7 +72,7 @@ export default class Render {
         return splash;
     }
 
-    sectionDevelovers() {
+    sectionDevelopers() {
         const developers = document.createElement('section');
         const developersContainer = document.createElement('div');
         developersContainer.classList.add('container');
@@ -341,46 +350,149 @@ export default class Render {
         return pageGamesContainer;
     }
 
-    pageStats() {
-        const pageStats = document.createElement('div');
-        pageStats.classList.add('page__stats');
-        const pageStatsContainer = document.createElement('div');
-        pageStatsContainer.classList.add('container');
-        pageStatsContainer.appendChild(pageStats);
-        pageStats.innerHTML += `<h2>Статистика</h2>`;
-        return pageStatsContainer;
+    //Statistics
+    pageStatistics(statistics: IStatistics) {
+        return this.stats(statisticType.Daily, statistics);
+    }
+
+    stats(type: statisticType, statistics: IStatistics) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        let wordLearnedTotal = 0;
+        let rightAnswersTotal = 0;
+        let wordLearnedTotalSprint = 0;
+        let rightAnswersTotalSprint = 0;
+        let wordLearnedTotalAudiocall = 0;
+        let rightAnswersTotalAudiocall = 0;
+        let header = 'Default Header';
+        let subtitle = 'Ваша статистика по всем активностям';
+
+        switch (type) {
+            case statisticType.Daily:
+                header = 'Статистика  за  сегодня';
+                for (let day in statistics.optional) {
+                    const statisticDay = statistics.optional[day];
+                    if (today.getTime() == new Date(statisticDay.date).getTime()) {
+                        updateData(statisticDay);
+                    } else {
+                        console.log('false');
+                    }
+                }
+                break;
+            case statisticType.Total:
+                header = 'Статистика  за все время';
+                for (let day in statistics.optional) {
+                    const statisticDay = statistics.optional[day];
+                    updateData(statisticDay);
+                }
+                break;
+        }
+
+        function updateData(statisticDay: IStatisticsDay) {
+            wordLearnedTotal += statisticDay.sprint.learned + statisticDay.audio.learned + statisticDay.book.learned;
+            rightAnswersTotal += statisticDay.sprint.right + statisticDay.audio.right;
+            wordLearnedTotalSprint += statisticDay.sprint.learned;
+            wordLearnedTotalAudiocall += statisticDay.audio.learned;
+            rightAnswersTotalSprint += statisticDay.sprint.right;
+            rightAnswersTotalAudiocall += statisticDay.audio.right;
+        }
+
+        const stats = document.createElement('div');
+        stats.classList.add('statistics');
+
+        stats.innerHTML = `
+        <div class="statistics__body">
+            <div class="statistics__body-heading">
+                <div class="statistics__header">${header}</div>
+                <div class="statistics__subtitle">${subtitle}</div>
+            </div>
+            <div class="statistics__body-info">
+                <div class="statistics__wordLearnedTotal">
+                    <div class="statistics__wordLearnedTotal-number">${wordLearnedTotal}<span>+</span></div>
+                    <div class="statistics__wordLearnedTotal-subtitle">слов изучено</div>
+                </div>
+                <div class="divider vertical"></div>
+                <div class="statistics__rightAnswersTotal">
+                    <div class="statistics__rightAnswersTotal-number">
+                        ${(rightAnswersTotal / wordLearnedTotal) * 100}<span>%</span>
+                    </div>
+                    <div class="statistics__rightAnswersTotal-subtitle">правильных ответов</div>
+                </div>
+            </div>
+            <div class="statistics__sprint">
+                <div class="statistics__sprint sprint-image"></div>
+                <div class="statistics__sprint-body">
+                    
+                </div>
+            </div>
+        </div>
+        `;
+
+        return stats;
     }
 
     //Games
-
     gameDifficulty(type: string) {
         const container = document.createElement('div');
         container.classList.add('container');
         let levels = '';
         let title;
         let desc;
+        let skill;
 
         if (type === 'audio-call') {
             title = 'Аудиовызов';
-            desc = '«Аудиовызов» - эта игра улучшает восприятие речи на слух.';
+            desc = 'Тренировка Аудиовызов развивает словарный запас и улучшает восприятие речи на слух.';
+            skill = 'на слух';
         } else if (type === 'sprint') {
             title = 'Спринт';
-            desc = '«Спринт» - это игра для повторения выученных слов из вашего словаря.';
+            desc =
+                'Тренирует навык быстрого перевода с английского языка на русский. Вам нужно выбрать соответствует ли перевод предложенному слову.';
+            skill = 'на скорость';
         }
 
+        let checked;
+        let letter;
+        let n;
         for (let i = 1; i <= 6; i += 1) {
+            if (i > 1) checked = '';
+            else checked = 'checked';
+            if (i % 2 !== 0) n = 1;
+            else n = 2;
+            switch (i) {
+                case 1:
+                case 2:
+                    letter = 'A';
+                    break;
+                case 3:
+                case 4:
+                    letter = 'B';
+                    break;
+                case 5:
+                case 6:
+                    letter = 'C';
+                    break;
+            }
             levels += `<li class="levels__item">
-                <a class="levels__link" href="/games/${type}/${i}/0">Уровень ${i}</a>
+                <input id="level-${i}" type="radio" name="radio" value="${i - 1}" ${checked}>
+                <label class="levels__btn" for="level-${i}">${letter}${n}</label>
             </li>`;
+            checked = '';
         }
 
         const html = `<div class="game">
             <div class="game__wrapper">
                 <div class="game__window">
-                    <h2 class="game__title">${title}</h2>
-                    <p class="game__desc">${desc}</p>
-                    <p>Выберите уровень сложности:</p>
-                    <ul class="game__levels levels">${levels}</ul>
+                    <img src="../assets/img/${type}.svg"/>
+                    <div class="game__block">
+                        <h2 class="game__title">${title}</h2>
+                        <p class="game__desc">${desc}</p>
+                        <p class="game__text">Выберите уровень:</p>
+                        <ul class="game__levels levels">${levels}</ul>
+                        <button class="game__start">Начать</button>
+                        <div class="game__skill">${skill}</div>
+                    </div>
                 </div>
             </div>
         </div>`;
@@ -389,17 +501,87 @@ export default class Render {
         return container;
     }
 
-    gameSprint(group: number, page: number) {
+    gameSprint(multiplier: number, points: number, strike: number, word: string, translatedWord: string) {
         const container = document.createElement('div');
-        container.classList.add('container');
-        container.innerHTML = '<h2>Игра Спринт</h2>';
+        let strikesHTML = '';
+        let maxStrike = 3;
+        for (let i = strike; i > 0; i--) {
+            strikesHTML += `<div class="sprint-game__normal-strike">✦</div>`;
+        }
+        for (let i = maxStrike - strike; i > 0; i--) {
+            strikesHTML += `<div class="sprint-game__empty-strike">✦</div>`;
+        }
+        container.classList.add('sprint-game__body');
+        container.innerHTML = `
+            <div class="sprint-game__body-info">
+                <div class="sprint-game__multiplier">
+                    <span>x${multiplier}</span>
+                    <span>Множитель</span>
+                </div>
+                <div class="divider"></div>
+                <div class="sprint-game__points">
+                    <span>${points}</span>
+                    <span>Очки</span>
+                </div>
+            </div>
+            <div>
+                <div class="sprint-game__body-strike">${strikesHTML}</div>
+                <div class="sprint-game__body-words">
+                    <div class="sprint-game__word">${word}</div>
+                    <div class="sprint-game__translatedWord">${translatedWord}</div>
+                </div>
+            </div>
+            <div class="sprint-game__body-actions">
+                <button class="sprint-game__true-button">Верно</button> <button class="sprint-game__false-button">Неверно</button>
+            </div>
+        `;
         return container;
     }
 
-    gameAudioCall(group: number, page: number) {
+    gameAudioCall() {
         const container = document.createElement('div');
         container.classList.add('container');
-        container.innerHTML = '<h2>Игра Аудио-вызов</h2>';
+
+        const html = `<div class="game">
+            <div class="game__wrapper">
+                <div class="game__window audio">
+                    <div class="audio__main">
+                        <button class="audio__question js-play-word">
+                            <img src="../assets/img/music.svg">
+                            <span class="audio__text-play">Play</span>
+                        </button>   
+                        <div class="audio__answer answer hidden">
+                            <img class="answer__photo">
+                            <div class="answer__word">
+                                <button class="answer__play js-play-word">
+                                    <img class="answer__icon-music" src="../assets/img/music-mini.svg">
+                                </button>
+                                <span class="answer__text"></span>
+                            </div>   
+                        </div>  
+                        <div class="audio__attempts">
+                            <span class="audio__icon-heart"></span>
+                            <span class="audio__icon-heart"></span>
+                            <span class="audio__icon-heart"></span>
+                            <span class="audio__icon-heart"></span>
+                            <span class="audio__icon-heart"></span>
+                        </div>
+                    </div>
+                    <div class="audio__choices">
+                        <button class="audio__choice"></button>  
+                        <button class="audio__choice"></button>  
+                        <button class="audio__choice"></button>  
+                        <button class="audio__choice"></button>  
+                        <button class="audio__choice"></button>  
+                    </div>
+                    <div class="audio__next">
+                        <button class="audio__know-btn">Не знаю</button>  
+                        <button class="audio__next-btn hidden">Дальше</button>  
+                    </div>
+                </div>
+            </div>
+        </div>`;
+        container.innerHTML = html;
         return container;
     }
 
@@ -466,19 +648,217 @@ export default class Render {
         return modal;
     }
 
-    //Current link highlighting
-    // static currentLink(path: string) {
-    //     const linksList = document.querySelectorAll('.header__menu-item');
-    //     const dropdownList = document.querySelectorAll('.dropdown__menu-item');
-    //     const linkActive = getHTMLElement(document.querySelector(`a[href='${path}']`));
-    //     linksList.forEach((item) => {
-    //         item.children[0].classList.remove('active');
-    //     });
-    //     dropdownList.forEach((item) => {
-    //         item.children[0].classList.remove('active');
-    //     });
-    //     linkActive.classList.add('active');
-    // }
+    chart(chartSize: number, strokeSize: number, percent: number, color: string, backgroundColor: string) {
+        const chart = document.createElement('div');
+        chart.classList.add('chart');
+        chart.style.width = `${chartSize}px`;
+        chart.style.height = `${chartSize}px`;
+        let opacity = 100;
+        const roundRadius = chartSize / 2;
+        const roundCircum = 2 * roundRadius * Math.PI;
+        const roundDraw = (percent * roundCircum) / 100;
+
+        if (percent <= 0) {
+            opacity = 0;
+        }
+
+        chart.innerHTML = `
+        <div class="chart-wrapper">
+            <svg class="chart-background" viewbox="0 0 ${chartSize} ${chartSize}" width="${chartSize}" height="${chartSize}" data-percent="100" stroke=${backgroundColor} stroke-width="${strokeSize}">
+                <circle cx="${roundRadius}" cy="${roundRadius}" r="${roundRadius - strokeSize / 2}" />
+            </svg>
+        </div>
+        <div class="chart-wrapper">
+            <svg class="chart-percentage" viewbox="0 0 ${chartSize} ${chartSize}" width="${chartSize}" height="${chartSize}" data-percent="0" stroke=${color} stroke-width="${strokeSize}">
+                <circle cx="${roundRadius}" cy="${roundRadius}" r="${
+            roundRadius - strokeSize / 2
+        }" stroke-opacity="${opacity}" stroke-dasharray="${roundDraw} ${roundCircum}"/>
+            </svg>
+        </div>
+        `;
+
+        return chart;
+    }
+
+    gameResultChart(type: gameChart, maxValue: number, currentValue: number) {
+        let color = '';
+        let backgroundColor = '';
+        let upperLabel = '';
+        let value = `${currentValue}`;
+        let buttomLabel = '';
+        let percent = (currentValue / maxValue) * 100;
+
+        switch (type) {
+            case gameChart.Healths:
+                color = '#945069';
+                backgroundColor = '#F2D4DC';
+                upperLabel = 'осталось';
+                value = `<span class="gameresult-chart__heart">♥</span> ${currentValue}`;
+                if (currentValue == 1) {
+                    buttomLabel = 'жизнь';
+                } else if (currentValue > 1 && currentValue < 5) {
+                    buttomLabel = 'жизни';
+                } else if (currentValue < 1 || currentValue > 4) {
+                    buttomLabel = 'жизней';
+                }
+                break;
+            case gameChart.Words:
+                color = '#639B6D';
+                backgroundColor = '#B1CDB6';
+                upperLabel = `${maxValue}/`;
+                if (currentValue == 1) {
+                    buttomLabel = 'слово';
+                } else if (currentValue > 1 && currentValue < 5) {
+                    buttomLabel = 'слова';
+                } else if (currentValue < 1 || currentValue > 4) {
+                    buttomLabel = 'слов';
+                }
+                break;
+            case gameChart.Points:
+                color = '#2B788B';
+                backgroundColor = '#C3DCE3';
+                upperLabel = 'получено';
+                if (currentValue == 1) {
+                    buttomLabel = 'очко';
+                } else if (currentValue > 1 && currentValue < 5) {
+                    buttomLabel = 'очка';
+                } else if (currentValue < 1 || currentValue > 4) {
+                    buttomLabel = 'очков';
+                }
+                break;
+        }
+
+        const chart = this.chart(120, 5, percent, color, backgroundColor);
+        const gameResultChart = document.createElement('div');
+        const gameResultChartBody = document.createElement('div');
+
+        gameResultChart.classList.add('gameresult-chart');
+        gameResultChartBody.classList.add('gameresult-chart__body');
+
+        gameResultChartBody.innerHTML = `
+            <div class="gameresult-chart__body-upper">${upperLabel}</div>
+            <div class="gameresult-chart__body-value">${value}</div>
+            <div class="gameresult-chart__body-buttom">${buttomLabel}</div>
+        `;
+
+        gameResultChart.appendChild(chart);
+        gameResultChart.appendChild(gameResultChartBody);
+
+        return gameResultChart;
+    }
+
+    gameResult(type: gameType, message: string, chartList: Array<IResultChart>) {
+        const container = document.createElement('div');
+        const charts = document.createElement('div');
+        let header = '';
+        let resultMessage = message;
+        chartList.forEach((chart) => {
+            let node = this.gameResultChart(chart.type, chart.maxValue, chart.currentValue);
+            charts.appendChild(node);
+        });
+        container.classList.add('gameresult');
+
+        switch (type) {
+            case gameType.AudioCall:
+                header = 'Ваш Аудиовызов';
+                break;
+            case gameType.Sprint:
+                header = 'Ваш Спринт';
+                break;
+        }
+
+        container.innerHTML = `
+        <div class="gameresult__info">
+            <img src="../assets/img/result.svg">
+            <div class="gameresult__info-body">
+                <div class="gameresult__header">${header}</div>
+                <div class="gameresult__message">${resultMessage}</div>
+                <div class="gameresult__charts">${charts.innerHTML}</div>
+            </div>
+        </div>
+        <div class="gameresult__actions">
+            <button class="gameresult__button-replay">Сыграть еще раз</button>
+            <button class="gameresult__button-tobook">Перейти в учебник</button>  
+        </div>
+        `;
+        return container;
+    }
+
+    gameResultWord(word: IWord, base: string) {
+        const gameResultWord = document.createElement('div');
+        gameResultWord.classList.add('gameresultword');
+        gameResultWord.innerHTML = `
+        <div class="gameresultword__icon">
+            <div class="play-icon"></div>
+        </div>
+        <div class="gameresultword__body">
+            <div class="gameresultword__body-word">${word.word}</div>
+            <span>-</span>
+            <div class="gameresultword__body-translation">${word.wordTranslate}</div>
+        </div>
+        `;
+        gameResultWord.addEventListener('click', () => {
+            const audio = new Audio();
+            audio.loop = false;
+            audio.src = `${base}/${word.audio}`;
+            audio.autoplay = true;
+        });
+
+        return gameResultWord;
+    }
+
+    gameResultWords(knowingWords: Array<IWord>, unknowingWords: Array<IWord>, base: string) {
+        const gameResultWords = document.createElement('div');
+        const knowingWordsList = document.createElement('div');
+        const unknowingWordsList = document.createElement('div');
+
+        gameResultWords.classList.add('gameresultwords');
+        knowingWordsList.classList.add('gameresultwords__list');
+        unknowingWordsList.classList.add('gameresultwords__list');
+
+        knowingWords.forEach((knowingWord) => {
+            const word = this.gameResultWord(knowingWord, base);
+            knowingWordsList.appendChild(word);
+        });
+
+        unknowingWords.forEach((unknowingWord) => {
+            const word = this.gameResultWord(unknowingWord, base);
+            unknowingWordsList.appendChild(word);
+        });
+
+        const knowingWordsContainer = document.createElement('div');
+        const unknowingWordsContainer = document.createElement('div');
+
+        knowingWordsContainer.classList.add('knowingwords__container');
+        unknowingWordsContainer.classList.add('unknowingwords__container');
+
+        const knowingWordsHeader = document.createElement('div');
+        const unknowingWordsHeader = document.createElement('div');
+
+        knowingWordsHeader.classList.add('knowingwords__header');
+        unknowingWordsHeader.classList.add('unknowingwords__header');
+
+        knowingWordsHeader.innerHTML = `
+        <div class="unknowingwords__header-title">Я знаю</div>
+        <div class="unknowingwords__header-label">${knowingWords.length}</div>
+        `;
+
+        unknowingWordsHeader.innerHTML = `
+        <div class="unknowingwords__header-title">Я не знаю</div>
+        <div class="unknowingwords__header-label">${unknowingWords.length}</div>
+        `;
+
+        knowingWordsContainer.appendChild(knowingWordsHeader);
+        knowingWordsContainer.appendChild(knowingWordsList);
+
+        unknowingWordsContainer.appendChild(unknowingWordsHeader);
+        unknowingWordsContainer.appendChild(unknowingWordsList);
+
+        gameResultWords.appendChild(knowingWordsContainer);
+        gameResultWords.appendChild(unknowingWordsContainer);
+
+        return gameResultWords;
+    }
 
     static currentLink(path: string) {
         const navLinks = document.querySelectorAll('.header__menu a:not([href^="#"])');
