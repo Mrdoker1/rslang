@@ -1,21 +1,21 @@
 //Utils
-import getHTMLElement from '../../utils/getHTMLElement';
-import getHTMLImageElement from '../../utils/getHTMLImageElement';
-import { shuffle } from '../../utils/helpers';
+import getHTMLElement from '../../../utils/getHTMLElement';
+import getHTMLImageElement from '../../../utils/getHTMLImageElement';
+import { shuffle } from '../../../utils/helpers';
 
 //Interfaces
-import IWord from '../interface/IWord';
-import IStatistics from '../interface/IStatistics';
+import IWord from '../../interface/IWord';
+import IStatistics from '../../interface/IStatistics';
 
 //API
-import Data from '../../module/api';
+import Data from '../../api';
 
 //UI
-import Render from '../ui';
+import Render from '../../ui';
 
 //State
-import State from '../app/state';
-import IUserWord from '../interface/IUserWord';
+import State from '../../app/state';
+import IUserWord from '../../interface/IUserWord';
 
 export default class AudioCall {
     group: number;

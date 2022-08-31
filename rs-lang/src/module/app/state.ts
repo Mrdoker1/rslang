@@ -5,12 +5,15 @@ export default class State {
     private _userId: string;
     private _name: string;
     private _message: string;
+    private _tokenTime: string;
     constructor() {
         this._token = '';
         this._refreshToken = '';
         this._userId = '';
         this._name = '';
         this._message = '';
+        this._tokenTime = '';
+
         if (typeof State.instance === 'object') {
             return State.instance;
         }
@@ -38,6 +41,10 @@ export default class State {
         return this._message;
     }
 
+    get tokenTime() {
+        return this._tokenTime;
+    }
+
     set token(value: string) {
         this._token = value;
     }
@@ -58,6 +65,10 @@ export default class State {
         this._message = value;
     }
 
+    set tokenTime(value: string) {
+        this._tokenTime = value;
+    }
+
     toJSON() {
         return {
             token: this.token,
@@ -65,6 +76,7 @@ export default class State {
             userId: this.userId,
             name: this.name,
             message: this.message,
+            tokenTime: this.tokenTime,
         };
     }
 }
