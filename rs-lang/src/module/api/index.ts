@@ -313,6 +313,32 @@ export default class Data {
         return response;
     };
 
+    //User aggregated words TEST
+    getUserAggregatedWordsTest = async (
+        id: string,
+        wordsPerPage: string,
+        filter: string,
+        token: string
+    ): Promise<number | Array<IWord>> => {
+        const response = await fetch(
+            `${this.users}/${id}/aggregatedWords/?wordsPerPage=${wordsPerPage}&filter=${filter}`,
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        ).then((response) => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                return response.status;
+            }
+        });
+        return response;
+    };
+
     getUserAggregatedWord = async (id: string, wordId: string, token: string): Promise<number | IAggregatedWord> => {
         const response = await fetch(`${this.users}/${id}/aggregatedWords/${wordId}`, {
             method: 'GET',

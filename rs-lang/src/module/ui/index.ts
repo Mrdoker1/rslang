@@ -18,7 +18,7 @@ export default class Render {
                     <a href="/">Главная</a>
                 </li>
                 <li class="header__menu-item">
-                    <a href="/book">Учебник</a>
+                    <a href="/book/0/0">Учебник</a>
                 </li>
                 <li class="header__menu-item dropdown">
                     <span>Игры</span>
@@ -195,7 +195,7 @@ export default class Render {
                       <a href="/">Главная</a>
                   </li>
                   <li class="footer__menu-item">
-                      <a href="/book">Учебник</a>
+                      <a href="/book/0/0">Учебник</a>
                   </li>
                   <li class="footer__menu-item">
                       <a href="/stats">Статистика</a>
@@ -233,24 +233,9 @@ export default class Render {
         pageBookContainer.classList.add('container');
         pageBookContainer.appendChild(pageBook);
         pageBook.innerHTML += `<h2 class="page__title">Учебник</h2>`;
-
         const wordsList = document.createElement('div');
         wordsList.classList.add('words__list');
         pageBook.append(wordsList);
-        /*
-        const wordLevels = document.createElement('div');
-        wordLevels.classList.add('word-levels');
-        wordLevels.innerHTML += `
-            <div class="word-levels__list">
-                Уровни
-            </div>
-        `;
-        pageBook.append(wordLevels);
-       
-        const bookPagination = document.createElement('div');
-        bookPagination.classList.add('pagination');
-        pageBook.append(bookPagination);
-         */
         return pageBookContainer;
     }
 
@@ -291,15 +276,28 @@ export default class Render {
         return bookPagination;
     }
 
-    cardWord(data: IWord, loginStatus: Boolean, id: string) {
+    cardWord(data: IWord, loginStatus: Boolean, id: string, hardWord?: Boolean, easyWord?: Boolean) {
         let bttnAddToHard;
+        let bttnAddToEasy;
         if (loginStatus) {
             bttnAddToHard = `<button class="bttn" data-handle="add-to-hard" data-id="${id}">Добавить в сложные</button>`;
+            bttnAddToEasy = `<button class="bttn" data-handle="add-to-easy" data-id="${id}">Добавить в изученные</button>`;
         } else {
             bttnAddToHard = '';
+            bttnAddToEasy = '';
+        }
+        let stateClass;
+        if (hardWord) {
+            stateClass = 'hard';
+            bttnAddToHard = `<button class="bttn" data-handle="delete-from-hard" data-id="${id}">Удалить из сложных</button>`;
+        } else if (easyWord) {
+            stateClass = 'easy';
+            bttnAddToEasy = `<button class="bttn" data-handle="delete-from-easy" data-id="${id}">Удалить из изученых</button>`;
+        } else {
+            stateClass = '';
         }
         const card = `
-          <div class="card card-word">
+          <div class="card card-word ${stateClass}">
               <img src="https://rslang-learnwords-app.herokuapp.com/${data.image}" class="card__image">
               <div class="card__title">
                   <div class="card-word__translate">
@@ -327,6 +325,7 @@ export default class Render {
                   <p>${data.textMeaningTranslate}</p>
               </div>
               ${bttnAddToHard}
+              ${bttnAddToEasy}
           </div>
         `;
         return card;
