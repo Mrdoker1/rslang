@@ -9,6 +9,7 @@ About
 Used NPM Modules:
 * [router.js](https://www.npmjs.com/package/routerjs)
 * [chart.js](https://www.npmjs.com/package/chart.js)
+* [date-and-time] (https://www.npmjs.com/package/date-and-time)
 
 Tools:
 * Webpack
