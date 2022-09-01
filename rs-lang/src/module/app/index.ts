@@ -596,8 +596,10 @@ export default class App {
         };
 
         main.innerHTML = '';
-        const pageStats = this.render.pageStatistics(statistics);
-        main.appendChild(pageStats);
+        // const pageStats = this.render.pageStatistics(statistics);
+        // main.appendChild(pageStats);
+        const pageStatsDenied = this.render.pageStatisticsDenied();
+        main.appendChild(pageStatsDenied);
     }
 
     showGameDifficulty(type: string) {

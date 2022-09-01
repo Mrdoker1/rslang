@@ -405,6 +405,29 @@ export default class Render {
         return container;
     }
 
+    pageStatisticsDenied() {
+        const container = document.createElement('div');
+        container.classList.add('container');
+
+        container.innerHTML = `
+            <div class="statistics-denied">
+                <div class="statistics-image"></div>
+                <div class="statistics-denied__body">
+                    <div class="statistics-denied__heading">
+                        <div class="statistics-denied__heading-header">Извините, статистика недоступна 🥺</div>
+                        <div class="statistics-denied__heading-subtitle">Чтобы получать статистику и следить за своими результатами зарегистрируйтесь или войдите в аккаунт</div>
+                    </div>
+                    <div class="statistics-denied__buttons">
+                        <button class="statistics-denied__login">Войти →</button>
+                        <button class="statistics-denied__register">Регистрация</button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        return container;
+    }
+
     statistics(type: statisticType, statistics: IStatistics) {
         const today = new Date();
         today.setHours(0, 0, 0, 0);

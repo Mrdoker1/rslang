@@ -5,6 +5,25 @@
     padding: 40px;
     background: white;
     width: fit-content;
+    &-denied{
+        display: flex;
+        max-width: fit-content;
+        flex-direction: row;
+        background: white;
+        padding: 40px;
+        &__body{
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        &__heading{
+            &-header{}
+            &-subtitle{
+                max-width: 600px;
+            }
+        }
+        &__buttons{}
+    }
     &__tabs{
         &-tab{}
     }
