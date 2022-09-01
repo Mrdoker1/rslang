@@ -938,7 +938,7 @@ export default class Render {
         gameResultWord.classList.add('gameresultword');
         gameResultWord.innerHTML = `
         <div class="gameresultword__icon">
-            <div class="play-icon"></div>
+            <div class="play-icon" data-src="${word.audio}"></div>
         </div>
         <div class="gameresultword__body">
             <div class="gameresultword__body-word">${word.word}</div>

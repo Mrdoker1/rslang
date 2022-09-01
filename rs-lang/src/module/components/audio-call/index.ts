@@ -3,6 +3,9 @@ import getHTMLElement from '../../../utils/getHTMLElement';
 import getHTMLImageElement from '../../../utils/getHTMLImageElement';
 import { shuffle } from '../../../utils/helpers';
 
+//Enums
+import { gameChart, gameType } from '../../../utils/enums';
+
 //Interfaces
 import IWord from '../../interface/IWord';
 import IStatistics from '../../interface/IStatistics';
@@ -46,39 +49,13 @@ export default class AudioCall {
         main.append(game);
 
         let count = 0;
-        let attempt = 4;
-        let words: IWord[];
-        this.isBook = true;
+        let attempt: number = 5;
 
-        if (this.isBook) {
-            const filter = `{"$and" : [{"userWord.difficulty" : { "$ne" : "easy"} }, {"page": { "$lte" : ${this.page} } }, {"group" : ${this.group}}]}`;
-            const aggregatedWords = await this.data.getUserAggregatedWords(
-                this.state.userId,
-                '',
-                '',
-                '1000',
-                filter,
-                this.state.token
-            );
-            if (typeof aggregatedWords === 'number') {
-                console.log(`error ${aggregatedWords}`);
-                return;
-            }
-            const paginatedResults = Object.values(aggregatedWords)[0];
-            const wordsTemp = Object.values(paginatedResults)[0];
-            wordsTemp.sort((a: IWord, b: IWord) => b.page - a.page);
-            words = wordsTemp.slice(0, 20);
-            if (words.length < 20) this.showResult();
-        } else {
-            const getWords = await this.data.getWords(this.group, this.page);
-            if (typeof getWords === 'number') {
-                console.log(`error ${getWords}`);
-                return;
-            }
-            words = getWords;
+        const words = await this.getWords();
+        if (words.length < 5) {
+            this.showResult(attempt);
+            return;
         }
-        console.log(words);
-        shuffle(words);
         this.showQuestion(words, count);
 
         const answerBtns = document.querySelectorAll('.audio__choice, .audio__know-btn');
@@ -89,16 +66,15 @@ export default class AudioCall {
                 const answer = target.dataset.answer;
 
                 if (answer === undefined) {
+                    attempt -= 1;
                     const hearts = document.querySelectorAll('.audio__icon-heart');
                     hearts[attempt].classList.add('audio__icon-heart_miss');
-                    attempt -= 1;
                     this.result.unknowingWords.push(words[count]);
                     if (this.series > this.record) this.record = this.series;
                     this.series = 0;
                 } else {
                     this.result.knowingWords.push(words[count]);
                     this.series += 1;
-                    //console.log(this.series);
                 }
             });
         });
@@ -107,11 +83,10 @@ export default class AudioCall {
         nextBtn.addEventListener('click', () => {
             if (typeof words === 'number') return;
             const len = words.length - 1;
-            if (count === len || attempt === -1) {
+            if (count === len || attempt === 0) {
                 if (this.series > this.record) this.record = this.series;
-                //console.log(this.state.token);
                 if (this.state.token) this.saveStatistics();
-                this.showResult();
+                this.showResult(attempt);
                 return;
             }
             count += 1;
@@ -131,6 +106,40 @@ export default class AudioCall {
                 this.sayWord(path);
             });
         });
+    }
+
+    async getWords() {
+        let words;
+        if (this.isBook) {
+            const filter = `{"$and" : [{"userWord.difficulty" : { "$ne" : "easy"} }, {"page": { "$lte" : ${this.page} } }, {"group" : ${this.group}}]}`;
+            const aggregatedWords = await this.data.getUserAggregatedWords(
+                this.state.userId,
+                '',
+                '',
+                '1000',
+                filter,
+                this.state.token
+            );
+
+            if (typeof aggregatedWords === 'number') {
+                console.log(`error aggregatedWords ${aggregatedWords}`);
+                return;
+            }
+
+            const paginatedResults = Object.values(aggregatedWords)[0];
+            const wordsTemp = Object.values(paginatedResults)[0];
+            wordsTemp.sort((a: IWord, b: IWord) => b.page - a.page);
+            words = wordsTemp.slice(0, 20);
+        } else {
+            const getWords = await this.data.getWords(this.group, this.page);
+            if (typeof getWords === 'number') {
+                console.log(`error getWords ${getWords}`);
+                return;
+            }
+            words = getWords;
+        }
+        shuffle(words);
+        return words;
     }
 
     sayWord(path: string) {
@@ -195,10 +204,34 @@ export default class AudioCall {
         document.querySelector('.audio__answer')?.classList.add('hidden');
     }
 
-    showResult() {
+    showResult(attempt: number) {
+        const knowingWords = this.result.knowingWords;
+        const unknowingWords = this.result.unknowingWords;
+
+        const chart1 = {
+            type: gameChart.Healths,
+            maxValue: 5,
+            currentValue: attempt,
+        };
+
+        const chart2 = {
+            type: gameChart.Words,
+            maxValue: unknowingWords.length + knowingWords.length,
+            currentValue: knowingWords.length,
+        };
+
+        let charts = [chart1, chart2];
+
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
-        main.innerHTML = '<h2>Результаты игры</h2>';
+        main.appendChild(this.render.gameResult(gameType.AudioCall, 'test message', charts));
+        main.appendChild(this.render.gameResultWords(knowingWords, unknowingWords, this.data.base));
+
+        const playBtn = document.querySelectorAll('[data-src]').forEach((btn) => {
+            const path = getHTMLElement(btn).dataset.src;
+            if (!path) return false;
+            this.sayWord(path);
+        });
     }
 
     async saveStatistics() {
@@ -210,7 +243,6 @@ export default class AudioCall {
             console.log(`Ошибка getUserWords ${userWords}`);
             return;
         }
-
         let stsAll = await this.data.getUserStatistics(this.state.userId, this.state.token);
         if (stsAll === 404)
             stsAll = {
@@ -249,8 +281,9 @@ export default class AudioCall {
 
         knowingWords.forEach(async (word, i) => {
             let learnedInGame = 0;
-
-            const matchedUserWord = userWords.find((userWord) => userWord.wordId === word.id);
+            const matchedUserWord = userWords.find(
+                (userWord) => userWord.wordId === word.id || userWord.wordId === word._id
+            );
             if (matchedUserWord) {
                 learnedInGame = (await this.updateUserWord(word, matchedUserWord, true)) || 0;
             } else {
@@ -264,7 +297,10 @@ export default class AudioCall {
         });
 
         unknowingWords.forEach((word) => {
-            const matchedUserWord = userWords.find((userWord) => userWord.wordId === word.id);
+            const matchedUserWord = userWords.find(
+                (userWord) => userWord.wordId === word.id || userWord.wordId === word._id
+            );
+
             if (matchedUserWord) {
                 this.updateUserWord(word, matchedUserWord, false);
             } else {
@@ -284,7 +320,6 @@ export default class AudioCall {
         if (isNewEntry) stsAll.optional[lastKey + 1] = sts;
         else stsAll.optional[lastKey] = sts;
 
-        // console.log(stsAll);
         delete stsAll.id;
         const updateUserStatistics = await this.data.updateUserStatistics(this.state.userId, stsAll, this.state.token);
         if (typeof updateUserStatistics === 'number') {
@@ -351,7 +386,12 @@ export default class AudioCall {
                 },
             };
         }
-        const resp = await this.data.createUserWord(this.state.userId, word.id, newUserWord, this.state.token);
+
+        let wordId;
+        if (this.isBook) wordId = word._id;
+        else wordId = word.id;
+
+        const resp = await this.data.createUserWord(this.state.userId, wordId, newUserWord, this.state.token);
         if (typeof resp != 'number') {
         } else {
             console.log(`Ошибка createUserWord ${resp}`);
@@ -393,7 +433,11 @@ export default class AudioCall {
             },
         };
 
-        const resp = await this.data.updateUserWord(this.state.userId, word.id, updUserWord, this.state.token);
+        let wordId;
+        if (this.isBook) wordId = word._id;
+        else wordId = word.id;
+
+        const resp = await this.data.updateUserWord(this.state.userId, wordId, updUserWord, this.state.token);
         if (typeof resp !== 'number') {
             return isLearned;
         } else {
