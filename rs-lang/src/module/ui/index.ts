@@ -472,6 +472,9 @@ export default class Render {
 
     statisticsCharts(type: statisticType, statistics: IStatistics) {
         const container = document.createElement('div');
+        const empty = document.createElement('div');
+        empty.classList.add('statisticsEmpty');
+        empty.innerHTML = `<div>Нет данных</div>`;
         let header = '';
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -514,8 +517,10 @@ export default class Render {
                                 },
                             },
                         });
+                        container.appendChild(canvas);
                     } else {
-                        console.log('false');
+                        console.log('No related Data');
+                        container.appendChild(empty);
                     }
                 }
                 break;
@@ -528,8 +533,6 @@ export default class Render {
                 const sortedStatistics = Object.entries(statistics.optional).sort(function (a, b) {
                     return new Date(a[1].date).getTime() - new Date(b[1].date).getTime();
                 });
-
-                console.log(Object.entries(statistics.optional));
 
                 sortedStatistics.forEach((day) => {
                     const statisticDay = day[1];
@@ -572,10 +575,9 @@ export default class Render {
                         },
                     },
                 });
+                container.appendChild(canvas);
                 break;
         }
-
-        container.appendChild(canvas);
         return container;
     }
 

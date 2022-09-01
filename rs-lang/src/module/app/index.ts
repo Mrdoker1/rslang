@@ -508,7 +508,10 @@ export default class App {
     showStatistics() {
         const main = getHTMLElement(document.querySelector('.main'));
 
-        const date1 = new Date();
+        // const date1 = new Date();
+        // date1.setHours(0, 0, 0, 0);
+
+        const date1 = new Date(2022, 7, 30);
         date1.setHours(0, 0, 0, 0);
 
         const date2 = new Date(2022, 7, 10);
