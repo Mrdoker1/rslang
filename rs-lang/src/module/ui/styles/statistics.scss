@@ -15,11 +15,19 @@
     &__header{}
     &__subtitle{}
     &__wordLearnedTotal{
-        &-number{}
+        &-number{
+            span{
+                color: aqua;
+            }
+        }
         &-subtitle{}
     }
     &__rightAnswersTotal{
-        &-number{}
+        &-number{
+            span{
+                color: aqua;
+            }
+        }
         &-subtitle{}
     }
     &__sprint{
@@ -48,4 +56,11 @@
             flex-direction: column;
         }
     }
+}
+
+.statisticsCharts{
+    max-width: 400px;
+    height: fit-content;
+    padding: 40px;
+    background: white;
 }

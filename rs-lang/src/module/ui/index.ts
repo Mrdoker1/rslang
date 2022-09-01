@@ -10,6 +10,9 @@ import IStatisticsDay from '../interface/IStatisticsDay';
 //Enums
 import { gameChart, gameType, statisticType } from '../../utils/enums';
 
+//Chart.js
+import Chart from 'chart.js/auto';
+
 export default class Render {
     constructor() {}
 
@@ -352,10 +355,11 @@ export default class Render {
 
     //Statistics
     pageStatistics(statistics: IStatistics) {
-        return this.stats(statisticType.Total, statistics);
+        //return this.statistics(statisticType.Total, statistics);
+        return this.statisticsCharts(statisticType.Total, statistics);
     }
 
-    stats(type: statisticType, statistics: IStatistics) {
+    statistics(type: statisticType, statistics: IStatistics) {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
@@ -462,6 +466,42 @@ export default class Render {
         `;
 
         return stats;
+    }
+
+    statisticsCharts(type: statisticType, statistics: IStatistics) {
+        const container = document.createElement('div');
+        container.classList.add('statisticsCharts');
+        const canvas = document.createElement('canvas');
+        canvas.id = 'Chart';
+
+        const myChart = new Chart(canvas, {
+            type: 'doughnut',
+            data: {
+                labels: ['1', '2', '3'],
+                datasets: [
+                    {
+                        label: 'Dataset 1',
+                        data: [1, 2, 3],
+                        backgroundColor: ['#5996A5', '#639B6D', '#A15993'],
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Chart.js Line Chart',
+                    },
+                },
+            },
+        });
+
+        container.appendChild(canvas);
+        return container;
     }
 
     //Games
@@ -696,12 +736,12 @@ export default class Render {
 
         chart.innerHTML = `
         <div class="chart-wrapper">
-            <svg class="chart-background" viewbox="0 0 ${chartSize} ${chartSize}" width="${chartSize}" height="${chartSize}" data-percent="100" stroke=${backgroundColor} stroke-width="${strokeSize}">
+            <svg class="chart-background" viewbox="0 0 ${chartSize} ${chartSize}" data-percent="100" stroke=${backgroundColor} stroke-width="${strokeSize}">
                 <circle cx="${roundRadius}" cy="${roundRadius}" r="${roundRadius - strokeSize / 2}" />
             </svg>
         </div>
         <div class="chart-wrapper">
-            <svg class="chart-percentage" viewbox="0 0 ${chartSize} ${chartSize}" width="${chartSize}" height="${chartSize}" data-percent="0" stroke=${color} stroke-width="${strokeSize}">
+            <svg class="chart-percentage" viewbox="0 0 ${chartSize} ${chartSize}" data-percent="0" stroke=${color} stroke-width="${strokeSize}">
                 <circle cx="${roundRadius}" cy="${roundRadius}" r="${
             roundRadius - strokeSize / 2
         }" stroke-opacity="${opacity}" stroke-dasharray="${roundDraw} ${roundCircum}"/>
