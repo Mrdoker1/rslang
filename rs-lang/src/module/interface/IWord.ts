@@ -1,8 +1,8 @@
 export default interface IWord {
     _id: string;
     id: string;
-    group: number;
-    page: number;
+    group?: number;
+    page?: number;
     word: string;
     image: string;
     audio: string;
@@ -14,4 +14,6 @@ export default interface IWord {
     textExampleTranslate: string;
     textMeaningTranslate: string;
     wordTranslate: string;
+    difficulty?: string;
+    userWord?: string;
 }

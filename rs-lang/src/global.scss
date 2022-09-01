@@ -1,7 +1,7 @@
 // Variables
 @import 'variables';
 
-@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
 
 html {
     height: 100%;
@@ -11,6 +11,12 @@ html {
     padding: 0; 
     margin:0;
     box-sizing: border-box;
+}
+
+.disabled {
+    background-color: gray;
+    cursor: not-allowed;
+    pointer-events: none;
 }
 
 ul, ol {
@@ -23,7 +29,7 @@ body {
     min-height: 100%;
     display: flex;
     flex-direction: column;
-    font: $roboto;
+    font: $montserrat;
 }
 
 .container {
@@ -42,29 +48,29 @@ section {
 
 .section__title {
     margin-bottom: 4rem;
-    font: $roboto-xl;
+    font: $dela-gothic-48px;
 }
 
 button {
     padding: 5px 20px;
     border: 2px solid transparent;
     border-radius: 2px;
-    background-color: $color-background-primary;
-    color: $color-secondary;
-    font: $roboto;
+    background-color: white;
+    color: red;
+    font: $montserrat-button-16px;
     transition: $transition-2;
     cursor: pointer;
     &:hover {
-        background: $color-background-white;
-        color: $color-primary;
-        border: 2px solid $color-primary;
+        background: white;
+        color: blue;
+        border: 2px solid red;
     }
 }
 
 .bttn--transparent {
-    background: $color-background-white;
-    color: $color-primary;
-    border: 2px solid $color-primary;
+    background: white;
+    color: red;
+    border: 2px solid blue;
 }
 
 .rs-icon{
@@ -84,7 +90,7 @@ button {
 
     &__title {
         margin-bottom: 2rem;
-        font: $roboto-xl;
+        font: $dela-gothic-48px;
     }
 }
 
@@ -93,11 +99,18 @@ button {
     flex-direction: column;
     flex-basis: calc(100% / 3 - 1rem);
     padding: 1rem;
-    box-shadow: $shadow-1;
     border-radius: 5px;
 
     &__image {
         width: 100%;
+    }
+
+    &.hard {
+        border: 2px solid red;
+    }
+
+    &.easy {
+        border: 2px solid blue;
     }
 }
 
@@ -107,13 +120,17 @@ button {
     order: 3;
 
     &__item {
-        color: $color-primary;
+        color: black;
         border: 1px solid;
         text-decoration: none;
 
         &.active {
             color: red;
         }
+        &.learned {
+          color: blue
+      }
     }
+    
 }
 

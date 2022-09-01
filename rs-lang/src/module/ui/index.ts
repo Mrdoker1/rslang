@@ -4,9 +4,16 @@ import IWord from '../interface/IWord';
 
 //Interface
 import IResultChart from '../interface/IResultChart';
+import IStatistics from '../interface/IStatistics';
+import IStatisticsDay from '../interface/IStatisticsDay';
 
 //Enums
-import { gameChart, gameType } from '../../utils/enums';
+import { gameChart, gameType, statisticType } from '../../utils/enums';
+
+//Modules
+import Chart from 'chart.js/auto';
+import CustomDate from 'date-and-time';
+const ru = require('date-and-time/locale/ru');
 
 export default class Render {
     constructor() {}
@@ -25,7 +32,7 @@ export default class Render {
                     <a href="/">Главная</a>
                 </li>
                 <li class="header__menu-item">
-                    <a href="/book">Учебник</a>
+                    <a href="/book/0/0">Учебник</a>
                 </li>
                 <li class="header__menu-item dropdown">
                     <span>Игры</span>
@@ -202,7 +209,7 @@ export default class Render {
                       <a href="/">Главная</a>
                   </li>
                   <li class="footer__menu-item">
-                      <a href="/book">Учебник</a>
+                      <a href="/book/0/0">Учебник</a>
                   </li>
                   <li class="footer__menu-item">
                       <a href="/stats">Статистика</a>
@@ -240,24 +247,9 @@ export default class Render {
         pageBookContainer.classList.add('container');
         pageBookContainer.appendChild(pageBook);
         pageBook.innerHTML += `<h2 class="page__title">Учебник</h2>`;
-
         const wordsList = document.createElement('div');
         wordsList.classList.add('words__list');
         pageBook.append(wordsList);
-        /*
-        const wordLevels = document.createElement('div');
-        wordLevels.classList.add('word-levels');
-        wordLevels.innerHTML += `
-            <div class="word-levels__list">
-                Уровни
-            </div>
-        `;
-        pageBook.append(wordLevels);
-       
-        const bookPagination = document.createElement('div');
-        bookPagination.classList.add('pagination');
-        pageBook.append(bookPagination);
-         */
         return pageBookContainer;
     }
 
@@ -298,15 +290,28 @@ export default class Render {
         return bookPagination;
     }
 
-    cardWord(data: IWord, loginStatus: Boolean, id: string) {
+    cardWord(data: IWord, loginStatus: Boolean, id: string, hardWord?: Boolean, easyWord?: Boolean) {
         let bttnAddToHard;
+        let bttnAddToEasy;
         if (loginStatus) {
             bttnAddToHard = `<button class="bttn" data-handle="add-to-hard" data-id="${id}">Добавить в сложные</button>`;
+            bttnAddToEasy = `<button class="bttn" data-handle="add-to-easy" data-id="${id}">Добавить в изученные</button>`;
         } else {
             bttnAddToHard = '';
+            bttnAddToEasy = '';
+        }
+        let stateClass;
+        if (hardWord) {
+            stateClass = 'hard';
+            bttnAddToHard = `<button class="bttn" data-handle="delete-from-hard" data-id="${id}">Удалить из сложных</button>`;
+        } else if (easyWord) {
+            stateClass = 'easy';
+            bttnAddToEasy = `<button class="bttn" data-handle="delete-from-easy" data-id="${id}">Удалить из изученых</button>`;
+        } else {
+            stateClass = '';
         }
         const card = `
-          <div class="card card-word">
+          <div class="card card-word ${stateClass}">
               <img src="https://rslang-learnwords-app.herokuapp.com/${data.image}" class="card__image">
               <div class="card__title">
                   <div class="card-word__translate">
@@ -334,6 +339,7 @@ export default class Render {
                   <p>${data.textMeaningTranslate}</p>
               </div>
               ${bttnAddToHard}
+              ${bttnAddToEasy}
           </div>
         `;
         return card;
@@ -349,18 +355,233 @@ export default class Render {
         return pageGamesContainer;
     }
 
-    pageStats() {
-        const pageStats = document.createElement('div');
-        pageStats.classList.add('page__stats');
-        const pageStatsContainer = document.createElement('div');
-        pageStatsContainer.classList.add('container');
-        pageStatsContainer.appendChild(pageStats);
-        pageStats.innerHTML += `<h2>Статистика</h2>`;
-        return pageStatsContainer;
+    //Statistics
+    pageStatistics(statistics: IStatistics) {
+        //return this.statistics(statisticType.Total, statistics);
+        return this.statisticsCharts(statisticType.Total, statistics);
+    }
+
+    statistics(type: statisticType, statistics: IStatistics) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        let wordLearned = 0;
+        let rightAnswers = 0;
+        let wordLearnedSprint = 0;
+        let rightAnswersSprint = 0;
+        let recordSprint = 0;
+        let recordAudioCall = 0;
+        let wordLearnedAudiocall = 0;
+        let rightAnswersAudiocall = 0;
+        let header = 'Default Header';
+        let subtitle = 'Ваша статистика по всем активностям';
+
+        switch (type) {
+            case statisticType.Daily:
+                header = 'Статистика  за  сегодня';
+                for (let day in statistics.optional) {
+                    const statisticDay = statistics.optional[day];
+                    if (today.getTime() == new Date(statisticDay.date).getTime()) {
+                        updateData(statisticDay);
+                    } else {
+                        console.log('false');
+                    }
+                }
+                break;
+            case statisticType.Total:
+                header = 'Статистика  за все время';
+                for (let day in statistics.optional) {
+                    const statisticDay = statistics.optional[day];
+                    updateData(statisticDay);
+                }
+                break;
+        }
+
+        function updateData(statisticDay: IStatisticsDay) {
+            wordLearned += statisticDay.sprint.learned + statisticDay.audio.learned + statisticDay.book.learned;
+            rightAnswers += statisticDay.sprint.right + statisticDay.audio.right;
+            wordLearnedSprint += statisticDay.sprint.learned;
+            wordLearnedAudiocall += statisticDay.audio.learned;
+            rightAnswersSprint += statisticDay.sprint.right;
+            rightAnswersAudiocall += statisticDay.audio.right;
+            if (recordSprint < statisticDay.sprint.record) {
+                recordSprint = statisticDay.sprint.record;
+            }
+            if (recordAudioCall < statisticDay.audio.record) {
+                recordAudioCall = statisticDay.audio.record;
+            }
+        }
+
+        const stats = document.createElement('div');
+        stats.classList.add('statistics');
+
+        stats.innerHTML = `
+        <div class="statistics__body">
+            <div class="statistics__body-heading">
+                <div class="statistics__header">${header}</div>
+                <div class="statistics__subtitle">${subtitle}</div>
+            </div>
+            <div class="statistics__body-info">
+                <div class="statistics__wordLearnedTotal">
+                    <div class="statistics__wordLearnedTotal-number">${wordLearned}<span>+</span></div>
+                    <div class="statistics__wordLearnedTotal-subtitle">слов изучено</div>
+                </div>
+                <div class="divider vertical"></div>
+                <div class="statistics__rightAnswersTotal">
+                    <div class="statistics__rightAnswersTotal-number">
+                        ${((rightAnswers / wordLearned) * 100).toFixed(2)}<span>%</span>
+                    </div>
+                    <div class="statistics__rightAnswersTotal-subtitle">правильных ответов</div>
+                </div>
+            </div>
+            <div class="statistics__sprint">
+                <div class="statistics__sprint sprint-image"></div>
+                <div class="statistics__sprint-body">
+                    <div class="statistics__sprint-heading">
+                        <div class="statistics__sprint-header">Спринт</div>
+                        <div class="statistics__sprint-label">на скорость</div>
+                    </div>
+                    <div class="statistics__sprint-info">
+                        <span>${wordLearnedSprint} слов изучено</span>
+                        <span>${((rightAnswersSprint / wordLearnedSprint) * 100).toFixed(2)}% правильных ответов</span>
+                        <span>${recordSprint} лучшая серия правильных ответов</span>
+                    </div>
+                </div>
+            </div>
+            <div class="statistics__audiocall">
+            <div class="statistics__audiocall audiocall-image"></div>
+                <div class="statistics__audiocall-body">
+                    <div class="statistics__audiocall-heading">
+                        <div class="statistics__audiocall-header">Аудиовызов</div>
+                        <div class="statistics__audiocall-label">на слух</div>
+                    </div>
+                    <div class="statistics__audiocall-info">
+                        <span><b>${wordLearnedAudiocall}</b> слов изучено</span>
+                        <span><b>${((rightAnswersAudiocall / wordLearnedAudiocall) * 100).toFixed(
+                            2
+                        )}%</b> правильных ответов</span>
+                        <span><b>${recordAudioCall}</b> лучшая серия правильных ответов</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `;
+
+        return stats;
+    }
+
+    statisticsCharts(type: statisticType, statistics: IStatistics) {
+        const container = document.createElement('div');
+        const empty = document.createElement('div');
+        empty.classList.add('statisticsEmpty');
+        empty.innerHTML = `<div>Нет данных</div>`;
+        let header = '';
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        container.classList.add('statisticsCharts');
+        const canvas = document.createElement('canvas');
+        canvas.id = 'Chart';
+
+        switch (type) {
+            case statisticType.Daily:
+                header = 'Колличество изученных слов на сегодня';
+                for (let day in statistics.optional) {
+                    const statisticDay = statistics.optional[day];
+                    if (today.getTime() == new Date(statisticDay.date).getTime()) {
+                        const myChart = new Chart(canvas, {
+                            type: 'doughnut',
+                            data: {
+                                labels: ['Спринт', 'Аудиовызов', 'Добавлено в изученное'],
+                                datasets: [
+                                    {
+                                        label: 'Dataset 1',
+                                        data: [
+                                            statisticDay.sprint.learned,
+                                            statisticDay.audio.learned,
+                                            statisticDay.book.learned,
+                                        ],
+                                        backgroundColor: ['#5996A5', '#639B6D', '#A15993'],
+                                    },
+                                ],
+                            },
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        position: 'top',
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: header,
+                                    },
+                                },
+                            },
+                        });
+                        container.appendChild(canvas);
+                    } else {
+                        console.log('No related Data');
+                        container.appendChild(empty);
+                    }
+                }
+                break;
+            case statisticType.Total:
+                header = 'Выучено слов по дням';
+                const dates: Array<string> = [];
+                const sprintData: Array<number> = [];
+                const audioCallData: Array<number> = [];
+
+                const sortedStatistics = Object.entries(statistics.optional).sort(function (a, b) {
+                    return new Date(a[1].date).getTime() - new Date(b[1].date).getTime();
+                });
+
+                sortedStatistics.forEach((day) => {
+                    const statisticDay = day[1];
+                    CustomDate.locale(ru);
+                    dates.push(CustomDate.format(new Date(statisticDay.date), 'D MMM YYYY').toString());
+                    sprintData.push(statisticDay.sprint.learned);
+                    audioCallData.push(statisticDay.audio.learned);
+                });
+
+                const data = {
+                    labels: dates,
+                    datasets: [
+                        {
+                            label: 'Спринт',
+                            data: sprintData,
+                            borderColor: '#945069',
+                            backgroundColor: '#945069',
+                        },
+                        {
+                            label: 'Аудиовызов',
+                            data: audioCallData,
+                            borderColor: '#2B788B',
+                            backgroundColor: '#2B788B',
+                        },
+                    ],
+                };
+                const myChart = new Chart(canvas, {
+                    type: 'line',
+                    data: data,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: header,
+                            },
+                        },
+                    },
+                });
+                container.appendChild(canvas);
+                break;
+        }
+        return container;
     }
 
     //Games
-
     gameDifficulty(type: string) {
         const container = document.createElement('div');
         container.classList.add('container');
@@ -592,12 +813,12 @@ export default class Render {
 
         chart.innerHTML = `
         <div class="chart-wrapper">
-            <svg class="chart-background" viewbox="0 0 ${chartSize} ${chartSize}" width="${chartSize}" height="${chartSize}" data-percent="100" stroke=${backgroundColor} stroke-width="${strokeSize}">
+            <svg class="chart-background" viewbox="0 0 ${chartSize} ${chartSize}" data-percent="100" stroke=${backgroundColor} stroke-width="${strokeSize}">
                 <circle cx="${roundRadius}" cy="${roundRadius}" r="${roundRadius - strokeSize / 2}" />
             </svg>
         </div>
         <div class="chart-wrapper">
-            <svg class="chart-percentage" viewbox="0 0 ${chartSize} ${chartSize}" width="${chartSize}" height="${chartSize}" data-percent="0" stroke=${color} stroke-width="${strokeSize}">
+            <svg class="chart-percentage" viewbox="0 0 ${chartSize} ${chartSize}" data-percent="0" stroke=${color} stroke-width="${strokeSize}">
                 <circle cx="${roundRadius}" cy="${roundRadius}" r="${
             roundRadius - strokeSize / 2
         }" stroke-opacity="${opacity}" stroke-dasharray="${roundDraw} ${roundCircum}"/>
