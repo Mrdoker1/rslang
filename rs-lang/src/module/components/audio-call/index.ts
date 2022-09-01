@@ -26,7 +26,8 @@ export default class AudioCall {
     series: number = 0;
     record: number = 0;
     state = new State();
-    constructor(base: string, group: number, page: number) {
+    isBook: boolean;
+    constructor(base: string, group: number, page: number, isBook: boolean = false) {
         this.group = group;
         this.page = page;
         this.data = new Data(base);
@@ -35,6 +36,7 @@ export default class AudioCall {
             knowingWords: [],
             unknowingWords: [],
         };
+        this.isBook = isBook;
     }
 
     async start() {
@@ -45,12 +47,37 @@ export default class AudioCall {
 
         let count = 0;
         let attempt = 4;
+        let words: IWord[];
+        this.isBook = true;
 
-        const words = await this.data.getWords(this.group, this.page);
-        if (typeof words === 'number') {
-            console.log(`error ${words}`);
-            return;
+        if (this.isBook) {
+            const filter = `{"$and" : [{"userWord.difficulty" : { "$ne" : "easy"} }, {"page": { "$lte" : ${this.page} } }, {"group" : ${this.group}}]}`;
+            const aggregatedWords = await this.data.getUserAggregatedWords(
+                this.state.userId,
+                '',
+                '',
+                '1000',
+                filter,
+                this.state.token
+            );
+            if (typeof aggregatedWords === 'number') {
+                console.log(`error ${aggregatedWords}`);
+                return;
+            }
+            const paginatedResults = Object.values(aggregatedWords)[0];
+            const wordsTemp = Object.values(paginatedResults)[0];
+            wordsTemp.sort((a: IWord, b: IWord) => b.page - a.page);
+            words = wordsTemp.slice(0, 20);
+            if (words.length < 20) this.showResult();
+        } else {
+            const getWords = await this.data.getWords(this.group, this.page);
+            if (typeof getWords === 'number') {
+                console.log(`error ${getWords}`);
+                return;
+            }
+            words = getWords;
         }
+        console.log(words);
         shuffle(words);
         this.showQuestion(words, count);
 
@@ -58,7 +85,6 @@ export default class AudioCall {
         answerBtns.forEach((btn) => {
             btn.addEventListener('click', (e) => {
                 const target = getHTMLElement(e.target);
-
                 this.showAnswer(target);
                 const answer = target.dataset.answer;
 
@@ -79,6 +105,7 @@ export default class AudioCall {
 
         const nextBtn = getHTMLElement(document.querySelector('.audio__next-btn'));
         nextBtn.addEventListener('click', () => {
+            if (typeof words === 'number') return;
             const len = words.length - 1;
             if (count === len || attempt === -1) {
                 if (this.series > this.record) this.record = this.series;

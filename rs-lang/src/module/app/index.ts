@@ -103,6 +103,12 @@ export default class App {
                 this.showBookPage(group, page);
                 Render.currentLink(req.path);
             })
+            .get('/book/audio-call/:group/:page', (req) => {
+                const group = Number(req.params.group);
+                const page = Number(req.params.page);
+                this.showAudioCall(group, page, true);
+                Render.currentLink(req.path);
+            })
             .get('/games', (req) => {
                 this.showGames();
                 Render.currentLink(req.path);
@@ -338,8 +344,8 @@ export default class App {
         //main.appendChild(gameSprint);
     }
 
-    async showAudioCall(group: number, page: number) {
-        const audioCall = new AudioCall(this.data.base, group, page);
+    async showAudioCall(group: number, page: number, isBook: boolean = false) {
+        const audioCall = new AudioCall(this.data.base, group, page, isBook);
         audioCall.start();
     }
 

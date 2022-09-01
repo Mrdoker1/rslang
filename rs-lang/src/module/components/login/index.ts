@@ -70,6 +70,8 @@ class ModalLogin {
         }
 
         let state = new State();
+        //state.token = 'qweqre'; //тест
+        //state.refreshToken = '456456'; //тест
         const modal = this.element;
         const loginForm = getHTMLElement(modal.querySelector('[data-type="login"] form'));
         const loginMessage = getHTMLElement(loginForm.querySelector('.js-signin-modal__message'));
@@ -171,14 +173,18 @@ class ModalLogin {
 
         const updToken = await this.data.updateToken(state.userId, state.refreshToken);
         if (typeof updToken !== 'number') {
-            //console.log('updToken working');
+            console.log('updToken working');
             const curTime = new Date();
             state.tokenTime = curTime.toString();
             state.token = updToken.token;
             state.refreshToken = updToken.refreshToken;
             tokenTimer = setTimeout(this.updateToken.bind(this), this.period);
         } else {
-            console.log(`Ошибка ${updToken}`);
+            console.log(`Не могу обновить токен: ${updToken}`);
+            const loginLink = getHTMLElement(document.querySelector('[data-signin="login"]'));
+            const logoutLink = getHTMLElement(document.querySelector('[data-signin="logout"]'));
+            logoutLink.classList.add('hidden');
+            loginLink.classList.remove('hidden');
             state.userId = '';
             state.token = '';
             state.refreshToken = '';
