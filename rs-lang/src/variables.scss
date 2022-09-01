@@ -1,19 +1,52 @@
 // Fonts
-$roboto: normal 300 14px/19px 'Roboto';
-$roboto-small: normal 300 10px/19px 'Roboto';
-$roboto-medium: normal 300 18px/22px 'Roboto';
-$roboto-xl: normal 500 32px/32px 'Roboto';
+@font-face {
+  font-family: 'Dela Gothic One';
+  src: url('./assets/fonts/DelaGothicOne-Regular.eot');
+  src: local('Dela Gothic One Regular'), local('DelaGothicOne-Regular'),
+      url('./assets/fonts/DelaGothicOne-Regular.eot?#iefix') format('embedded-opentype'),
+      url('./assets/fonts/DelaGothicOne-Regular.woff2') format('woff2'),
+      url('./assets/fonts/DelaGothicOne-Regular.woff') format('woff'),
+      url('./assets/fonts/DelaGothicOne-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
 
-// Colors
+$montserrat: normal 300 14px/19px 'Montserrat';
+$dela-gothic-56px: normal 400 56px/100% 'Dela Gothic One';
+$dela-gothic-48px: normal 400 48px/100% 'Dela Gothic One';
+$dela-gothic-32px: normal 400 32px/100% 'Dela Gothic One';
+$dela-gothic-24px: normal 400 24px/100% 'Dela Gothic One';
+$montserrat-18px: normal 600 18px/140% 'Montserrat';
+$montserrat-16px: normal 600 16px/140% 'Montserrat';
+$montserrat-14px: normal 600 14px/140% 'Montserrat';
+$montserrat-12px: normal 600 12px/140% 'Montserrat';
+$montserrat-button-18px: normal 700 18px/140% 'Montserrat';
+$montserrat-button-16px: normal 700 16px/100% 'Montserrat';
+$montserrat-link-16px: normal 400 16px/20px 'Montserrat';
+$montserrat-link-14px: normal 400 14px/20px 'Montserrat';
+
+// Colors Primary
 $color-primary: #000;
-$color-secondary: #ccc;
-$color-link: #968fff;
-$color-background-white: #fff;
-$color-background-primary: #000;
-$color-background-secondary: #666;
+$color-pink-dark: #945069;
+$color-pink-light: #F2D4DC;
+$color-cyan-dark: #2B788B;
+$color-cyan-light: #C3DCE3;
+$color-grey-ligth: #F6F5F4;
+$color-grey-medium: #E0E0E0;
+$color-grey-icon: #BABABA;
+$color-grey-dark: #757575;
+
+// Color Secondary
+$color-cyan: #5996A5;
+$color-green: #639B6D;
+$color-pink: #A15993;
+$color-red: #A95170;
+$color-yellow: #C4A24C;
+$color-orange: #CB5B43;
 
 //Effects
 $transition-1: .1s linear;
 $transition-2: .5s ease-in-out;
-$shadow-1: 0px 6px 19px -1px rgba(34, 60, 80, 0.15);
-
+$box-shadow-1: 0px 343.472px 343.472px rgba(52, 41, 39, 0.08), 0px 183.185px 183.185px rgba(52, 41, 39, 0.12), 0px 91.5925px 91.5925px rgba(52, 41, 39, 0.04), 0px 68.6944px 68.6944px rgba(52, 41, 39, 0.04), 0px 11.4491px 68.6944px rgba(52, 41, 39, 0.04), 0px 11.4491px 11.4491px rgba(52, 41, 39, 0.04);
+$box-shadow-2: 0px 22.8981px 45.7963px -11.4491px rgba(52, 41, 39, 0.08);
