@@ -470,35 +470,99 @@ export default class Render {
 
     statisticsCharts(type: statisticType, statistics: IStatistics) {
         const container = document.createElement('div');
+        let header = '';
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
         container.classList.add('statisticsCharts');
         const canvas = document.createElement('canvas');
         canvas.id = 'Chart';
 
-        const myChart = new Chart(canvas, {
-            type: 'doughnut',
-            data: {
-                labels: ['1', '2', '3'],
-                datasets: [
-                    {
-                        label: 'Dataset 1',
-                        data: [1, 2, 3],
-                        backgroundColor: ['#5996A5', '#639B6D', '#A15993'],
+        switch (type) {
+            case statisticType.Daily:
+                header = 'Колличество изученных слов на сегодня';
+                for (let day in statistics.optional) {
+                    const statisticDay = statistics.optional[day];
+                    if (today.getTime() == new Date(statisticDay.date).getTime()) {
+                        const myChart = new Chart(canvas, {
+                            type: 'doughnut',
+                            data: {
+                                labels: ['Спринт', 'Аудиовызов', 'Добавлено в изученное'],
+                                datasets: [
+                                    {
+                                        label: 'Dataset 1',
+                                        data: [
+                                            statisticDay.sprint.learned,
+                                            statisticDay.audio.learned,
+                                            statisticDay.book.learned,
+                                        ],
+                                        backgroundColor: ['#5996A5', '#639B6D', '#A15993'],
+                                    },
+                                ],
+                            },
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        position: 'top',
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: header,
+                                    },
+                                },
+                            },
+                        });
+                    } else {
+                        console.log('false');
+                    }
+                }
+                break;
+            case statisticType.Total:
+                header = 'Выучено слов по дням';
+                const labels = [];
+                const sprintData = [];
+                const audioCallData = [];
+                for (let day in statistics.optional) {
+                    const statisticDay = statistics.optional[day];
+                    labels.push(statisticDay.date);
+                    sprintData.push(statisticDay.sprint.learned);
+                    audioCallData.push(statisticDay.audio.learned);
+                }
+                const data = {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Спринт',
+                            data: sprintData,
+                            borderColor: '#945069',
+                            backgroundColor: '#945069',
+                        },
+                        {
+                            label: 'Аудиовызов',
+                            data: audioCallData,
+                            borderColor: '#2B788B',
+                            backgroundColor: '#2B788B',
+                        },
+                    ],
+                };
+                const myChart = new Chart(canvas, {
+                    type: 'line',
+                    data: data,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: header,
+                            },
+                        },
                     },
-                ],
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    title: {
-                        display: true,
-                        text: 'Chart.js Line Chart',
-                    },
-                },
-            },
-        });
+                });
+                break;
+        }
 
         container.appendChild(canvas);
         return container;
