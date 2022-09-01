@@ -357,8 +357,52 @@ export default class Render {
 
     //Statistics
     pageStatistics(statistics: IStatistics) {
-        //return this.statistics(statisticType.Total, statistics);
-        return this.statisticsCharts(statisticType.Total, statistics);
+        //Container for content
+        const container = document.createElement('div');
+        container.classList.add('container');
+        //Wrapper for page content
+        const pageStatistics = document.createElement('div');
+        pageStatistics.classList.add('statistics__wrapper');
+
+        //Tabs
+        const pageStatisticsTabs = document.createElement('div');
+        pageStatisticsTabs.classList.add('statistics__tabs');
+        const pageStatisticsDailyTab = document.createElement('button');
+        const pageStatisticsTotalTab = document.createElement('button');
+        pageStatisticsDailyTab.classList.add('statistics__tabs-tab');
+        pageStatisticsTotalTab.classList.add('statistics__tabs-tab');
+        pageStatisticsDailyTab.textContent = 'Tab 1';
+        pageStatisticsTotalTab.textContent = 'Tab 2';
+
+        pageStatisticsDailyTab.addEventListener('click', () => {
+            console.log('Daily');
+            const container = getHTMLElement(document.querySelector('.statistics__container'));
+            container.innerHTML = '';
+            container.appendChild(this.statistics(statisticType.Daily, statistics));
+            container.appendChild(this.statisticsCharts(statisticType.Daily, statistics));
+        });
+
+        pageStatisticsTotalTab.addEventListener('click', () => {
+            console.log('Total');
+            const container = getHTMLElement(document.querySelector('.statistics__container'));
+            container.innerHTML = '';
+            container.appendChild(this.statistics(statisticType.Total, statistics));
+            container.appendChild(this.statisticsCharts(statisticType.Total, statistics));
+        });
+
+        pageStatisticsTabs.appendChild(pageStatisticsDailyTab);
+        pageStatisticsTabs.appendChild(pageStatisticsTotalTab);
+
+        //Container for statistics
+        const statisticsContainer = document.createElement('div');
+        statisticsContainer.classList.add('statistics__container');
+        statisticsContainer.appendChild(this.statistics(statisticType.Daily, statistics));
+        statisticsContainer.appendChild(this.statisticsCharts(statisticType.Daily, statistics));
+
+        pageStatistics.appendChild(pageStatisticsTabs);
+        pageStatistics.appendChild(statisticsContainer);
+        container.appendChild(pageStatistics);
+        return container;
     }
 
     statistics(type: statisticType, statistics: IStatistics) {
@@ -472,15 +516,16 @@ export default class Render {
 
     statisticsCharts(type: statisticType, statistics: IStatistics) {
         const container = document.createElement('div');
+        container.classList.add('statistics__charts');
         const empty = document.createElement('div');
-        empty.classList.add('statisticsEmpty');
-        empty.innerHTML = `<div>Нет данных</div>`;
+        empty.classList.add('statistics__empty');
+        empty.innerHTML = `<div>Нет данных за сегодня</div>`;
         let header = '';
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        container.classList.add('statisticsCharts');
         const canvas = document.createElement('canvas');
         canvas.id = 'Chart';
+        let isEmpty = true;
 
         switch (type) {
             case statisticType.Daily:
@@ -518,10 +563,12 @@ export default class Render {
                             },
                         });
                         container.appendChild(canvas);
-                    } else {
-                        console.log('No related Data');
-                        container.appendChild(empty);
+                        isEmpty = false;
                     }
+                }
+                if (isEmpty) {
+                    console.log('No related Data');
+                    container.appendChild(empty);
                 }
                 break;
             case statisticType.Total:
