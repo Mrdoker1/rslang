@@ -514,6 +514,9 @@ export default class App {
         const date2 = new Date(2022, 7, 10);
         date2.setHours(0, 0, 0, 0);
 
+        const date3 = new Date(2022, 7, 9);
+        date3.setHours(0, 0, 0, 0);
+
         const statisticsDay1 = {
             date: date1.toString(),
             sprint: {
@@ -558,11 +561,34 @@ export default class App {
             },
         };
 
+        const statisticsDay3 = {
+            date: date3.toString(),
+            sprint: {
+                new: 4,
+                total: 30,
+                right: 3,
+                record: 10,
+                learned: 5,
+            },
+            audio: {
+                new: 9,
+                total: 21,
+                right: 5,
+                record: 3,
+                learned: 5,
+            },
+            book: {
+                new: 5,
+                learned: 10,
+            },
+        };
+
         const statistics = {
             learnedWords: 0,
             optional: {
                 1: statisticsDay1,
                 2: statisticsDay2,
+                3: statisticsDay3,
             },
         };
 

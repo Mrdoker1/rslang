@@ -10,8 +10,10 @@ import IStatisticsDay from '../interface/IStatisticsDay';
 //Enums
 import { gameChart, gameType, statisticType } from '../../utils/enums';
 
-//Chart.js
+//Modules
 import Chart from 'chart.js/auto';
+import CustomDate from 'date-and-time';
+const ru = require('date-and-time/locale/ru');
 
 export default class Render {
     constructor() {}
@@ -519,17 +521,26 @@ export default class Render {
                 break;
             case statisticType.Total:
                 header = 'Выучено слов по дням';
-                const labels = [];
-                const sprintData = [];
-                const audioCallData = [];
-                for (let day in statistics.optional) {
-                    const statisticDay = statistics.optional[day];
-                    labels.push(statisticDay.date);
+                const dates: Array<string> = [];
+                const sprintData: Array<number> = [];
+                const audioCallData: Array<number> = [];
+
+                const sortedStatistics = Object.entries(statistics.optional).sort(function (a, b) {
+                    return new Date(a[1].date).getTime() - new Date(b[1].date).getTime();
+                });
+
+                console.log(Object.entries(statistics.optional));
+
+                sortedStatistics.forEach((day) => {
+                    const statisticDay = day[1];
+                    CustomDate.locale(ru);
+                    dates.push(CustomDate.format(new Date(statisticDay.date), 'D MMM YYYY').toString());
                     sprintData.push(statisticDay.sprint.learned);
                     audioCallData.push(statisticDay.audio.learned);
-                }
+                });
+
                 const data = {
-                    labels: labels,
+                    labels: dates,
                     datasets: [
                         {
                             label: 'Спринт',
