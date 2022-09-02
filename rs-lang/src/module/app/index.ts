@@ -153,7 +153,7 @@ export default class App {
         const sectionSplash = this.render.sectionSplash();
         const sectionDevelopers = this.render.sectionDevelopers();
         const sectionBenefits = this.render.sectionBenefits();
-        const sectionGames = this.render.sectionGames();
+        const sectionGames = this.render.sectionGames(`/games/sprint`, `/games/audio-call`);
         main.appendChild(sectionSplash);
         main.appendChild(sectionDevelopers);
         main.appendChild(sectionBenefits);
@@ -168,6 +168,11 @@ export default class App {
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
         const pageBook = this.render.pageBook();
+        const sectionGames = this.render.sectionGames(
+            `/book/sprint/${group}/${page}`,
+            `/book/audio-call/${group}/${page}`
+        );
+        pageBook.appendChild(sectionGames);
         const dataWords = await this.data.getWords(group, page);
 
         if (typeof dataWords === 'number') {
@@ -225,6 +230,7 @@ export default class App {
         if (typeof dataWords === 'number') {
             console.log('error');
         } else {
+            const userWords = await this.data.getUserWords(userId, token);
             const state = new State();
             const loginStatus = state.token ? true : false;
 
@@ -240,21 +246,36 @@ export default class App {
             let paginatedResults = 0;
             let totalLength = 0;
 
-            Object.values(dataWords).map((item) => {
-                paginatedResults = Object.values(item)[0].length;
+            let itemOptional: IUserWord[] = [];
+
+            Object.values(dataWords).forEach((item) => {
                 const wordsArray = Object.values(item);
+
+                paginatedResults = Object.values(item)[0].length;
                 totalLength = Object.values(item)[1].length;
 
                 if (totalLength > 0) {
                     wordsCount = Object.values(item)[1][0].count;
-                    wordsArray[0].forEach((item: IWord) => {
-                        getHTMLElement(pageBook.querySelector('.words__list')).innerHTML += this.render.cardWord(
-                            item,
-                            loginStatus,
-                            item._id,
-                            true
-                        );
-                    });
+                    if (typeof userWords === 'number') {
+                        console.log('error');
+                    } else {
+                        wordsArray[0].forEach((item: IWord) => {
+                            const user = userWords.findIndex((x) => x.wordId === item._id);
+                            let optional;
+                            if (userWords[user].optional !== undefined) {
+                                optional = userWords[user];
+                            }
+
+                            getHTMLElement(pageBook.querySelector('.words__list')).innerHTML += this.render.cardWord(
+                                item,
+                                loginStatus,
+                                item._id,
+                                true,
+                                false,
+                                optional
+                            );
+                        });
+                    }
                 }
             });
 
@@ -270,34 +291,34 @@ export default class App {
                         const target = getHTMLElement(e.target);
 
                         const wordId = target.getAttribute('data-id');
-                        const dataWords = await this.data.deleteUserWord(state.userId, wordId!, state.token);
 
-                        if (typeof dataWords === 'number') {
-                            console.log('error');
-                        } else {
-                            if (target.getAttribute('data-handle') === 'delete-from-hard') {
-                                const dataWords = await this.data.deleteUserWord(state.userId, wordId!, token);
-                                if (typeof dataWords === 'number') {
-                                    console.log('error');
-                                } else {
-                                    const parent = target.parentElement!.parentElement!.closest('.card-word');
-                                    parent!.remove();
-                                    this.showBookPageHard(group, page);
-                                }
-                            } else if (target.getAttribute('data-handle') === 'add-to-easy') {
-                                const dataWords = await this.data.createUserWord(
-                                    state.userId,
-                                    wordId!,
-                                    { difficulty: 'easy' },
-                                    state.token
-                                );
-                                if (typeof dataWords === 'number') {
-                                    console.log('error');
-                                } else {
-                                    const parent = target.parentElement!.parentElement!.closest('.card-word');
-                                    parent!.remove();
-                                    this.showBookPageHard(group, page);
-                                }
+                        if (target.getAttribute('data-handle') === 'delete-from-hard') {
+                            const dataWords = await this.data.updateUserWord(
+                                state.userId,
+                                wordId!,
+                                { difficulty: 'normal' },
+                                state.token
+                            );
+                            if (typeof dataWords === 'number') {
+                                console.log('error');
+                            } else {
+                                const parent = target.parentElement!.parentElement!.closest('.card-word');
+                                parent!.remove();
+                                this.showBookPageHard(group, page);
+                            }
+                        } else if (target.getAttribute('data-handle') === 'add-to-easy') {
+                            const dataWords = await this.data.updateUserWord(
+                                state.userId,
+                                wordId!,
+                                { difficulty: 'easy' },
+                                state.token
+                            );
+                            if (typeof dataWords === 'number') {
+                                console.log('error');
+                            } else {
+                                const parent = target.parentElement!.parentElement!.closest('.card-word');
+                                parent!.remove();
+                                this.showBookPageHard(group, page);
                             }
                         }
                     });
@@ -338,10 +359,11 @@ export default class App {
             `{"$and":[{"userWord.difficulty":"hard"}, {"page": ${page}}, {"group": ${group}}]}`,
             token
         );
-        if (typeof hardWords === 'number' || typeof easyWords === 'number') {
+        if (typeof hardWords === 'number' || typeof easyWords === 'number' || typeof userWords === 'number') {
             console.log('error');
         } else {
             const dataWords = await this.data.getWords(group, page);
+
             let hardWordsArr: IWord[] = [];
             let easyWordsArr: IWord[] = [];
 
@@ -349,6 +371,7 @@ export default class App {
                 easyWords.forEach((easyWord) => {
                     const hardWordsArray = Object.values(hardWord);
                     const easyWordsArray = Object.values(easyWord);
+
                     hardWordsArr = [...hardWordsArray[0]];
                     easyWordsArr = [...easyWordsArray[0]];
                 });
@@ -357,27 +380,23 @@ export default class App {
             if (typeof dataWords === 'number') {
             } else {
                 const arr = [...dataWords];
+                const uWrods = [...userWords];
                 let cards: string[] = [];
 
                 cards = arr.map((item) => {
+                    const user = uWrods.findIndex((x) => x.wordId === item.id);
                     const hard = hardWordsArr.findIndex((x) => x._id === item.id);
                     const easy = easyWordsArr.findIndex((x) => x._id === item.id);
                     const hardWord: IWord = hardWordsArr[hard];
                     const easyWord: IWord = easyWordsArr[easy];
-                    if (
-                        hardWord !== undefined &&
-                        hardWord._id === item.id &&
-                        Object.values(hardWord.userWord!).join() === 'hard'
-                    ) {
-                        return this.render.cardWord(item, loginStatus, item.id, true, false);
-                    } else if (
-                        easyWord !== undefined &&
-                        easyWord._id === item.id &&
-                        Object.values(easyWord.userWord!).join() === 'easy'
-                    ) {
-                        return this.render.cardWord(item, loginStatus, item.id, false, true);
+                    const userWord: IUserWord = uWrods[user];
+
+                    if (userWord !== undefined && hardWord !== undefined) {
+                        return this.render.cardWord(item, loginStatus, item.id, true, false, userWord);
+                    } else if (userWord !== undefined && easyWord !== undefined) {
+                        return this.render.cardWord(item, loginStatus, item.id, false, true, userWord);
                     } else {
-                        return this.render.cardWord(item, loginStatus, item.id, false);
+                        return this.render.cardWord(item, loginStatus, item.id, false, false, userWord);
                     }
                 });
 
@@ -386,101 +405,226 @@ export default class App {
                 });
 
                 const bttn = pageBook.querySelectorAll('[data-handle]');
+
                 bttn.forEach((item) => {
                     item.addEventListener('click', async (e) => {
-                        const userWords = await this.data.getUserWords(userId, token);
                         const target = getHTMLElement(e.target);
-
                         const wordId = target.getAttribute('data-id');
-                        const dataWords = await this.data.deleteUserWord(state.userId, wordId!, state.token);
+                        const dataWordsArr = await this.data.getWords(group, page);
+                        const userWords = await this.data.getUserWords(userId, token);
 
-                        if (typeof dataWords === 'number') {
-                            console.log('error');
-                        } else {
-                            if (target.getAttribute('data-handle') === 'delete-from-hard') {
-                                const dataWords = await this.data.deleteUserWord(state.userId, wordId!, state.token);
+                        if (target.getAttribute('data-handle') === 'delete-from-hard') {
+                            const dataWords = await this.data.updateUserWord(
+                                state.userId,
+                                wordId!,
+                                { difficulty: 'normal' },
+                                state.token
+                            );
 
-                                if (typeof dataWords === 'number') {
+                            if (typeof dataWords === 'number') {
+                                console.log('error');
+                            } else {
+                                const parent = target.parentElement!.parentElement!.closest('.card-word');
+                                target.innerHTML = 'Добавить в сложные';
+                                parent!.className = 'card card-word';
+                                target.setAttribute('data-handle', 'add-to-hard');
+                                console.log('delete from hard');
+                                const userWords = await this.data.getUserWords(userId, token);
+                                if (typeof userWords === 'number') {
                                     console.log('error');
                                 } else {
-                                    const parent = target.parentElement!.parentElement!.closest('.card-word');
-                                    target.innerHTML = 'Добавить в сложные';
-                                    parent!.className = 'card card-word';
-                                    target.setAttribute('data-handle', 'add-to-hard');
-                                    console.log('delete from hard');
+                                    console.log(userWords);
                                 }
-                            } else if (target.getAttribute('data-handle') === 'add-to-hard') {
+                            }
+                        } else if (target.getAttribute('data-handle') === 'add-to-hard') {
+                            let checkUserWord;
+                            const userWords = await this.data.getUserWords(userId, token);
+
+                            if (typeof userWords === 'number') {
+                                console.log('error');
+                            } else {
+                                checkUserWord = userWords.findIndex((x) => x.wordId === wordId);
+                            }
+
+                            if (checkUserWord === -1) {
                                 const dataWords = await this.data.createUserWord(
                                     state.userId,
                                     wordId!,
                                     { difficulty: 'hard' },
                                     state.token
                                 );
+                                console.log('Word not in user words, add to User Words');
+                            } else {
+                                const dataWords = await this.data.updateUserWord(
+                                    state.userId,
+                                    wordId!,
+                                    { difficulty: 'hard' },
+                                    state.token
+                                );
+                                console.log('Word IN user words, UPDATE word');
+                            }
 
-                                if (typeof dataWords === 'number') {
-                                    console.log(userWords);
+                            if (typeof dataWords === 'number') {
+                                console.log('error');
+                            } else {
+                                const parent = target.parentElement!.parentElement!.closest('.card-word');
+                                target.innerHTML = 'Удалить из сложных';
+                                target.setAttribute('data-handle', 'delete-from-hard');
+                                parent!.className = 'card card-word hard';
+
+                                const bttn = target.parentElement;
+                                if (bttn!.querySelector('[data-handle="delete-from-easy"]')) {
+                                    bttn!.querySelector('[data-handle="delete-from-easy"]')!.innerHTML =
+                                        'Добавить в изученные';
+                                    bttn!
+                                        .querySelector('[data-handle="delete-from-easy"]')!
+                                        .setAttribute('data-handle', 'add-to-easy');
+                                }
+
+                                console.log('add to hard');
+                                const userWords = await this.data.getUserWords(userId, token);
+                                if (typeof userWords === 'number') {
                                     console.log('error');
                                 } else {
-                                    const parent = target.parentElement!.parentElement!.closest('.card-word');
-                                    target.innerHTML = 'Удалить из сложных';
-                                    target.setAttribute('data-handle', 'delete-from-hard');
-                                    parent!.className = 'card card-word hard';
-
-                                    const bttn = target.parentElement;
-                                    if (bttn!.querySelector('[data-handle="delete-from-easy"]')) {
-                                        bttn!.querySelector('[data-handle="delete-from-easy"]')!.innerHTML =
-                                            'Добавить в изученные';
-                                        bttn!
-                                            .querySelector('[data-handle="delete-from-easy"]')!
-                                            .setAttribute('data-handle', 'add-to-easy');
-                                    }
-
-                                    console.log('add to hard');
+                                    console.log(userWords);
                                 }
-                            } else if (target.getAttribute('data-handle') === 'add-to-easy') {
+                            }
+                        } else if (target.getAttribute('data-handle') === 'add-to-easy') {
+                            let checkUserWord;
+                            const userWords = await this.data.getUserWords(userId, token);
+
+                            if (typeof userWords === 'number') {
+                                console.log('error');
+                            } else {
+                                checkUserWord = userWords.findIndex((x) => x.wordId === wordId);
+                            }
+
+                            if (checkUserWord === -1) {
                                 const dataWords = await this.data.createUserWord(
                                     state.userId,
                                     wordId!,
                                     { difficulty: 'easy' },
                                     state.token
                                 );
-                                if (typeof dataWords === 'number') {
+                                console.log('Word not in user words, add to User Words');
+                            } else {
+                                const dataWords = await this.data.updateUserWord(
+                                    state.userId,
+                                    wordId!,
+                                    { difficulty: 'easy' },
+                                    state.token
+                                );
+                                console.log('Word IN user words, UPDATE word');
+                            }
+                            if (typeof dataWords === 'number') {
+                                console.log('error');
+                            } else {
+                                const parent = target.parentElement!.parentElement!.closest('.card-word');
+                                target.innerHTML = 'Удалить из изученных';
+                                target.setAttribute('data-handle', 'delete-from-easy');
+                                parent!.classList.add('easy');
+
+                                const bttn = target.parentElement;
+                                if (bttn!.querySelector('[data-handle="delete-from-hard"]')) {
+                                    bttn!
+                                        .querySelector('[data-handle="delete-from-hard"]')!
+                                        .setAttribute('data-handle', 'add-to-hard');
+                                    bttn!.querySelector('[data-handle="add-to-hard"]')!.innerHTML =
+                                        'Добавить в сложные';
+                                }
+                                const easyWords = await this.data.getUserAggregatedWordsTest(
+                                    userId,
+                                    '20',
+                                    `{"$and":[{"userWord.difficulty":"easy"}, {"page": ${page}}, {"group": ${group}}]}`,
+                                    token
+                                );
+                                if (typeof easyWords === 'number') {
                                     console.log('error');
                                 } else {
-                                    const parent = target.parentElement!.parentElement!.closest('.card-word');
-                                    target.innerHTML = 'Удалить из изученных';
-                                    target.setAttribute('data-handle', 'delete-from-easy');
-                                    parent!.classList.add('easy');
-                                    console.log('add to easy');
-
-                                    const bttn = target.parentElement;
-                                    if (bttn!.querySelector('[data-handle="delete-from-hard"]')) {
-                                        bttn!
-                                            .querySelector('[data-handle="delete-from-hard"]')!
-                                            .setAttribute('data-handle', 'add-to-hard');
-                                        bttn!.querySelector('[data-handle="add-to-hard"]')!.innerHTML =
-                                            'Добавить в сложные';
+                                    const linkActive = pagination.querySelectorAll(`a[href='/book/${group}/${page}']`);
+                                    linkActive[0].classList.add('active');
+                                    if (Object.values(easyWords[0])[0].length === 20) {
+                                        if (linkActive[0] !== undefined)
+                                            linkActive[0].className = 'pagination__item active learned';
+                                        pageBook.children[0].classList.add('learned');
+                                        const sectionGames = this.render.sectionGames(
+                                            `/book/sprint/${group}/${page}`,
+                                            `/book/audio-call/${group}/${page}`,
+                                            'disabled'
+                                        );
+                                        pageBook.querySelector('.games')?.remove();
+                                        pageBook.appendChild(sectionGames);
+                                    } else {
+                                        pageBook.children[0].classList.remove('learned');
+                                        const sectionGames = this.render.sectionGames(
+                                            `/book/sprint/${group}/${page}`,
+                                            `/book/audio-call/${group}/${page}`
+                                        );
+                                        pageBook.querySelector('.games')?.remove();
+                                        pageBook.appendChild(sectionGames);
                                     }
                                 }
-                            } else if (target.getAttribute('data-handle') === 'delete-from-easy') {
-                                const dataWords = await this.data.deleteUserWord(state.userId, wordId!, state.token);
+                            }
+                        } else if (target.getAttribute('data-handle') === 'delete-from-easy') {
+                            const dataWords = await this.data.updateUserWord(
+                                state.userId,
+                                wordId!,
+                                { difficulty: 'normal' },
+                                state.token
+                            );
 
-                                if (typeof dataWords === 'number') {
-                                    console.log('error');
+                            if (typeof dataWords === 'number') {
+                                console.log('error');
+                            } else {
+                                const parent = target.parentElement!.parentElement!.closest('.card-word');
+                                target.innerHTML = 'Добавить в изученные';
+                                parent!.className = 'card card-word';
+                                target.setAttribute('data-handle', 'add-to-easy');
+                                console.log('delete from easy');
+                            }
+                            const easyWords = await this.data.getUserAggregatedWordsTest(
+                                userId,
+                                '20',
+                                `{"$and":[{"userWord.difficulty":"easy"}, {"page": ${page}}, {"group": ${group}}]}`,
+                                token
+                            );
+                            if (typeof easyWords === 'number') {
+                                console.log('error');
+                            } else {
+                                const linkActive = pagination.querySelectorAll(`a[href='/book/${group}/${page}']`);
+                                linkActive[0].classList.add('active');
+                                if (Object.values(easyWords[0])[0].length === 20) {
+                                    if (linkActive[0] !== undefined)
+                                        linkActive[0].className = 'pagination__item active learned';
+                                    pageBook.children[0].classList.add('learned');
+                                    const sectionGames = this.render.sectionGames(
+                                        `/book/sprint/${group}/${page}`,
+                                        `/book/audio-call/${group}/${page}`,
+                                        'disabled'
+                                    );
+                                    pageBook.querySelector('.games')?.remove();
+                                    pageBook.appendChild(sectionGames);
                                 } else {
-                                    const parent = target.parentElement!.parentElement!.closest('.card-word');
-                                    target.innerHTML = 'Добавить в изученные';
-                                    parent!.className = 'card card-word';
-                                    target.setAttribute('data-handle', 'add-to-easy');
-
-                                    console.log('delete from easy');
+                                    if (linkActive[0] !== undefined)
+                                        linkActive[0].className = 'pagination__item active';
+                                    pageBook.children[0].classList.remove('learned');
+                                    const sectionGames = this.render.sectionGames(
+                                        `/book/sprint/${group}/${page}`,
+                                        `/book/audio-call/${group}/${page}`
+                                    );
+                                    pageBook.querySelector('.games')?.remove();
+                                    pageBook.appendChild(sectionGames);
                                 }
                             }
                         }
                     });
                 });
                 const wordLevels = this.render.wordLevels();
+                const linkActiveLevel = wordLevels.querySelectorAll(`a[href='/book/${group}/${page}']`);
                 getHTMLElement(pageBook.querySelector('.page__book')).append(wordLevels);
+                if (linkActiveLevel[0] !== undefined) linkActiveLevel[0].classList.add('active');
+
+                pageBook.children[0].classList.add(`A${group}`);
 
                 if (state.token) {
                     const hardWords = this.render.hardWords();
@@ -490,8 +634,25 @@ export default class App {
                 const pagination = this.render.bookPagination(group, 29);
                 getHTMLElement(pageBook.querySelector('.page__book')).append(pagination);
 
-                const linkActive = pageBook.querySelectorAll(`a[href='/book/${group}/${page}']`);
-                linkActive[0].classList.add('active');
+                const linkActive = pagination.querySelectorAll(`a[href='/book/${group}/${page}']`);
+
+                if (easyWordsArr.length === 20) {
+                    if (linkActive[0] !== undefined) linkActive[0].className = 'pagination__item active learned';
+                    pageBook.children[0].classList.add('learned');
+                    const sectionGames = this.render.sectionGames(
+                        `/book/sprint/${group}/${page}`,
+                        `/book/audio-call/${group}/${page}`,
+                        'disabled'
+                    );
+                    pageBook.appendChild(sectionGames);
+                } else {
+                    linkActive[0].classList.add('active');
+                    const sectionGames = this.render.sectionGames(
+                        `/book/sprint/${group}/${page}`,
+                        `/book/audio-call/${group}/${page}`
+                    );
+                    pageBook.appendChild(sectionGames);
+                }
                 main.appendChild(pageBook);
             }
         }
