@@ -663,101 +663,21 @@ export default class App {
         main.appendChild(pageGames);
     }
 
-    showStatistics() {
+    async showStatistics() {
         const main = getHTMLElement(document.querySelector('.main'));
-
-        const date1 = new Date();
-        date1.setHours(0, 0, 0, 0);
-
-        // const date1 = new Date(2022, 7, 30);
-        // date1.setHours(0, 0, 0, 0);
-
-        const date2 = new Date(2022, 7, 10);
-        date2.setHours(0, 0, 0, 0);
-
-        const date3 = new Date(2022, 7, 9);
-        date3.setHours(0, 0, 0, 0);
-
-        const statisticsDay1 = {
-            date: date1.toString(),
-            sprint: {
-                new: 10,
-                total: 20,
-                right: 5,
-                record: 5,
-                learned: 5,
-            },
-            audio: {
-                new: 20,
-                total: 30,
-                right: 15,
-                record: 5,
-                learned: 10,
-            },
-            book: {
-                new: 10,
-                learned: 10,
-            },
-        };
-
-        const statisticsDay2 = {
-            date: date2.toString(),
-            sprint: {
-                new: 4,
-                total: 30,
-                right: 3,
-                record: 10,
-                learned: 5,
-            },
-            audio: {
-                new: 9,
-                total: 21,
-                right: 5,
-                record: 3,
-                learned: 5,
-            },
-            book: {
-                new: 5,
-                learned: 10,
-            },
-        };
-
-        const statisticsDay3 = {
-            date: date3.toString(),
-            sprint: {
-                new: 4,
-                total: 30,
-                right: 3,
-                record: 10,
-                learned: 5,
-            },
-            audio: {
-                new: 9,
-                total: 21,
-                right: 5,
-                record: 3,
-                learned: 5,
-            },
-            book: {
-                new: 5,
-                learned: 10,
-            },
-        };
-
-        const statistics = {
-            learnedWords: 0,
-            optional: {
-                1: statisticsDay1,
-                2: statisticsDay2,
-                3: statisticsDay3,
-            },
-        };
-
         main.innerHTML = '';
-        // const pageStats = this.render.pageStatistics(statistics);
-        // main.appendChild(pageStats);
-        const pageStatsDenied = this.render.pageStatisticsDenied();
-        main.appendChild(pageStatsDenied);
+        const state = new State();
+
+        if (state.token) {
+            const statistics = await this.data.getUserStatistics(state.userId, state.token);
+            if (typeof statistics === 'number') {
+                console.log('error');
+            } else {
+                main.appendChild(this.render.pageStatistics(statistics));
+            }
+        } else {
+            main.appendChild(this.render.pageStatisticsDenied());
+        }
     }
 
     showGameDifficulty(type: string) {
