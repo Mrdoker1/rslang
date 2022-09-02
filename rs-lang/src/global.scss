@@ -19,10 +19,56 @@ html {
     pointer-events: none;
 }
 
+::placeholder {
+    font: $montserrat;
+}
+
 ul, ol {
     margin: 0;
     padding: 0;
     list-style: none;
+}
+
+button {
+    padding: 14px 22px;
+    border-radius: 14px;
+    border: none;
+    background-color: $color-cyan-dark;
+    font: $montserrat-button-16px;
+    letter-spacing: -0.04em;
+    color: #fff;
+    transition: $transition-2;
+    cursor: pointer;
+    text-decoration: none;
+    &:hover {
+        background-color: $color-cyan-light;
+        color: $color-cyan-dark;
+    }
+}
+
+.bttn {
+    display: inline-block;
+    padding: 14px 22px;
+    border-radius: 14px;
+    border: none;
+    background-color: $color-cyan-dark;
+    letter-spacing: -0.04em;
+    color: #fff;
+    transition: $transition-2;
+    text-decoration: none;
+    font: $montserrat-button-16px;
+    cursor: pointer;
+}
+
+.bttn--light {
+    background-color: $color-cyan-light;
+    color: $color-cyan-dark;
+}
+
+.bttn--transparent {
+    padding: 0;
+    background: none;
+    color: $color-primary;
 }
 
 body {
@@ -42,53 +88,31 @@ body {
     flex: 1 1 auto;
 }
 
-section {
-    padding: 3rem 0;
-}
-
-.section__title {
-    margin-bottom: 4rem;
-    font: $dela-gothic-48px;
-}
-
-button {
-    padding: 5px 20px;
-    border: 2px solid transparent;
-    border-radius: 2px;
-    background-color: white;
-    color: red;
-    font: $montserrat-button-16px;
-    transition: $transition-2;
-    cursor: pointer;
-    &:hover {
-        background: white;
-        color: blue;
-        border: 2px solid red;
-    }
-}
-
-.bttn--transparent {
-    background: white;
-    color: red;
-    border: 2px solid blue;
-}
-
-.rs-icon{
-    width: 60px;
-    height: 30px;
-    background: url("./assets/img/rs_school.svg") no-repeat center;
-}
-
-.play-icon{
-    width: 24px;
-    height: 24px;
-    background: url("./assets/img/play-icon.svg") no-repeat center;
-}
-
-.statistics-image{
-    width: 200px;
-    height: 200px;
-    background: url("./assets/img/statistics-image.svg") no-repeat center;
+.nav {
+  &__list {
+    display: flex;
+  } 
+  &__item {
+      padding: 0 1rem;
+      a {
+          padding-bottom: 2px;
+          border-bottom: 1.22px solid transparent;
+          color: $color-grey-dark;
+          font: $montserrat-16px;
+          letter-spacing: -0.04em;
+          text-decoration: none;
+          transition: $transition-1;
+          &.active {
+              border-color: initial;
+          }
+      }
+      &:first-child {
+          padding-left: 0;
+      }
+      &:hover a {
+          color: $color-primary;
+      }
+  }
 }
 
 .page {
@@ -98,6 +122,146 @@ button {
         margin-bottom: 2rem;
         font: $dela-gothic-48px;
     }
+}
+
+.section {
+    &-img {
+        display: flex;
+        align-items: center;
+        img {
+            display: flex;
+            max-width: 580px;
+            width: 100%;
+        }
+    }
+
+    &-right {
+        max-width: 474px;
+        width: 100%;
+        flex: 1;
+        align-self: center;
+    }
+
+    &__title {
+        margin-bottom: 30px;
+        font: $dela-gothic-48px;
+        letter-spacing: -0.04em;
+    }
+
+    &__description {
+        margin-bottom: 30px;
+        font: $montserrat-18px;
+        letter-spacing: -0.04em;
+        color: $color-grey-dark;
+    }
+}
+
+//GAMES from main page
+.games {
+    .games__list {
+        display: flex;
+        gap: 30px;
+        .game:last-child {
+            .game__img {
+                animation-delay: 0.5s;
+            }
+       }
+    }
+    .game {
+        display: flex;
+        flex-direction: column;
+        padding-bottom: 14px;
+        position: relative;
+        text-align: center;
+        &--sprint {
+            width: 120px;
+            &:before {
+                content: '';
+                display: block;
+                width: calc(100% - 5px);
+                position: absolute;
+                bottom: 0px;
+                left: 5px;
+                height: 80%;
+                z-index: -1;
+                border-radius: 14px;
+                background-color: $color-pink-light;
+          }
+          .game__bttn {
+            color: $color-pink-dark;
+          }
+        }
+
+        &--audio-call {
+            width: 172px;
+            &:before {
+                content: '';
+                display: block;
+                width: 100%;
+                position: absolute;
+                bottom: 0px;
+                height: 80%;
+                z-index: -1;
+                border-radius: 14px;
+                background-color: $color-cyan-light;
+            }
+            .game__bttn {
+                color: $color-cyan-dark;
+            }
+        }
+
+        &__img {
+          height: 106px;
+          object-fit: contain;
+          position: relative;
+          top: -5px;
+          transform: translatey(0px);
+          animation: float 4.5s ease-in-out infinite;
+      } 
+    }
+}
+
+.app-statistic {
+  display: flex;
+  div {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    .numbers { 
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        font: $dela-gothic-extra;
+        color: $color-primary;
+        letter-spacing: -0.02em;
+        &:before {
+          content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='30' viewBox='0 0 24 30' fill='none'%3E%3Cpath d='M23.5875 0.329924C23.5518 0.250124 23.4937 0.182423 23.4203 0.135072C23.3468 0.0877205 23.2611 0.0627626 23.1737 0.0632391H10.3636C10.2867 0.0633673 10.211 0.0827975 10.1436 0.11975C10.0761 0.156702 10.0189 0.209995 9.97741 0.274748L0.128464 15.908C0.0810479 15.9761 0.0533448 16.0559 0.0484066 16.1387C0.0434684 16.2215 0.0614868 16.3041 0.100477 16.3773C0.139467 16.4505 0.197915 16.5116 0.26938 16.5537C0.340845 16.5958 0.422553 16.6174 0.505501 16.6161H7.55885L1.33314 28.8008C1.2974 28.8733 1.2806 28.9536 1.28431 29.0343C1.28802 29.115 1.31213 29.1935 1.35437 29.2624C1.39661 29.3313 1.45562 29.3883 1.52588 29.4282C1.59614 29.4681 1.67537 29.4895 1.75616 29.4905H4.51497C4.57879 29.491 4.642 29.4781 4.70058 29.4528C4.75916 29.4274 4.81182 29.3902 4.85522 29.3434L21.0126 11.8801C21.0768 11.8148 21.1199 11.7317 21.1366 11.6416C21.1532 11.5516 21.1426 11.4586 21.106 11.3746C21.0695 11.2906 21.0087 11.2195 20.9314 11.1703C20.8541 11.1211 20.7639 11.0961 20.6724 11.0985H14.4743L23.514 0.817313C23.5722 0.751998 23.6102 0.671123 23.6233 0.584569C23.6364 0.498015 23.6239 0.40953 23.5875 0.329924Z' fill='%232B788B'/%3E%3C/svg%3E");
+          display: flex;
+          width: 24px;
+          height: 30px;
+          margin-right: 10px;
+        }
+        &:after {
+          content: '+';
+          display: inline-block;
+          color: $color-cyan-dark;
+        }
+    }
+    .text {
+        text-align: center;
+    }
+  }
+  .hours {
+      padding-right: 3rem;
+      border-right: 1.22px solid $color-grey-medium;
+  }
+  .users {
+      padding-left:  3rem;
+  } 
+  span {
+      font: $montserrat-16px;
+      color: $color-grey-dark;
+  }
 }
 
 .card {
@@ -136,7 +300,67 @@ button {
         &.learned {
           color: blue
       }
-    }
-    
+    }   
 }
 
+.social {
+    display: flex;
+    gap: 30px;
+}
+
+.icon {
+    display: block;
+    width: 30px;
+    height: 24px;
+    transition: $transition-1;
+
+    &--git {
+        background: url("./assets/img/icon-git.svg") no-repeat center;
+    }
+    &--rs {
+        background: url("./assets/img/icon-rs.svg") no-repeat center;
+    }
+    &--yt {
+        background: url("./assets/img/icon-yt.svg") no-repeat center;
+    }
+    &:hover {
+        filter: brightness(0) saturate(100%) invert(0%) sepia(89%) saturate(7465%) hue-rotate(83deg) brightness(83%) contrast(101%);
+    }
+}
+
+.rs-logo {
+    width: 90px;
+    height: 26px;
+    background: url("./assets/img/logo.svg") no-repeat center;
+}
+
+.rs-icon{
+    width: 60px;
+    height: 30px;
+    background: url("./assets/img/rs_school.svg") no-repeat center;
+}
+
+.play-icon{
+    width: 24px;
+    height: 24px;
+    background: url("./assets/img/play-icon.svg") no-repeat center;
+}
+
+.statistics-image {
+    width: 200px;
+    height: 200px;
+    background: url("./assets/img/statistics-image.svg") no-repeat center;
+}
+
+//Levitate animation
+@keyframes float {
+    0% {
+      transform: translatey(0px);
+    }
+    50% {
+      transform: translatey(-10px);
+    }
+    100% {
+      transform: translatey(0px);
+    }
+}

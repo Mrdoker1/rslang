@@ -2,19 +2,25 @@
 @import '../../../variables.scss';
 
 .benefits {
-    &__list {
+    .benefits__item .container {
         display: flex;
-        flex-direction: row;
+        justify-content: center;
         gap: 1rem;
     }
-    &__item {
-        flex-basis: 33%;
-        text-align: center;
-        &-title {
-            margin: 1rem 2rem;
-            font: $dela-gothic-24px;
-            font-weight: 500;
-        }
+    .benefits__item {
+      padding: 5rem 0 5rem;
+
+      &:first-child .container {
+          justify-content: space-between
+      }
+
+      &:nth-child(even) {
+          padding: 0;
+          background-color: $color-grey-ligth;
+          .container {
+            padding: 1rem 0 0 4.5rem;
+            flex-direction: row-reverse;
+          }
+      }
     }
-   
 }
