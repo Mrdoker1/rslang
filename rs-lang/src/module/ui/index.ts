@@ -471,7 +471,7 @@ export default class Render {
                     if (today.getTime() == new Date(statisticDay.date).getTime()) {
                         updateData(statisticDay);
                     } else {
-                        console.log('false');
+                        //console.log('false');
                     }
                 }
                 break;
@@ -502,6 +502,10 @@ export default class Render {
         const stats = document.createElement('div');
         stats.classList.add('statistics');
 
+        const rightAnswersTotal = ((rightAnswers / wordLearned) * 100).toFixed(2);
+        const rightAnswersSprintTotal = ((rightAnswersSprint / wordLearnedSprint) * 100).toFixed(2);
+        const rightAnswersAudiocallTotal = ((rightAnswersAudiocall / wordLearnedAudiocall) * 100).toFixed(2);
+
         stats.innerHTML = `
         <div class="statistics__body">
             <div class="statistics__body-heading">
@@ -516,7 +520,7 @@ export default class Render {
                 <div class="divider vertical"></div>
                 <div class="statistics__rightAnswersTotal">
                     <div class="statistics__rightAnswersTotal-number">
-                        ${((rightAnswers / wordLearned) * 100).toFixed(2)}<span>%</span>
+                        ${typeof rightAnswersTotal === 'number' ? rightAnswersTotal : 0}<span>%</span>
                     </div>
                     <div class="statistics__rightAnswersTotal-subtitle">правильных ответов</div>
                 </div>
@@ -529,9 +533,11 @@ export default class Render {
                         <div class="statistics__sprint-label">на скорость</div>
                     </div>
                     <div class="statistics__sprint-info">
-                        <span>${wordLearnedSprint} слов изучено</span>
-                        <span>${((rightAnswersSprint / wordLearnedSprint) * 100).toFixed(2)}% правильных ответов</span>
-                        <span>${recordSprint} лучшая серия правильных ответов</span>
+                        <span><b>${wordLearnedSprint}</b> слов изучено</span>
+                        <span><b>${
+                            typeof rightAnswersSprintTotal === 'number' ? rightAnswersTotal : 0
+                        }%</b> правильных ответов</span>
+                        <span><b>${recordSprint}</b> лучшая серия правильных ответов</span>
                     </div>
                 </div>
             </div>
@@ -544,9 +550,9 @@ export default class Render {
                     </div>
                     <div class="statistics__audiocall-info">
                         <span><b>${wordLearnedAudiocall}</b> слов изучено</span>
-                        <span><b>${((rightAnswersAudiocall / wordLearnedAudiocall) * 100).toFixed(
-                            2
-                        )}%</b> правильных ответов</span>
+                        <span><b>${
+                            typeof rightAnswersAudiocallTotal === 'number' ? rightAnswersTotal : 0
+                        }%</b> правильных ответов</span>
                         <span><b>${recordAudioCall}</b> лучшая серия правильных ответов</span>
                     </div>
                 </div>
