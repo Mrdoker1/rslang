@@ -1,3 +1,98 @@
 // Variables
 @import '../../../variables.scss';
 
+.statistics{
+    padding: 40px;
+    background: white;
+    width: fit-content;
+    &-denied{
+        display: flex;
+        max-width: fit-content;
+        flex-direction: row;
+        background: white;
+        padding: 40px;
+        &__body{
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        &__heading{
+            &-header{}
+            &-subtitle{
+                max-width: 600px;
+            }
+        }
+        &__buttons{}
+    }
+    &__tabs{
+        &-tab{}
+    }
+    &__charts{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 400px;
+        padding: 40px;
+        background: white;
+    }
+    &__container{
+        display: flex;
+    }
+    &__wrapper{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    &__empty{}
+    &__body{
+        &-heading{}
+        &-info{
+            display: flex;
+            justify-content: space-between;
+        }
+    }
+    &__header{}
+    &__subtitle{}
+    &__wordLearnedTotal{
+        &-number{
+            span{
+                color: aqua;
+            }
+        }
+        &-subtitle{}
+    }
+    &__rightAnswersTotal{
+        &-number{
+            span{
+                color: aqua;
+            }
+        }
+        &-subtitle{}
+    }
+    &__sprint{
+        display: flex;
+        flex-direction: row;
+        & .sprint-image{}
+        &-body{}
+        &-heading{
+            display: flex;
+        }
+        &-info{
+            display: flex;
+            flex-direction: column;
+        }
+    }
+    &__audiocall{
+        display: flex;
+        flex-direction: row;
+        & .sprint-image{}
+        &-body{}
+        &-heading{
+            display: flex;
+        }
+        &-info{
+            display: flex;
+            flex-direction: column;
+        }
+    }
+}

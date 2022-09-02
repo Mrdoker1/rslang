@@ -99,23 +99,23 @@ export default class Sprint {
         buttonTrue.addEventListener('click', () => {
             const main = getHTMLElement(document.querySelector('main'));
 
-            // const chart1 = {
-            //     type: gameChart.Healths,
-            //     maxValue: 1500,
-            //     currentValue: 800,
-            // };
+            const chart1 = {
+                type: gameChart.Healths,
+                maxValue: 1500,
+                currentValue: 800,
+            };
 
-            // const chart2 = {
-            //     type: gameChart.Words,
-            //     maxValue: 20,
-            //     currentValue: 10,
-            // };
+            const chart2 = {
+                type: gameChart.Words,
+                maxValue: 20,
+                currentValue: 10,
+            };
 
-            // let charts = [chart1, chart2];
+            let charts = [chart1, chart2];
 
-            // main.appendChild(this.render.gameResult(gameType.Sprint, 'test message', charts));
+            main.appendChild(this.render.gameResult(gameType.Sprint, 'test message', charts));
 
-            main.appendChild(this.render.gameResultWords(this.words, this.words, this.base));
+            // main.appendChild(this.render.gameResultWords(this.words, this.words, this.base));
 
             if (this.counter > 0) {
                 if (this.gameState.possibleTranslation == this.gameState.wordTranslation) {

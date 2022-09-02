@@ -27,6 +27,7 @@ import '../ui/styles/sprint.scss';
 import '../ui/styles/chart.scss';
 import '../ui/styles/gameResult.scss';
 import '../ui/styles/gameResultWords.scss';
+import '../ui/styles/statistics.scss';
 
 //Router
 import { createRouter, Router } from 'routerjs';
@@ -671,8 +672,14 @@ export default class App {
         const date1 = new Date();
         date1.setHours(0, 0, 0, 0);
 
+        // const date1 = new Date(2022, 7, 30);
+        // date1.setHours(0, 0, 0, 0);
+
         const date2 = new Date(2022, 7, 10);
         date2.setHours(0, 0, 0, 0);
+
+        const date3 = new Date(2022, 7, 9);
+        date3.setHours(0, 0, 0, 0);
 
         const statisticsDay1 = {
             date: date1.toString(),
@@ -718,17 +725,42 @@ export default class App {
             },
         };
 
+        const statisticsDay3 = {
+            date: date3.toString(),
+            sprint: {
+                new: 4,
+                total: 30,
+                right: 3,
+                record: 10,
+                learned: 5,
+            },
+            audio: {
+                new: 9,
+                total: 21,
+                right: 5,
+                record: 3,
+                learned: 5,
+            },
+            book: {
+                new: 5,
+                learned: 10,
+            },
+        };
+
         const statistics = {
             learnedWords: 0,
             optional: {
                 1: statisticsDay1,
                 2: statisticsDay2,
+                3: statisticsDay3,
             },
         };
 
         main.innerHTML = '';
-        const pageStats = this.render.pageStatistics(statistics);
-        main.appendChild(pageStats);
+        // const pageStats = this.render.pageStatistics(statistics);
+        // main.appendChild(pageStats);
+        const pageStatsDenied = this.render.pageStatisticsDenied();
+        main.appendChild(pageStatsDenied);
     }
 
     showGameDifficulty(type: string) {
