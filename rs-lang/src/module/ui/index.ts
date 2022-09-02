@@ -9,6 +9,7 @@ import IStatisticsDay from '../interface/IStatisticsDay';
 
 //Enums
 import { gameChart, gameType, statisticType } from '../../utils/enums';
+import IUserWord from '../interface/IUserWord';
 
 export default class Render {
     constructor() {}
@@ -151,7 +152,7 @@ export default class Render {
         return benefits;
     }
 
-    sectionGames() {
+    sectionGames(gameLinkSprintGame: string, gameLinkAudioGame: string, disableButton?: string) {
         const games = document.createElement('section');
         const gamesContainer = document.createElement('div');
         gamesContainer.classList.add('container');
@@ -165,24 +166,24 @@ export default class Render {
                       <img src="https://via.placeholder.com/150/FF0000/FFFFFF?Text=Down.comC/O" alt="Игра 1">
                   </div>
                   <div class="card__title">
-                      Название игры 1
+                      Спринт
                   </div>
                   <p class="card__description">
                       Описание игры 1
                   </p>
-                  <button class="bttn">Кнопка</button>
+                  <a href="${gameLinkSprintGame}" class="bttn ${disableButton}">Запустить игру</a>
                 </div>
                 <div class="card">
                   <div class="card__image">
                       <img src="https://via.placeholder.com/150/FF0000/FFFFFF?Text=Down.comC/O" alt="Игра 2">
                   </div>
                   <div class="card__title">
-                      Название игры 2
+                      Аудиовызов
                   </div>
                   <p class="card__description">
                       Описание игры 2
                   </p>
-                  <button class="bttn">Кнопка</button>
+                  <a href="${gameLinkAudioGame}" class="bttn ${disableButton}">Запустить игру</a>
                 </div>
             </div>
         `;
@@ -285,7 +286,7 @@ export default class Render {
         return bookPagination;
     }
 
-    cardWord(data: IWord, loginStatus: Boolean, id: string, hardWord?: Boolean, easyWord?: Boolean) {
+    cardWord(data: IWord, loginStatus: Boolean, id: string, hardWord?: Boolean, easyWord?: Boolean, stats?: IUserWord) {
         let bttnAddToHard;
         let bttnAddToEasy;
         if (loginStatus) {
@@ -295,6 +296,7 @@ export default class Render {
             bttnAddToHard = '';
             bttnAddToEasy = '';
         }
+
         let stateClass;
         if (hardWord) {
             stateClass = 'hard';
@@ -305,6 +307,23 @@ export default class Render {
         } else {
             stateClass = '';
         }
+
+        let statisctic = '';
+        if (
+            stats !== undefined &&
+            stats?.optional?.total !== undefined &&
+            stats?.optional?.right !== undefined &&
+            stats?.optional?.series !== undefined
+        ) {
+            statisctic = `
+              <ul>
+                  <li><b>total:</b> ${stats?.optional?.total}</li>
+                  <li><b>right:</b> ${stats?.optional?.right}</li>
+                  <li><b>series:</b> ${stats?.optional?.series}</li>
+              </ul>
+          `;
+        }
+
         const card = `
           <div class="card card-word ${stateClass}">
               <img src="https://rslang-learnwords-app.herokuapp.com/${data.image}" class="card__image">
@@ -333,6 +352,7 @@ export default class Render {
               <div class="card-word__text-meaning-translate">
                   <p>${data.textMeaningTranslate}</p>
               </div>
+              ${statisctic}
               ${bttnAddToHard}
               ${bttnAddToEasy}
           </div>
