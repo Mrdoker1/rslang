@@ -2,31 +2,41 @@
 @import '../../../variables.scss';
 
 .footer {
-    padding: 1.5rem 0 0.5rem;
+    padding: 2.5rem 0 2.5rem;
+    background-color: $color-grey-ligth;
+
     &__wrapper {
         display: flex;
         flex-direction: row;
-        gap: 2rem;
-        margin-bottom: 2rem;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
     }
 
-    &__menu-title {
-        margin-bottom: 1rem;
-        font: $dela-gothic-24px;
-        font-weight: 500;
+    &__menu {
+        .nav__item:last-child {
+            padding-right: 0;
+        }
     }
 
-    &__menu-item a {
-        text-decoration: none;
-        color: red;
+    .nav__item a {
+        font: $montserrat-14px;
+    }
+
+    &-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        padding-top: 20px;
+        border-top: 1.22px solid $color-grey-medium;
     }
 
     &__copyright {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 1rem;
-        padding: 0.5rem 0 0;
-        border-top: 1px solid #ccc;
+        a {
+          font: $montserrat-12px;
+          text-decoration: none;
+          color: $color-grey-dark;
+        }
     }
 }

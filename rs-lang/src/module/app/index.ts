@@ -152,13 +152,10 @@ export default class App {
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
         const sectionSplash = this.render.sectionSplash();
-        const sectionDevelopers = this.render.sectionDevelopers();
         const sectionBenefits = this.render.sectionBenefits();
         const sectionGames = this.render.sectionGames(`/games/sprint`, `/games/audio-call`);
         main.appendChild(sectionSplash);
-        main.appendChild(sectionDevelopers);
         main.appendChild(sectionBenefits);
-        main.appendChild(sectionGames);
     }
 
     async showBook(group: number, page: number) {

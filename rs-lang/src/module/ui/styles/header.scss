@@ -2,11 +2,11 @@
 @import '../../../variables.scss';
 
 .header {
-    padding: 1.5rem 0;
+    padding: 2.2rem 0 1.5rem;
     position: sticky;
     top: 0;
     z-index: 1;
-    background-color: white;
+    background-color: $color-grey-ligth;
 
     .container {
         width: 100%;
@@ -15,35 +15,31 @@
         align-items: center;
     }
 
+    &-left {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
     &__logo {
         text-decoration: none;
-        color: blue;
     }
 
-    &__menu-items {
-        display: flex;
-        padding: 0.5rem;
-    }
-
-    &__menu-item {
-        padding: 0 1rem;
-        a {
-            padding-bottom: 2px;
-            border-bottom: 2px solid transparent;
-            color: blue;
-            text-decoration: none;
-            &.active {
-              border-color: initial;
-            }
-        }
+    &__menu {
+        margin-left: 30px;
+        padding-left: 30px;
+        border-left: 1.22px solid $color-grey-medium;
     }
 
     .dropdown {
         position: relative;
+        cursor: pointer;
 
         span {
-          color: blue;
-
+          color: $color-grey-dark;
+          font: $montserrat-16px;
+          letter-spacing: -0.04em;
+          
           &:after {
             content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3C!--! Font Awesome Pro 6.1.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --%3E%3Cpath d='M224 416c-8.188 0-16.38-3.125-22.62-9.375l-192-192c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0L224 338.8l169.4-169.4c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25l-192 192C240.4 412.9 232.2 416 224 416z'/%3E%3C/svg%3E");
             display: inline-block;
@@ -54,21 +50,30 @@
         }
 
         &__menu {
-            min-width: 185px;
-            padding: 1rem 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            min-width: 215px;
+            padding: 20px;
             position: absolute;
             top: 2rem;
             left: 0;
             opacity: 0;
             visibility: hidden;
             transition: $transition-2;
-            background-color: white;
-            border-radius: 5px;
+            background-color: #fff;
+            border-radius: 14px;
+            box-shadow: $box-shadow-1;
             
             &-item {
-                margin-bottom: 0.5rem;
                 a {
-                    color: red;
+                    color: $color-grey-dark;
+                    font: $montserrat-16px;
+                    letter-spacing: -0.04em;
+                    transition: $transition-1;
+                    &:hover {
+                        color: $color-primary;
+                    }
                 }
             }
         }
@@ -77,5 +82,11 @@
             opacity: 1;
             visibility: visible;
         }
+    }
+
+    &__user-links {
+        display: flex;
+        gap: 30px;
+        align-items: center;
     }
 }
