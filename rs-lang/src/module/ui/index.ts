@@ -19,7 +19,7 @@ const ru = require('date-and-time/locale/ru');
 export default class Render {
     constructor() {}
 
-    header() {
+    header(userName: string) {
         const header = document.createElement('header');
         header.classList.add('header');
         const headerContainer = document.createElement('div');
@@ -55,8 +55,12 @@ export default class Render {
         </div>    
         <div class="header__user-links">
             <a href="#" class="bttn bttn--transparent js-signin-modal-trigger" data-router js-ignore data-signin="login">Войти →</a>
-            <a href="#" class="bttn bttn--transparent" data-router js-ignore data-signin="logout">Выйти</a>
-            <a href="#" class="bttn">Регистрация</a>
+            <div class="user">
+               <div class="user__avatar"></div>
+               <div class="user__name"></div>
+            </div>
+            <a href="#" class="bttn bttn--transparent" data-router js-ignore data-signin="logout">Выход →</a>
+            <a href="#" class="bttn" data-router data-signin="register">Регистрация</a>
          </div>
         `;
         return header;
