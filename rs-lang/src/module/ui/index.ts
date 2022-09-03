@@ -59,8 +59,8 @@ export default class Render {
                <div class="user__avatar"></div>
                <div class="user__name"></div>
             </div>
-            <a href="#" class="bttn bttn--transparent" data-routerjs-ignore data-signin="logout">Выход → →</a>
-            <a href="#" class="bttn js-signin-modal-trigger" data-routerjs-ignore data-signin="signup" data-router data-signin="register">Регистрация</a>
+            <a href="#" class="bttn bttn--transparent" data-routerjs-ignore data-signin="logout">Выход →</a>
+            <a href="#" class="bttn js-signin-modal-trigger" data-routerjs-ignore data-signin="signup">Регистрация</a>
          </div>
         `;
         return header;
@@ -467,8 +467,8 @@ export default class Render {
                         <div class="statistics-denied__heading-subtitle">Чтобы получать статистику и следить за своими результатами зарегистрируйтесь или войдите в аккаунт</div>
                     </div>
                     <div class="statistics-denied__buttons">
-                        <button class="statistics-denied__login">Войти →</button>
-                        <button class="statistics-denied__register">Регистрация</button>
+                        <button class="statistics-denied__login js-signin-modal-trigger" data-signin="login">Войти →</button>
+                        <button class="statistics-denied__register js-signin-modal-trigger" data-signin="signup">Регистрация</button>
                     </div>
                 </div>
             </div>

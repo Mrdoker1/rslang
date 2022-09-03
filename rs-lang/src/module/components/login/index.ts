@@ -42,9 +42,10 @@ class ModalLogin {
         const signupLink = getHTMLElement(document.querySelector('[data-signin="signup"]'));
         const loginLink = getHTMLElement(document.querySelector('[data-signin="login"]'));
         const logoutLink = getHTMLElement(document.querySelector('[data-signin="logout"]'));
-        const registerLink = getHTMLElement(document.querySelector('[data-signin="register"]'));
-        const userAvatar = getHTMLElement(document.querySelector('.user__avatar'));
-        const userName = getHTMLElement(document.querySelector('.user__name'));
+
+        const user = getHTMLElement(document.querySelector('.user'));
+        const userAvatar = getHTMLElement(user.querySelector('.user__avatar'));
+        const userName = getHTMLElement(user.querySelector('.user__name'));
         logoutLink.addEventListener('click', (e) => {
             e.preventDefault();
             state.token = '';
@@ -53,23 +54,14 @@ class ModalLogin {
             state.refreshToken = '';
             state.tokenTime = '';
             clearTimeout(tokenTimer);
+
             logoutLink.classList.add('hidden');
             loginLink.classList.remove('hidden');
             signupLink.classList.remove('hidden');
-            registerLink.classList.remove('hidden');
-            userAvatar.parentElement!.classList.add('hidden');
+
+            user.classList.add('hidden');
             this.router.run();
         });
-
-        if (state.token) {
-            loginLink.classList.add('hidden');
-            registerLink.classList.add('hidden');
-            userAvatar.innerHTML = state.name.charAt(0);
-            userName.innerHTML = state.name;
-        } else {
-            logoutLink.classList.add('hidden');
-            userAvatar.parentElement!.classList.add('hidden');
-        }
 
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -86,11 +78,12 @@ class ModalLogin {
 
                 loginLink.classList.add('hidden');
                 logoutLink.classList.remove('hidden');
-                registerLink.classList.add('hidden');
+                signupLink.classList.add('hidden');
+
                 userAvatar.innerHTML = state.name.charAt(0);
                 userName.innerHTML = state.name;
-                userAvatar.parentElement!.classList.remove('hidden');
-                signupLink.classList.add('hidden');
+                user.classList.remove('hidden');
+
                 modal.classList.remove('cd-signin-modal--is-visible');
 
                 this.router.run();
@@ -107,8 +100,8 @@ class ModalLogin {
             const email = getHTMLInputElement(signupForm.querySelector('#signup-email')).value;
             const password = getHTMLInputElement(signupForm.querySelector('#signup-password')).value;
 
-            const user = await this.data.createUser({ name, email, password });
-            if (typeof user != 'number') {
+            const createUser = await this.data.createUser({ name, email, password });
+            if (typeof createUser != 'number') {
                 const login = await this.data.login({ email, password });
                 if (typeof login != 'number') {
                     state.token = login.token;
@@ -120,13 +113,18 @@ class ModalLogin {
                     loginLink.classList.add('hidden');
                     logoutLink.classList.remove('hidden');
                     signupLink.classList.add('hidden');
+
+                    userAvatar.innerHTML = state.name.charAt(0);
+                    userName.innerHTML = state.name;
+                    user.classList.remove('hidden');
+
                     modal.classList.remove('cd-signin-modal--is-visible');
                     this.router.run();
                     tokenTimer = setTimeout(this.updateToken.bind(this), this.period);
                 }
             } else {
-                if (user === 422) signupMessage.textContent = 'Неверный пароль, имя или почта';
-                else if (user === 417) signupMessage.textContent = 'Аккаунт уже существует';
+                if (createUser === 422) signupMessage.textContent = 'Неверный пароль, имя или почта';
+                else if (createUser === 417) signupMessage.textContent = 'Аккаунт уже существует';
             }
         });
 
@@ -134,9 +132,12 @@ class ModalLogin {
             this.checkToken();
             loginLink.classList.add('hidden');
             signupLink.classList.add('hidden');
+            userAvatar.innerHTML = state.name.charAt(0);
+            userName.innerHTML = state.name;
         } else {
             signupLink.classList.remove('hidden');
             logoutLink.classList.add('hidden');
+            user.classList.add('hidden');
         }
     }
 
@@ -183,18 +184,19 @@ class ModalLogin {
 
     //main page
     initSecondTrigger() {
-        const trigger = getHTMLElement(document.querySelector('main .js-signin-modal-trigger'));
-        trigger.addEventListener('click', (e) => {
-            const target = getHTMLElement(e.target);
-            if (target.hasAttribute('data-signin')) {
-                e.preventDefault();
-                const type = target.getAttribute('data-signin');
-                if (type) this.showSigninForm(type);
-            }
+        const triggers: NodeListOf<HTMLElement> = document.querySelectorAll('main .js-signin-modal-trigger');
+        triggers.forEach((trigger) => {
+            trigger.addEventListener('click', (e) => {
+                const target = getHTMLElement(e.target);
+                if (target.hasAttribute('data-signin')) {
+                    e.preventDefault();
+                    const type = target.getAttribute('data-signin');
+                    if (type) this.showSigninForm(type);
+                }
+            });
+            if (this.state.token) trigger.classList.add('hidden');
+            else trigger.classList.remove('hidden');
         });
-
-        if (this.state.token) trigger.classList.add('hidden');
-        else trigger.classList.remove('hidden');
     }
 
     checkToken() {
@@ -217,19 +219,26 @@ class ModalLogin {
         const updToken = await this.data.updateToken(state.userId, state.refreshToken);
         if (typeof updToken !== 'number') {
             console.log('updToken working');
+
             const curTime = new Date();
             state.tokenTime = curTime.toString();
             state.token = updToken.token;
             state.refreshToken = updToken.refreshToken;
+
             tokenTimer = setTimeout(this.updateToken.bind(this), this.period);
         } else {
             console.log(`Не могу обновить токен: ${updToken}`);
-            state.name = '';
+
             const loginLink = getHTMLElement(document.querySelector('[data-signin="login"]'));
             const logoutLink = getHTMLElement(document.querySelector('[data-signin="logout"]'));
+            const signupLink = getHTMLElement(document.querySelector('[data-signin="signup"]'));
+            const user = getHTMLElement(document.querySelector('.user'));
             logoutLink.classList.add('hidden');
             loginLink.classList.remove('hidden');
+            signupLink.classList.remove('hidden');
+            user.classList.add('hidden');
 
+            state.name = '';
             state.userId = '';
             state.token = '';
             state.refreshToken = '';

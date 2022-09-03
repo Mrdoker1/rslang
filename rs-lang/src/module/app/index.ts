@@ -166,6 +166,7 @@ export default class App {
             .get('/stats', (req) => {
                 this.showStatistics();
                 Render.currentLink(req.path);
+                this.login.initSecondTrigger();
             })
             .error(404, () => {
                 //this.show404();
