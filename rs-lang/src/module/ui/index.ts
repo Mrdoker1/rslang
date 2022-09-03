@@ -814,12 +814,12 @@ export default class Render {
             <div class="sprint-game__body-info">
                 <div class="sprint-game__multiplier">
                     <span>x${multiplier}</span>
-                    <span>Множитель</span>
+                    <span>множитель</span>
                 </div>
-                <div class="divider-horizontal"></div>
+                <div class="divider-vertical"></div>
                 <div class="sprint-game__points">
                     <span>${points}</span>
-                    <span>Очки</span>
+                    <span>очки</span>
                 </div>
             </div>
             <div>
@@ -978,6 +978,26 @@ export default class Render {
         return chart;
     }
 
+    gameResult(
+        gameType: gameType,
+        message: string,
+        chartList: IResultChart[],
+        knowingWords: IWord[],
+        unknowingWords: IWord[],
+        base: string
+    ) {
+        const container = document.createElement('div');
+        container.classList.add('container', 'align-center');
+        const wrapper = document.createElement('div');
+        wrapper.classList.add('gameresult__wrapper');
+
+        wrapper.append(this.gameResultInfo(gameType, message, chartList));
+        wrapper.append(this.gameResultWords(knowingWords, unknowingWords, base));
+
+        container.appendChild(wrapper);
+        return container;
+    }
+
     gameResultChart(type: gameChart, maxValue: number, currentValue: number) {
         let color = '';
         let backgroundColor = '';
@@ -1045,7 +1065,7 @@ export default class Render {
         return gameResultChart;
     }
 
-    gameResult(type: gameType, message: string, chartList: Array<IResultChart>) {
+    gameResultInfo(type: gameType, message: string, chartList: Array<IResultChart>) {
         const container = document.createElement('div');
         const charts = document.createElement('div');
         let header = '';

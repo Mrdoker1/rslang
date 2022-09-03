@@ -247,11 +247,16 @@ export default class Sprint {
         const main = getHTMLElement(document.querySelector('main'));
         main.innerHTML = '';
 
-        const container = document.createElement('div');
-        container.classList.add('container', 'align-center', 'game-container');
-        container.append(this.render.gameResult(gameType.Sprint, 'Вы неплохо справились', [chart1, chart2]));
-        container.append(this.render.gameResultWords(knowingWords, unknowingWords, this.data.base));
-        main.append(container);
+        main.append(
+            this.render.gameResult(
+                gameType.Sprint,
+                'Вы неплохо справились!',
+                [chart1, chart2],
+                knowingWords,
+                unknowingWords,
+                this.data.base
+            )
+        );
 
         const btnReplay = getHTMLElement(main.querySelector('.gameresult__button-replay'));
         btnReplay.addEventListener('click', () => {
