@@ -5,6 +5,7 @@
 About
 * [Task Description](https://github.com/rolling-scopes-school/tasks/blob/master/tasks/stage-2/rs-lang/rslang.md)
 * [Project Documentation](https://goofy-secure-b26.notion.site/RS-Lang-02cab7e30a424ca184c9284203e33e1e)
+* [Figma Design](https://www.figma.com/file/2WF9g7pRAwPl5InvHVDQZu/RS-Lang-Design?node-id=19%3A4202)
 
 Used NPM Modules:
 * [router.js](https://www.npmjs.com/package/routerjs)
