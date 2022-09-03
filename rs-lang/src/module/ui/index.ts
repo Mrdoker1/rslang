@@ -611,6 +611,7 @@ export default class Render {
     }
 
     statisticsCharts(type: statisticType, statistics: IStatistics) {
+        console.log(statistics);
         const container = document.createElement('div');
         container.classList.add('statistics__charts');
         const empty = document.createElement('div');
@@ -626,48 +627,50 @@ export default class Render {
         switch (type) {
             case statisticType.Daily:
                 header = 'Колличество изученных слов на сегодня';
-
+                let sprintLearned = 0;
+                let audioLearned = 0;
+                let bookLearned = 0;
                 for (let day in statistics.optional) {
                     const statisticDay = statistics.optional[day];
                     const statisticDate = new Date(statisticDay.date);
                     statisticDate.setHours(0, 0, 0, 0);
                     if (today.getTime() == statisticDate.getTime()) {
-                        const myChart = new Chart(canvas, {
-                            type: 'doughnut',
-                            data: {
-                                labels: ['Спринт', 'Аудиовызов', 'Добавлено в изученное'],
-                                datasets: [
-                                    {
-                                        label: 'Dataset 1',
-                                        data: [
-                                            statisticDay.sprint.learned,
-                                            statisticDay.audio.learned,
-                                            statisticDay.book.learned,
-                                        ],
-                                        backgroundColor: ['#5996A5', '#639B6D', '#A15993'],
-                                    },
-                                ],
-                            },
-                            options: {
-                                responsive: true,
-                                plugins: {
-                                    legend: {
-                                        position: 'top',
-                                    },
-                                    title: {
-                                        display: true,
-                                        text: header,
-                                    },
-                                },
-                            },
-                        });
-                        container.appendChild(canvas);
+                        sprintLearned += statisticDay.sprint.learned;
+                        audioLearned += statisticDay.audio.learned;
+                        bookLearned += statisticDay.book.learned;
                         isEmpty = false;
                     }
                 }
                 if (isEmpty) {
                     console.log('No related Data');
                     container.appendChild(empty);
+                } else {
+                    const myChart = new Chart(canvas, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Спринт', 'Аудиовызов', 'Добавлено в изученное'],
+                            datasets: [
+                                {
+                                    label: 'Dataset 1',
+                                    data: [sprintLearned, audioLearned, bookLearned],
+                                    backgroundColor: ['#5996A5', '#639B6D', '#A15993'],
+                                },
+                            ],
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                title: {
+                                    display: true,
+                                    text: header,
+                                },
+                            },
+                        },
+                    });
+                    container.appendChild(canvas);
                 }
                 break;
             case statisticType.Total:
