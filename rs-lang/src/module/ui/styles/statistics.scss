@@ -113,8 +113,9 @@
             }
         }
         &-subtitle{
-            font: $montserrat-16px;
+            font: $montserrat-14px;
             color: $color-grey-dark;
+            letter-spacing: 1px;
         }
     }
     &__rightAnswersTotal{
@@ -127,8 +128,9 @@
             }
         }
         &-subtitle{
-            font: $montserrat-16px;
+            font: $montserrat-14px;
             color: $color-grey-dark;
+            letter-spacing: 1px;
         }
     }
     &__sprint{

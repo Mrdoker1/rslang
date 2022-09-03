@@ -8,6 +8,10 @@
     flex-direction: column;
     max-width: fit-content;
     align-items: center;
+    &__wrapper{
+        display: flex;
+        gap: 10px;
+    }
     &__info{
         display: flex;
         flex-direction: row;
