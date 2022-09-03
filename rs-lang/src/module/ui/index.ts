@@ -9,6 +9,7 @@ import IStatisticsDay from '../interface/IStatisticsDay';
 
 //Enums
 import { gameChart, gameType, statisticType } from '../../utils/enums';
+import IUserWord from '../interface/IUserWord';
 
 //Modules
 import Chart from 'chart.js/auto';
@@ -24,36 +25,39 @@ export default class Render {
         const headerContainer = document.createElement('div');
         headerContainer.classList.add('container');
         header.appendChild(headerContainer);
-        headerContainer.innerHTML += `<a href="#" class="header__logo"><h1>RSLang</h1></a>`;
         headerContainer.innerHTML += `
-        <div class="header__menu">
-            <ul class="header__menu-items">
-                <li class="header__menu-item">
-                    <a href="/">Главная</a>
-                </li>
-                <li class="header__menu-item">
-                    <a href="/book/0/0">Учебник</a>
-                </li>
-                <li class="header__menu-item dropdown">
-                    <span>Игры</span>
-                    <ul class="dropdown__menu">
-                      <li class="dropdown__menu-item">
-                          <a href="/games/sprint">Играть в Спринт</a>
-                      </li>
-                      <li class="dropdown__menu-item">
-                          <a href="/games/audio-call">Играть в Аудио-вызов</a>
-                      </li>
-                    </ul>
-                </li>
-                <li class="header__menu-item">
-                    <a href="/stats">Статистика</a>
-                </li>
-                <li class="header__menu-item">
-                    <a href="#" class="js-signin-modal-trigger" data-routerjs-ignore data-signin="login">Войти</a>
-                    <a href="#" data-routerjs-ignore data-signin="logout">Выйти</a>
-                </li>
-            </ul>
-        </div>
+        <div class="header-left">
+            <a href="#" class="header__logo rs-logo"></a>
+            <nav class="nav header__menu">
+                <ul class="nav__list">
+                    <li class="nav__item">
+                        <a href="/">Главная</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="/book/0/0">Учебник</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="/stats">Статистика</a>
+                    </li>
+                    <li class="nav__item dropdown">
+                        <span>Игры</span>
+                        <ul class="dropdown__menu">
+                          <li class="dropdown__menu-item">
+                              <a href="/games/sprint">Спринт →</a>
+                          </li>
+                          <li class="dropdown__menu-item">
+                              <a href="/games/audio-call">Аудио-вызов →</a>
+                          </li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </div>    
+        <div class="header__user-links">
+            <a href="#" class="bttn bttn--transparent js-signin-modal-trigger" data-router js-ignore data-signin="login">Войти →</a>
+            <a href="#" class="bttn bttn--transparent" data-router js-ignore data-signin="logout">Выйти</a>
+            <a href="#" class="bttn">Регистрация</a>
+         </div>
         `;
         return header;
     }
@@ -71,127 +75,129 @@ export default class Render {
         splashContainer.classList.add('container');
         splash.appendChild(splashContainer);
         splashContainer.innerHTML += `
-            <h2 class="splash__title">Какое-то название</h2>
-            <p class="splash__descrition">Какое-то описание</p>
+            <div class="splash__wrapper">
+                <h3 class="splash__subtitle">Онлайн Учeбник</h3>
+                <h2 class="splash__title">Изучай английский вместе с нами.</h2>
+                <p class="splash__description">Практикуйте английский язык и изучайте &nbsp; новое с помощью платформы</p>
+                <div class="splash__buttons">
+                    <a href="#" class="bttn bttn--transparent js-signin-modal-trigger" data-router="" js-ignore="" data-signin="login">Войти →</a>
+                    <a href="#" class="bttn bttn--light">О платформе →</a>
+                </div>
+                <div class="app-statistic">
+                    <div class="hours">
+                        <span class="numbers">700</span>
+                        <span class="text">Часов контента</span>
+                    </div>
+                    <div class="users">
+                        <span class="numbers">575k</span>
+                        <span class="text">Пользователей</span>
+                    </div>
+                </div>
+            </div>
         `;
         return splash;
     }
 
-    sectionDevelopers() {
-        const developers = document.createElement('section');
-        const developersContainer = document.createElement('div');
-        developersContainer.classList.add('container');
-        developers.classList.add('developers');
-        developers.appendChild(developersContainer);
-        developersContainer.innerHTML = `
-            <h3 class="section__title">Наша команда</h3>
-            <div class="developers__list">
-                <div class="developer">
-                    <img src="https://via.placeholder.com/120x120?text=Фото разработчика" class="developer__img" alt="разраб1">
-                    <div class="developer__title">Разраб 1</div>
-                    <ul class="developer__role-list">
-                        <li class="developer__role-item">Role1</li>
-                        <li class="developer__role-item">Role2</li>
-                    </ul>
-                    <p class="developer__description">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia, sunt.
-                    </p>
-                    <a href="#" class="developer__link" target="_blank">Ссылка на гитхаб</a>
-                </div>
-                <div class="developer">
-                    <img src="https://via.placeholder.com/120x120?text=Фото разработчика" class="developer__img" alt="разраб2">
-                    <div class="developer__title">Разраб 2</div>
-                    <ul class="developer__role-list">
-                        <li class="developer__role-item">Role1</li>
-                        <li class="developer__role-item">Role2</li>
-                        <li class="developer__role-item">Role3</li>
-                    </ul>
-                    <p class="developer__description">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia, sunt.
-                    </p>
-                    <a href="#" class="developer__link" target="_blank">Ссылка на гитхаб</a>
-                </div>
-                <div class="developer">
-                    <img src="https://via.placeholder.com/120x120?text=Фото разработчика" class="developer__img" alt="разраб3">
-                    <div class="developer__title">Разраб 3</div>
-                    <ul class="developer__role-list">
-                        <li class="developer__role-item">Role1</li>
-                    </ul>
-                    <p class="developer__description">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia, sunt.
-                    </p>
-                    <a href="#" class="developer__link" target="_blank">Ссылка на гитхаб</a>
-                </div>
-            </div>
-        `;
-        return developers;
-    }
-
-    sectionBenefits() {
-        const benefits = document.createElement('section');
-        const benefitsContainer = document.createElement('div');
-        benefitsContainer.classList.add('container');
-        benefits.classList.add('benefits');
-        benefits.appendChild(benefitsContainer);
-        benefitsContainer.innerHTML += `
-            <h3 class="section__title">Наши преимущества</h3>
-            <div class="benefits__list">
-                <div class="benefits__item">
-                    <img src="https://via.placeholder.com/50/FF0000/FFFFFF?Text=Down.comC/O" class="benefits__item-image" alt="Игры">
-                    <div class="benefits__item-title">Игры</div>
-                    <div class="benefits__item-description">Сделайте изучение слов более увлекательным с помощью мини-игр</div>
-                </div>
-                <div class="benefits__item">
-                    <img src="https://via.placeholder.com/50/FF0000/FFFFFF?Text=Down.comC/O" class="benefits__item-image" alt="Статистика">
-                    <div class="benefits__item-title">Статистика</div>
-                    <div class="benefits__item-description">Следите за своим прогрессом каждый день. А авторизованным пользователям доступна возможность просмотра долгосрочной статистики</div>
-                </div>
-                <div class="benefits__item">
-                    <img src="https://via.placeholder.com/50/FF0000/FFFFFF?Text=Down.comC/O" class="benefits__item-image" alt="Словарь">
-                    <div class="benefits__item-title">Словарь</div>
-                    <div class="benefits__item-description">Авторизованный пользователь может заносить сложные слова в словарь</div>
-                </div>
-            </div>
-        `;
-        return benefits;
-    }
-
-    sectionGames() {
+    sectionGames(gameLinkSprintGame: string, gameLinkAudioGame: string, disableButton?: string) {
         const games = document.createElement('section');
         const gamesContainer = document.createElement('div');
         gamesContainer.classList.add('container');
         games.classList.add('games');
         games.appendChild(gamesContainer);
         gamesContainer.innerHTML += `
-            <h3 class="section__title">Игры</h3>
-            <div class="games__list">
-                <div class="card">
-                  <div class="card__image">
-                      <img src="https://via.placeholder.com/150/FF0000/FFFFFF?Text=Down.comC/O" alt="Игра 1">
-                  </div>
-                  <div class="card__title">
-                      Название игры 1
-                  </div>
-                  <p class="card__description">
-                      Описание игры 1
-                  </p>
-                  <button class="bttn">Кнопка</button>
-                </div>
-                <div class="card">
-                  <div class="card__image">
-                      <img src="https://via.placeholder.com/150/FF0000/FFFFFF?Text=Down.comC/O" alt="Игра 2">
-                  </div>
-                  <div class="card__title">
-                      Название игры 2
-                  </div>
-                  <p class="card__description">
-                      Описание игры 2
-                  </p>
-                  <button class="bttn">Кнопка</button>
-                </div>
+        <h3 class="section__title">Игры</h3>
+        <div class="games__list">
+            <div class="card">
+              <div class="card__image">
+                  <img src="https://via.placeholder.com/150/FF0000/FFFFFF?Text=Down.comC/O" alt="Игра 1">
+              </div>
+              <div class="card__title">
+                  Спринт
+              </div>
+              <p class="card__description">
+                  Описание игры 1
+              </p>
+              <a href="${gameLinkSprintGame}" class="bttn ${disableButton}">Запустить игру</a>
             </div>
-        `;
+            <div class="card">
+              <div class="card__image">
+                  <img src="https://via.placeholder.com/150/FF0000/FFFFFF?Text=Down.comC/O" alt="Игра 2">
+              </div>
+              <div class="card__title">
+                  Аудиовызов
+              </div>
+              <p class="card__description">
+                  Описание игры 2
+              </p>
+              <a href="${gameLinkAudioGame}" class="bttn ${disableButton}">Запустить игру</a>
+            </div>
+        </div>
+      `;
         return games;
+    }
+
+    sectionBenefits() {
+        const benefits = document.createElement('section');
+        benefits.classList.add('benefits');
+        benefits.classList.add('benefits');
+        benefits.innerHTML += `
+          <div class="benefits__item">
+              <div class="container">
+                  <div class="section-img">
+                      <img src="../assets/img/section1-bg.png">
+                  </div>
+                  <div class="section-right">
+                      <h3 class="section__title">Изучай язык в игровой форме</h3>
+                      <p class="section__description">
+                          Сделайте изучение слов более увлекательным с помощью мини-игр
+                      </p>
+                      <div class="games">
+                          <div class="games__list">
+                              <div class="game game--sprint">
+                                  <img src="../assets/img/icon-sprint.png" class="game__img">
+                                  <a href="/games/sprint" class="bttn bttn--transparent game__bttn">Спринт →</a>
+                              </div>
+                              <div class="game game--audio-call">
+                                  <img src="../assets/img/icon-audio-call.png" class="game__img">
+                                  <a href="/games/audio-call" class="bttn bttn--transparent game__bttn">Аудио-вызов →</a>
+                              </div>
+                          </div>
+                      </div>    
+                  </div>
+              </div>    
+          </div>
+
+          <div class="benefits__item">
+              <div class="container">
+                  <div class="section-img">
+                      <img src="../assets/img/section2-bg.png">
+                  </div>
+                  <div class="section-right">
+                      <h3 class="section__title">Увеличь свой словарный запас</h3>
+                      <p class="section__description">
+                          Традиционные и новые эффективные подходы к изучению слов
+                      </p>
+                      <a href="/book/0/0" class="bttn bttn--light">Учебник →</a>
+                  </div>
+              </div>    
+          </div>
+
+          <div class="benefits__item">
+              <div class="container">
+                  <div class="section-img">
+                      <img src="../assets/img/section3-bg.png">
+                  </div>
+                  <div class="section-right">
+                      <h3 class="section__title">Следи за прогрессом каждый день</h3>
+                      <p class="section__description">
+                          Сохраняй статистику своих достижений, изученных слов и ошибок
+                      </p>
+                      <a href="/stats" class="bttn bttn--light">Статистика →</a>
+                  </div>
+              </div>
+          </div>
+        `;
+        return benefits;
     }
 
     footer() {
@@ -202,38 +208,58 @@ export default class Render {
         footer.appendChild(footerContainer);
         footerContainer.innerHTML += `
         <div class="footer__wrapper">
-          <div class="footer__menu-block">
-              <h3 class="footer__menu-title">Меню</h3>
-              <ul class="footer__menu-items">
-                  <li class="footer__menu-item">
-                      <a href="/">Главная</a>
-                  </li>
-                  <li class="footer__menu-item">
-                      <a href="/book/0/0">Учебник</a>
-                  </li>
-                  <li class="footer__menu-item">
-                      <a href="/stats">Статистика</a>
-                  </li>
-              </ul>
-          </div>
-          <div class="footer__menu-block">
-              <h3 class="footer__menu-title">Разработчики</h3>
-              <ul class="footer__menu-items">
-                  <li class="footer__menu-item">
-                      <a href="https://github.com/Mrdoker1/" target="_blank">Mrdoker1</a>
-                  </li>
-                  <li class="footer__menu-item">
-                      <a href="https://github.com/GeoBo/" target="_blank">GeoBo</a>
-                  </li>
-                  <li class="footer__menu-item">
-                  <a href="https://github.com/makrakvladislav/" target="_blank">makrakvladislav</a>
-                  </li>
-              </ul>
-          </div>
+            <div class="footer-left">
+                <nav class="nav footer__menu">
+                    <ul class="nav__list">
+                        <li class="nav__item">
+                            <a href="/">Главная</a>
+                        </li>
+                        <li class="nav__item">
+                            <a href="/book/0/0">Учебник</a>
+                        </li>
+                        <li class="nav__item">
+                            <a href="/stats">Статистика</a>
+                        </li>
+                        <li class="nav__item">
+                            <a href="/games/sprint">Спринт</a>
+                        </li>
+                        <li class="nav__item">
+                            <a href="/games/audio-call">Аудио-вызов</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>    
+            <div class="footer-right">
+                <nav class="nav footer__menu">
+                    <ul class="nav__list">
+                        <li class="nav__item">
+                            <a href="https://github.com/Mrdoker1/" target="_blank">Mrdoker1</a>
+                        </li>
+                        <li class="nav__item">
+                            <a href="https://github.com/GeoBo/" target="_blank">GeoBo</a>
+                        </li>
+                        <li class="nav__item">
+                        <a href="https://github.com/makrakvladislav/" target="_blank">makrakvladislav</a>
+                        </li>
+                    </ul>
+                </nav>  
+            </div>
         </div>
-        <div class="footer__copyright">
-            ©2022 RS LANG.<a href="https://rs.school/js/" class="rs-icon" target="_blank"></a>
+        <div class="footer-bottom">
+            <div class="footer__social">
+                <nav class="nav">
+                    <ul class="nav__list">
+                        <li class="nav__item"><a href="#" class="icon icon--git"></a></li>
+                        <li class="nav__item"><a href="#" class="icon icon--rs"></a></li>
+                        <li class="nav__item"><a href="#" class="icon icon--yt"></a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="footer__copyright">
+                <a href="https://rs.school/js/" target="_blank">©2022 RS LANG. Project for RS School JS Course.</a>
+            </div>
         </div>
+     
         `;
         return footer;
     }
@@ -290,7 +316,7 @@ export default class Render {
         return bookPagination;
     }
 
-    cardWord(data: IWord, loginStatus: Boolean, id: string, hardWord?: Boolean, easyWord?: Boolean) {
+    cardWord(data: IWord, loginStatus: Boolean, id: string, hardWord?: Boolean, easyWord?: Boolean, stats?: IUserWord) {
         let bttnAddToHard;
         let bttnAddToEasy;
         if (loginStatus) {
@@ -300,6 +326,7 @@ export default class Render {
             bttnAddToHard = '';
             bttnAddToEasy = '';
         }
+
         let stateClass;
         if (hardWord) {
             stateClass = 'hard';
@@ -310,6 +337,23 @@ export default class Render {
         } else {
             stateClass = '';
         }
+
+        let statisctic = '';
+        if (
+            stats !== undefined &&
+            stats?.optional?.total !== undefined &&
+            stats?.optional?.right !== undefined &&
+            stats?.optional?.series !== undefined
+        ) {
+            statisctic = `
+              <ul>
+                  <li><b>total:</b> ${stats?.optional?.total}</li>
+                  <li><b>right:</b> ${stats?.optional?.right}</li>
+                  <li><b>series:</b> ${stats?.optional?.series}</li>
+              </ul>
+          `;
+        }
+
         const card = `
           <div class="card card-word ${stateClass}">
               <img src="https://rslang-learnwords-app.herokuapp.com/${data.image}" class="card__image">
@@ -338,6 +382,7 @@ export default class Render {
               <div class="card-word__text-meaning-translate">
                   <p>${data.textMeaningTranslate}</p>
               </div>
+              ${statisctic}
               ${bttnAddToHard}
               ${bttnAddToEasy}
           </div>
@@ -405,6 +450,29 @@ export default class Render {
         return container;
     }
 
+    pageStatisticsDenied() {
+        const container = document.createElement('div');
+        container.classList.add('container');
+
+        container.innerHTML = `
+            <div class="statistics-denied">
+                <div class="statistics-image"></div>
+                <div class="statistics-denied__body">
+                    <div class="statistics-denied__heading">
+                        <div class="statistics-denied__heading-header">Извините, статистика недоступна 🥺</div>
+                        <div class="statistics-denied__heading-subtitle">Чтобы получать статистику и следить за своими результатами зарегистрируйтесь или войдите в аккаунт</div>
+                    </div>
+                    <div class="statistics-denied__buttons">
+                        <button class="statistics-denied__login">Войти →</button>
+                        <button class="statistics-denied__register">Регистрация</button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        return container;
+    }
+
     statistics(type: statisticType, statistics: IStatistics) {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -428,7 +496,7 @@ export default class Render {
                     if (today.getTime() == new Date(statisticDay.date).getTime()) {
                         updateData(statisticDay);
                     } else {
-                        console.log('false');
+                        //console.log('false');
                     }
                 }
                 break;
@@ -459,6 +527,10 @@ export default class Render {
         const stats = document.createElement('div');
         stats.classList.add('statistics');
 
+        const rightAnswersTotal = ((rightAnswers / wordLearned) * 100).toFixed(2);
+        const rightAnswersSprintTotal = ((rightAnswersSprint / wordLearnedSprint) * 100).toFixed(2);
+        const rightAnswersAudiocallTotal = ((rightAnswersAudiocall / wordLearnedAudiocall) * 100).toFixed(2);
+
         stats.innerHTML = `
         <div class="statistics__body">
             <div class="statistics__body-heading">
@@ -473,7 +545,7 @@ export default class Render {
                 <div class="divider vertical"></div>
                 <div class="statistics__rightAnswersTotal">
                     <div class="statistics__rightAnswersTotal-number">
-                        ${((rightAnswers / wordLearned) * 100).toFixed(2)}<span>%</span>
+                        ${typeof rightAnswersTotal === 'number' ? rightAnswersTotal : 0}<span>%</span>
                     </div>
                     <div class="statistics__rightAnswersTotal-subtitle">правильных ответов</div>
                 </div>
@@ -486,9 +558,11 @@ export default class Render {
                         <div class="statistics__sprint-label">на скорость</div>
                     </div>
                     <div class="statistics__sprint-info">
-                        <span>${wordLearnedSprint} слов изучено</span>
-                        <span>${((rightAnswersSprint / wordLearnedSprint) * 100).toFixed(2)}% правильных ответов</span>
-                        <span>${recordSprint} лучшая серия правильных ответов</span>
+                        <span><b>${wordLearnedSprint}</b> слов изучено</span>
+                        <span><b>${
+                            typeof rightAnswersSprintTotal === 'number' ? rightAnswersTotal : 0
+                        }%</b> правильных ответов</span>
+                        <span><b>${recordSprint}</b> лучшая серия правильных ответов</span>
                     </div>
                 </div>
             </div>
@@ -501,9 +575,9 @@ export default class Render {
                     </div>
                     <div class="statistics__audiocall-info">
                         <span><b>${wordLearnedAudiocall}</b> слов изучено</span>
-                        <span><b>${((rightAnswersAudiocall / wordLearnedAudiocall) * 100).toFixed(
-                            2
-                        )}%</b> правильных ответов</span>
+                        <span><b>${
+                            typeof rightAnswersAudiocallTotal === 'number' ? rightAnswersTotal : 0
+                        }%</b> правильных ответов</span>
                         <span><b>${recordAudioCall}</b> лучшая серия правильных ответов</span>
                     </div>
                 </div>
