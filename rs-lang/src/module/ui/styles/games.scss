@@ -1,3 +1,6 @@
+// Variables
+@import '../../../variables.scss';
+
 .container {
   height: 100%;	
 }
@@ -9,7 +12,7 @@
   &__wrapper {
     margin: auto;   
     padding: 10px 0;
-    max-width: 755px;
+    max-width: 800px;
     width: 100%;
   }
 
@@ -20,7 +23,6 @@
     border-radius: 14px;
     padding: 20px 40px;
     //height: 415px;
-  
     background: #ffffff;
     gap: 10px;
   }
@@ -30,54 +32,35 @@
   }
   
   &__title {
-    font-weight: 400;
-    font-family: 'Dela Gothic One';
-    font-size: 48px;
-    line-height: 48px;
+    font: $dela-gothic-48px;
+    color: $color-primary;
   }
 
   &__desc {
-    padding-top: 14px;
-    font-weight: 600;
     padding-top: 20px;
-    font-size: 16px;
-    font-family: 'Montserrat';
-    line-height: 22px;
+    font: $montserrat-16px;
+    color: $color-grey-dark;
   }
 
   &__text {
     padding-top: 30px;
+    font: $montserrat-14px;
+    color: $color-grey-dark;
   }
 
   &__start {
     margin-top: 30px;
-    background: #2B788B;
-    color: #ffffff;
-    border-radius: 14px;
-    width: 102px;
-    height: 44px;
-    padding: 0;
-    font-weight: 700;
-    font-size: 16px;
-    //letter-spacing: -0.04em;
-    &:hover {
-      background-color: #fff;
-      border-color: #2B788B;
-      color: #2B788B;
-    }
   }
   
   &__skill {
     position: absolute;
     top: 11px;
     right: 0;
-    background-color: #C3DCE3;
-    padding: 4px 8px;
-    color: #519ca5;
+    font: $montserrat-12px;
+    background-color: $color-cyan-light;
+    color: $color-cyan-dark;
+    padding: 4px 8px; 
     border-radius: 6px;
-    font-size: 12px;
-    line-height: 140%;
-    font-weight: 600;
   }
 }
 
@@ -85,8 +68,8 @@
   display: flex;
   flex-direction: row;
   padding-top: 8px;
-  //gap: 24px;
-  gap: 5%;
+  gap: 24px;
+  //gap: 5%;
 
   &__btn {
     display: flex;
@@ -96,18 +79,13 @@
     width: 44px;
     height: 44px;
     padding: 0;
-    background-color: transparent;
+    //background-color: transparent;
     border-radius: 50%;
     border: 3px solid black;
-    color: #000;
-    font-weight: 700;
-
-    &:hover {
-      border-width: 3px;
-    }
+    font: $montserrat-16px;
   }
 
-  input {
+  [type="radio"] { 
     display: none;
   }
 }
@@ -131,7 +109,7 @@
   }
 }
 
-@include radioBtn(green, orange, red, brown, blueviolet, blue);
+@include radioBtn($color-green, $color-yellow, $color-orange, $color-red, $color-pink,  $color-cyan);
 
 .audio {
     background: #e6e6e6;
@@ -147,38 +125,53 @@
     }
 
     &__question {
-      margin-top: 53px;
-      width: 140px;
-      height: 140px;
-      background-color: transparent;
-      border-radius: 100%;
-      border: 5px solid black;
-      color: #000;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      margin-top: 52px;
+      width: 140px;
+      height: 140px;
+      background-color: transparent;
+      border-radius: 100%;
+      border: 5px solid $color-cyan-dark;
+      color: $color-cyan-dark; 
       opacity: 1;
       visibility: visible;
+      transition: $transition-2;
       
       &:hover {
-        border-width: 5px;
-      }
+        background-color: $color-cyan-dark;
+        & img {
+          filter: brightness(0) saturate(100%) invert(100%) sepia(10%) saturate(0%) hue-rotate(269deg) brightness(107%) contrast(107%);
+        }
+        & span {  
+          color: #ffffff;
+        }
+      }   
     }
+
+    &__img {
+      transition: $transition-2;
+    }
+
+    &__text-play {
+      transition: $transition-2;
+    }
+
     &__attempts {
       display: flex;
       justify-content: center;
       gap: 10px;
-      padding-top: 20px;
     }
 
     &__icon-heart  {
-      background: url("../../../assets/img/icon-heart.svg") no-repeat;
-      width: 26px;
-      height: 26px;
+      font: $dela-gothic-32px;
+      color: $color-pink-dark;
+      transition: $transition-1;
 
       &_miss {
-        background-image: url("../../../assets/img/icon-heart-miss.svg");    
+        color: $color-pink-light;   
       }
     }
 
@@ -192,34 +185,35 @@
     }
 
     &__choice {
-      padding: 10px;
-      background-color: transparent;
+      padding: 10px; 
       border-radius: 100px;
-      border: 3px solid gray;
-      color: #000;
-      transition: 0.2s;
-      // font-weight: 700;
+      border: 3px solid $color-grey-icon;
+      color: $color-grey-icon;
+      background-color: transparent;
+      font: $montserrat-16px;
+      transition: $transition-1;
   
       &:hover {
-        border-width: 3px;
         background-color: transparent;
+        border-color: $color-grey-dark;
+        color: $color-grey-dark;
       }
 
       &.disabled{
         pointer-events: none;
         &[data-answer] {
-          border-color: red;
-          color: red;
+          border-color: $color-pink-dark;
+          color: $color-pink-dark;
         }
       }
 
       &.active{
         &[data-answer] {
-          border-color: green;
-          color: green;
+          border-color: $color-green;
+          color: $color-green;
         }
-        border-color: blue;
-        color: blue;
+        border-color: $color-cyan-dark;
+        color: $color-cyan-dark;
       }
     }  
 } 
@@ -231,10 +225,7 @@
   align-items: center;
   
   &__photo {
-    //width: 140px;
     height: 140px;
-    //width: 100%;
-    //height: 100%;
     border-radius: 14px;
   }
 
@@ -243,23 +234,37 @@
     justify-content: center;
     align-items: center;
     gap: 12px;
-    padding-top: 20px;
+    margin: 20px 0;
+    background-color: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0px 22px 45px -11px rgba(52, 41, 39, 0.08);
+    padding: 10px 20px;
   }
 
   &__play {
     padding: 0;
-    background-color: transparent;
+    background-color: $color-grey-ligth;
     border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 0;
     
     &:hover {
       border: none;
       background-color: transparent;
     }
   }
+
+  &__icon-music {
+    width: 24px;
+    height: 24px;
+  }
+
+  &__text {
+    font: $montserrat-18px;
+    color: $color-grey-dark;
+    b {
+      color: $color-primary;
+    }
+  }
 }
-
-
-// .hidden-smooth {
-//   opacity: 0;
-//   visibility: hidden;
-// }

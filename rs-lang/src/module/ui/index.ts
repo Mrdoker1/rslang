@@ -821,7 +821,7 @@ export default class Render {
                 <div class="game__window audio">
                     <div class="audio__main">
                         <button class="audio__question js-play-word">
-                            <img src="../assets/img/music.svg">
+                            <img class="audio__img" src="../assets/img/music.svg">
                             <span class="audio__text-play">Play</span>
                         </button>   
                         <div class="audio__answer answer hidden">
@@ -834,11 +834,11 @@ export default class Render {
                             </div>   
                         </div>  
                         <div class="audio__attempts">
-                            <span class="audio__icon-heart"></span>
-                            <span class="audio__icon-heart"></span>
-                            <span class="audio__icon-heart"></span>
-                            <span class="audio__icon-heart"></span>
-                            <span class="audio__icon-heart"></span>
+                            <span class="audio__icon-heart">♥</span>
+                            <span class="audio__icon-heart">♥</span>
+                            <span class="audio__icon-heart">♥</span>
+                            <span class="audio__icon-heart">♥</span>
+                            <span class="audio__icon-heart">♥</span>
                         </div>
                     </div>
                     <div class="audio__choices">
