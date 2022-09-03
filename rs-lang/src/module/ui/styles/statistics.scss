@@ -25,7 +25,22 @@
         &__buttons{}
     }
     &__tabs{
-        &-tab{}
+        display: flex;
+        font: $dela-gothic-26px;
+        height: 40px;
+        gap: 40px;
+        cursor: pointer;
+        &-tab{
+            transition: $transition-1;
+            color: $color-grey-dark;
+            &:hover{
+                color: $color-primary;
+            }
+            &.active{
+                color: $color-primary;
+                border-bottom: 2px solid $color-primary;
+            }
+        }
     }
     &__charts{
         display: flex;

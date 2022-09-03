@@ -416,15 +416,18 @@ export default class Render {
         //Tabs
         const pageStatisticsTabs = document.createElement('div');
         pageStatisticsTabs.classList.add('statistics__tabs');
-        const pageStatisticsDailyTab = document.createElement('button');
-        const pageStatisticsTotalTab = document.createElement('button');
+        const pageStatisticsDailyTab = document.createElement('div');
+        const pageStatisticsTotalTab = document.createElement('div');
         pageStatisticsDailyTab.classList.add('statistics__tabs-tab');
+        pageStatisticsDailyTab.classList.add('active');
         pageStatisticsTotalTab.classList.add('statistics__tabs-tab');
-        pageStatisticsDailyTab.textContent = 'Tab 1';
-        pageStatisticsTotalTab.textContent = 'Tab 2';
+        pageStatisticsDailyTab.textContent = 'За день';
+        pageStatisticsTotalTab.textContent = 'За все время';
 
         pageStatisticsDailyTab.addEventListener('click', () => {
             console.log('Daily');
+            pageStatisticsDailyTab.classList.add('active');
+            pageStatisticsTotalTab.classList.remove('active');
             const container = getHTMLElement(document.querySelector('.statistics__container'));
             container.innerHTML = '';
             container.appendChild(this.statistics(statisticType.Daily, statistics));
@@ -433,6 +436,8 @@ export default class Render {
 
         pageStatisticsTotalTab.addEventListener('click', () => {
             console.log('Total');
+            pageStatisticsTotalTab.classList.add('active');
+            pageStatisticsDailyTab.classList.remove('active');
             const container = getHTMLElement(document.querySelector('.statistics__container'));
             container.innerHTML = '';
             container.appendChild(this.statistics(statisticType.Total, statistics));

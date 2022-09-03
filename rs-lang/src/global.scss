@@ -14,6 +14,12 @@ html {
     box-sizing: border-box;
 }
 
+.align-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
 .disabled {
     background-color: gray;
     cursor: not-allowed;
@@ -75,12 +81,15 @@ button {
 body {
     min-height: 100%;
     display: flex;
+    height: 100%;
+    display: flex;
     flex-direction: column;
     font: $montserrat;
 }
 
 .container {
     max-width: 1200px;
+    height: 100%;
     margin: 0 auto;
     padding: 0 10px;
 }
