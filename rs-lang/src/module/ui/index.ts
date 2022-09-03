@@ -85,7 +85,7 @@ export default class Render {
                 <p class="splash__description">Практикуйте английский язык и изучайте &nbsp; новое с помощью платформы</p>
                 <div class="splash__buttons">
                     <a href="#" class="bttn bttn--transparent js-signin-modal-trigger" data-routerjs-ignore="" data-signin="login">Войти →</a>
-                    <a href="#" class="bttn bttn--light">О платформе →</a>
+                    <a href="#benefits" class="bttn bttn--light" data-routerjs-ignore="true">О платформе</a>
                 </div>
                 <div class="app-statistic">
                     <div class="hours">
@@ -145,7 +145,7 @@ export default class Render {
         benefits.classList.add('benefits');
         benefits.classList.add('benefits');
         benefits.innerHTML += `
-          <div class="benefits__item">
+          <div class="benefits__item" id="benefits">
               <div class="container">
                   <div class="section-img">
                       <img src="../assets/img/section1-bg.png">
@@ -260,7 +260,7 @@ export default class Render {
                 </nav>
             </div>
             <div class="footer__copyright">
-                <a href="https://rs.school/js/" target="_blank">©2022 RS LANG. Project for RS School JS Course.</a>
+                ©2022 RS LANG. <a href="https://rs.school/js/" target="_blank">Project for RS School JS Course.</a>
             </div>
         </div>
      
@@ -407,8 +407,8 @@ export default class Render {
     //Statistics
     pageStatistics(statistics: IStatistics) {
         //Container for content
-        const container = document.createElement('div');
-        container.classList.add('container');
+        const pageStatisticsContainer = document.createElement('div');
+        pageStatisticsContainer.classList.add('container', 'align-center');
         //Wrapper for page content
         const pageStatistics = document.createElement('div');
         pageStatistics.classList.add('statistics__wrapper');
@@ -416,15 +416,18 @@ export default class Render {
         //Tabs
         const pageStatisticsTabs = document.createElement('div');
         pageStatisticsTabs.classList.add('statistics__tabs');
-        const pageStatisticsDailyTab = document.createElement('button');
-        const pageStatisticsTotalTab = document.createElement('button');
+        const pageStatisticsDailyTab = document.createElement('div');
+        const pageStatisticsTotalTab = document.createElement('div');
         pageStatisticsDailyTab.classList.add('statistics__tabs-tab');
+        pageStatisticsDailyTab.classList.add('active');
         pageStatisticsTotalTab.classList.add('statistics__tabs-tab');
-        pageStatisticsDailyTab.textContent = 'Tab 1';
-        pageStatisticsTotalTab.textContent = 'Tab 2';
+        pageStatisticsDailyTab.textContent = 'За день';
+        pageStatisticsTotalTab.textContent = 'За все время';
 
         pageStatisticsDailyTab.addEventListener('click', () => {
             console.log('Daily');
+            pageStatisticsDailyTab.classList.add('active');
+            pageStatisticsTotalTab.classList.remove('active');
             const container = getHTMLElement(document.querySelector('.statistics__container'));
             container.innerHTML = '';
             container.appendChild(this.statistics(statisticType.Daily, statistics));
@@ -433,6 +436,8 @@ export default class Render {
 
         pageStatisticsTotalTab.addEventListener('click', () => {
             console.log('Total');
+            pageStatisticsTotalTab.classList.add('active');
+            pageStatisticsDailyTab.classList.remove('active');
             const container = getHTMLElement(document.querySelector('.statistics__container'));
             container.innerHTML = '';
             container.appendChild(this.statistics(statisticType.Total, statistics));
@@ -450,15 +455,15 @@ export default class Render {
 
         pageStatistics.appendChild(pageStatisticsTabs);
         pageStatistics.appendChild(statisticsContainer);
-        container.appendChild(pageStatistics);
-        return container;
+        pageStatisticsContainer.appendChild(pageStatistics);
+        return pageStatisticsContainer;
     }
 
     pageStatisticsDenied() {
-        const container = document.createElement('div');
-        container.classList.add('container');
+        const pageStatisticsContainer = document.createElement('div');
+        pageStatisticsContainer.classList.add('container', 'align-center');
 
-        container.innerHTML = `
+        pageStatisticsContainer.innerHTML = `
             <div class="statistics-denied">
                 <div class="statistics-image"></div>
                 <div class="statistics-denied__body">
@@ -474,7 +479,7 @@ export default class Render {
             </div>
         `;
 
-        return container;
+        return pageStatisticsContainer;
     }
 
     statistics(type: statisticType, statistics: IStatistics) {
@@ -559,7 +564,7 @@ export default class Render {
                 <div class="statistics__sprint-body">
                     <div class="statistics__sprint-heading">
                         <div class="statistics__sprint-header">Спринт</div>
-                        <div class="statistics__sprint-label">на скорость</div>
+                        <div class="label statistics__sprint-label">на скорость</div>
                     </div>
                     <div class="statistics__sprint-info">
                         <span><b>${wordLearnedSprint}</b> слов изучено</span>
@@ -575,7 +580,7 @@ export default class Render {
                 <div class="statistics__audiocall-body">
                     <div class="statistics__audiocall-heading">
                         <div class="statistics__audiocall-header">Аудиовызов</div>
-                        <div class="statistics__audiocall-label">на слух</div>
+                        <div class="label statistics__audiocall-label">на слух</div>
                     </div>
                     <div class="statistics__audiocall-info">
                         <span><b>${wordLearnedAudiocall}</b> слов изучено</span>

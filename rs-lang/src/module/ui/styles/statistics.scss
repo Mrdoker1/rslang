@@ -5,6 +5,7 @@
     padding: 40px;
     background: white;
     width: fit-content;
+    border-radius: 14px;
     &-denied{
         display: flex;
         max-width: fit-content;
@@ -25,10 +26,26 @@
         &__buttons{}
     }
     &__tabs{
-        &-tab{}
+        display: flex;
+        font: $dela-gothic-26px;
+        height: 40px;
+        gap: 40px;
+        cursor: pointer;
+        &-tab{
+            transition: $transition-1;
+            color: $color-grey-dark;
+            &:hover{
+                color: $color-primary;
+            }
+            &.active{
+                color: $color-primary;
+                border-bottom: 2px solid $color-primary;
+            }
+        }
     }
     &__charts{
         display: flex;
+        align-items: center;
         flex-direction: column;
         justify-content: center;
         width: 400px;
@@ -45,37 +62,70 @@
     }
     &__empty{}
     &__body{
-        &-heading{}
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        &-heading{
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
         &-info{
             display: flex;
             justify-content: space-between;
+            align-items: center;
         }
     }
-    &__header{}
-    &__subtitle{}
+    &__header{
+        font: $dela-gothic-32px;
+    }
+    &__subtitle{
+        font: $montserrat-16px;
+        color: $color-grey-dark;
+    }
     &__wordLearnedTotal{
+        font: $dela-gothic-extra;
         &-number{
+            display: flex;
+            justify-content: center;
             span{
-                color: aqua;
+                color: $color-cyan-dark;
             }
         }
-        &-subtitle{}
+        &-subtitle{
+            font: $montserrat-16px;
+            color: $color-grey-dark;
+        }
     }
     &__rightAnswersTotal{
+        font: $dela-gothic-extra;
         &-number{
+            display: flex;
+            justify-content: center;
             span{
-                color: aqua;
+                color: $color-cyan-dark;
             }
         }
-        &-subtitle{}
+        &-subtitle{
+            font: $montserrat-16px;
+            color: $color-grey-dark;
+        }
     }
     &__sprint{
         display: flex;
         flex-direction: row;
         & .sprint-image{}
-        &-body{}
+        &-body{
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
         &-heading{
             display: flex;
+            gap: 8px;
+        }
+        &-header{
+            font: $dela-gothic-26px;
         }
         &-info{
             display: flex;
@@ -86,9 +136,17 @@
         display: flex;
         flex-direction: row;
         & .sprint-image{}
-        &-body{}
+        &-body{
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
         &-heading{
             display: flex;
+            gap: 8px;
+        }
+        &-header{
+            font: $dela-gothic-26px;
         }
         &-info{
             display: flex;
