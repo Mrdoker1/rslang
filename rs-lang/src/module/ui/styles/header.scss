@@ -97,6 +97,8 @@
         font: $montserrat-16px;
 
         &__avatar {
+            display: flex;
+            justify-content: center;
             padding: 11px 18px;
             max-width: 44px;
             max-height: 44px;
