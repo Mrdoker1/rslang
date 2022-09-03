@@ -3,6 +3,9 @@ import getHTMLElement from '../../../utils/getHTMLElement';
 import getHTMLImageElement from '../../../utils/getHTMLImageElement';
 import { shuffle } from '../../../utils/helpers';
 
+//Router
+import { Router } from 'routerjs';
+
 //Enums
 import { gameChart, gameType } from '../../../utils/enums';
 
@@ -30,7 +33,8 @@ export default class AudioCall {
     record: number = 0;
     state = new State();
     isBook: boolean;
-    constructor(base: string, group: number, page: number, isBook: boolean = false) {
+    router: Router;
+    constructor(base: string, group: number, page: number, isBook: boolean = false, router: Router) {
         this.group = group;
         this.page = page;
         this.data = new Data(base);
@@ -40,6 +44,7 @@ export default class AudioCall {
             unknowingWords: [],
         };
         this.isBook = isBook;
+        this.router = router;
     }
 
     async start() {
@@ -207,6 +212,8 @@ export default class AudioCall {
     showResult(attempt: number) {
         const knowingWords = this.result.knowingWords;
         const unknowingWords = this.result.unknowingWords;
+        // const knowingWordsSet = [...new Set(knowingWords)];
+        // const unknowingWordsSet = [...new Set(unknowingWords)];
 
         const chart1 = {
             type: gameChart.Healths,
@@ -224,13 +231,24 @@ export default class AudioCall {
 
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
-        main.appendChild(this.render.gameResult(gameType.AudioCall, 'test message', charts));
-        main.appendChild(this.render.gameResultWords(knowingWords, unknowingWords, this.data.base));
+        main.append(this.render.gameResult(gameType.AudioCall, 'test message', charts));
+        main.append(this.render.gameResultWords(knowingWords, unknowingWords, this.data.base));
+        // main.append(this.render.gameResultWords(knowingWordsSet, unknowingWordsSet, this.data.base));
 
-        const playBtn = document.querySelectorAll('[data-src]').forEach((btn) => {
+        const playBtns = document.querySelectorAll('[data-src]').forEach((btn) => {
             const path = getHTMLElement(btn).dataset.src;
             if (!path) return false;
             this.sayWord(path);
+        });
+
+        const btnReplay = getHTMLElement(main.querySelector('.gameresult__button-replay'));
+        btnReplay.addEventListener('click', () => {
+            this.router.run();
+        });
+
+        const btnToBook = getHTMLElement(main.querySelector('.gameresult__button-tobook'));
+        btnToBook.addEventListener('click', () => {
+            this.router.navigate(`/book/${this.group}/${this.page}`);
         });
     }
 

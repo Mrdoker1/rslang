@@ -11,6 +11,9 @@ import { getRandom } from '../../utils/helpers';
 
 //Interface
 import IUserBody from '../interface/IUserBody';
+import IWord from '../interface/IWord';
+import IAggregatedWord from '../interface/IAggregatedWord';
+import IUserWord from '../interface/IUserWord';
 
 //Style
 import '../../global.scss';
@@ -41,9 +44,6 @@ import AudioCall from '../components/audio-call';
 
 //State
 import State from './state';
-import IWord from '../interface/IWord';
-import IAggregatedWord from '../interface/IAggregatedWord';
-import IUserWord from '../interface/IUserWord';
 
 export default class App {
     data: Data;
@@ -97,8 +97,8 @@ export default class App {
             })
             .get('/book/:group/:page', (req) => {
                 const state = new State();
-                const userId = state.userId;
-                const token = state.token;
+                //const userId = state.userId;
+                //const token = state.token;
                 const loginStatus = state.token ? true : false;
 
                 const group = Number(req.params.group);
@@ -113,9 +113,23 @@ export default class App {
 
                 Render.currentLink(req.path);
             })
+            .get('/book/sprint/:group/:page', (req) => {
+                const group = Number(req.params.group);
+                const page = Number(req.params.page);
+                if (new State().token === '') {
+                    this.router.navigate(`/book/${group}/${page}`);
+                    return;
+                }
+                this.showSprint(group, page, true);
+                Render.currentLink(req.path);
+            })
             .get('/book/audio-call/:group/:page', (req) => {
                 const group = Number(req.params.group);
                 const page = Number(req.params.page);
+                if (new State().token === '') {
+                    this.router.navigate(`/book/${group}/${page}`);
+                    return;
+                }
                 this.showAudioCall(group, page, true);
                 Render.currentLink(req.path);
             })
@@ -169,8 +183,8 @@ export default class App {
 
     async showBook(group: number, page: number) {
         const state = new State();
-        const userId = state.userId;
-        const token = state.token;
+        //const userId = state.userId;
+        //const token = state.token;
         const loginStatus = state.token ? true : false;
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
@@ -620,22 +634,13 @@ export default class App {
         });
     }
 
-    async showSprint(group: number, page: number) {
-        const main = getHTMLElement(document.querySelector('.main'));
-        main.innerHTML = '';
-        const words = await this.data.getWords(group, page);
-        if (typeof words === 'number') {
-            console.log(`error ${words}`);
-            return;
-        }
-        const sprint = new Sprint(this.data.base, words, group, page);
+    showSprint(group: number, page: number, isBook: boolean = false) {
+        const sprint = new Sprint(this.data.base, group, page, isBook, this.router);
         sprint.start();
-        //const gameSprint = this.render.gameSprint(group, page);
-        //main.appendChild(gameSprint);
     }
 
     async showAudioCall(group: number, page: number, isBook: boolean = false) {
-        const audioCall = new AudioCall(this.data.base, group, page, isBook);
+        const audioCall = new AudioCall(this.data.base, group, page, isBook, this.router);
         audioCall.start();
     }
 

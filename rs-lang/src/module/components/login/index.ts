@@ -194,18 +194,18 @@ class ModalLogin {
     }
 
     showSigninForm(type: string) {
-        // show modal if not visible
-        if (!this.element.classList.contains('cd-signin-modal--is-visible'))
+        if (!this.element.classList.contains('cd-signin-modal--is-visible')) {
             this.element.classList.add('cd-signin-modal--is-visible');
-        // show selected form
-        for (var i = 0; i < this.blocks.length; i++) {
+        }
+
+        for (let i = 0; i < this.blocks.length; i++) {
             const block = this.blocks[i];
             if (block.getAttribute('data-type') == type) block.classList.add('cd-signin-modal__block--is-selected');
             else block.classList.remove('cd-signin-modal__block--is-selected');
         }
-        //update switcher appearance
-        var switcherType = type == 'signup' ? 'signup' : 'login';
-        for (var i = 0; i < this.switchers.length; i++) {
+
+        const switcherType = type == 'signup' ? 'signup' : 'login';
+        for (let i = 0; i < this.switchers.length; i++) {
             const switcher = this.switchers[i];
             if (switcher.getAttribute('data-type') == switcherType) switcher.classList.add('cd-selected');
             else switcher.classList.remove('cd-selected');
@@ -222,7 +222,7 @@ class ModalLogin {
 
     putCursorAtEnd(input: HTMLInputElement) {
         if (input.setSelectionRange) {
-            var len = input.value.length * 2;
+            const len = input.value.length * 2;
             input.focus();
             input.setSelectionRange(len, len);
         }
