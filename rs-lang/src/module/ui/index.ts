@@ -260,7 +260,7 @@ export default class Render {
                 </nav>
             </div>
             <div class="footer__copyright">
-                <a href="https://rs.school/js/" target="_blank">©2022 RS LANG. Project for RS School JS Course.</a>
+                ©2022 RS LANG. <a href="https://rs.school/js/" target="_blank">Project for RS School JS Course.</a>
             </div>
         </div>
      
