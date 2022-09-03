@@ -122,8 +122,12 @@ export default class Sprint {
     }
 
     setNewWord() {
-        const word = this.words[getRandom(0, this.words.length - 1)];
-        const possibleTranslation = this.words[getRandom(0, this.words.length - 1)].wordTranslate;
+        const rightWordIndex = getRandom(0, this.words.length - 1);
+        const word = this.words[rightWordIndex];
+
+        let possibleTranslation;
+        if (getRandom(0, 1)) possibleTranslation = this.words[rightWordIndex].wordTranslate;
+        else possibleTranslation = this.words[getRandom(0, this.words.length - 1)].wordTranslate;
 
         this.gameState.word = word;
         this.gameState.wordEnglish = word.word;
@@ -242,8 +246,12 @@ export default class Sprint {
 
         const main = getHTMLElement(document.querySelector('main'));
         main.innerHTML = '';
-        main.append(this.render.gameResult(gameType.Sprint, 'test message', [chart1, chart2]));
-        main.append(this.render.gameResultWords(knowingWords, unknowingWords, this.data.base));
+
+        const container = document.createElement('div');
+        container.classList.add('container', 'align-center', 'game-container');
+        container.append(this.render.gameResult(gameType.Sprint, 'Вы неплохо справились', [chart1, chart2]));
+        container.append(this.render.gameResultWords(knowingWords, unknowingWords, this.data.base));
+        main.append(container);
 
         const btnReplay = getHTMLElement(main.querySelector('.gameresult__button-replay'));
         btnReplay.addEventListener('click', () => {
