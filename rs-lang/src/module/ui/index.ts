@@ -787,12 +787,14 @@ export default class Render {
                 <div class="game__window game__window__light">
                 <div class="game__window ${gameImage}"></div>
                     <div class="game__block">
-                        <h2 class="game__title">${title}</h2>
+                        <div class="game__heading">
+                            <h2 class="game__heading-title">${title}</h2>
+                            <div class="game__heading-skill">${skill}</div>
+                        </div>
                         <p class="game__desc">${desc}</p>
                         <p class="game__text">Выберите уровень:</p>
                         <ul class="game__levels levels">${levels}</ul>
                         <button class="game__start">Начать</button>
-                        <div class="game__skill">${skill}</div>
                     </div>
                 </div>
             </div>
