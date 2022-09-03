@@ -499,10 +499,12 @@ export default class Render {
 
         switch (type) {
             case statisticType.Daily:
-                header = 'Статистика  за  сегодня';
+                header = 'Статистика за сегодня';
                 for (let day in statistics.optional) {
                     const statisticDay = statistics.optional[day];
-                    if (today.getTime() == new Date(statisticDay.date).getTime()) {
+                    const statisticDate = new Date(statisticDay.date);
+                    statisticDate.setHours(0, 0, 0, 0);
+                    if (today.getTime() == statisticDate.getTime()) {
                         updateData(statisticDay);
                     } else {
                         //console.log('false');
@@ -510,7 +512,7 @@ export default class Render {
                 }
                 break;
             case statisticType.Total:
-                header = 'Статистика  за все время';
+                header = 'Статистика за все время';
                 for (let day in statistics.optional) {
                     const statisticDay = statistics.optional[day];
                     updateData(statisticDay);
@@ -614,9 +616,14 @@ export default class Render {
         switch (type) {
             case statisticType.Daily:
                 header = 'Колличество изученных слов на сегодня';
+
+                console.log(statistics);
+
                 for (let day in statistics.optional) {
                     const statisticDay = statistics.optional[day];
-                    if (today.getTime() == new Date(statisticDay.date).getTime()) {
+                    const statisticDate = new Date(statisticDay.date);
+                    statisticDate.setHours(0, 0, 0, 0);
+                    if (today.getTime() == statisticDate.getTime()) {
                         const myChart = new Chart(canvas, {
                             type: 'doughnut',
                             data: {
