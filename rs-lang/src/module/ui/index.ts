@@ -85,7 +85,7 @@ export default class Render {
                 <p class="splash__description">Практикуйте английский язык и изучайте &nbsp; новое с помощью платформы</p>
                 <div class="splash__buttons">
                     <a href="#" class="bttn bttn--transparent js-signin-modal-trigger" data-routerjs-ignore="" data-signin="login">Войти →</a>
-                    <a href="#" class="bttn bttn--light">О платформе →</a>
+                    <a href="#benefits" class="bttn bttn--light" data-routerjs-ignore="true">О платформе →</a>
                 </div>
                 <div class="app-statistic">
                     <div class="hours">
