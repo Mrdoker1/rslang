@@ -194,12 +194,12 @@ body {
                 bottom: 0px;
                 left: 5px;
                 height: 80%;
-                z-index: -1;
                 border-radius: 14px;
                 background-color: $color-pink-light;
           }
           .game__bttn {
             color: $color-pink-dark;
+            z-index: 0;
           }
         }
 
@@ -212,12 +212,12 @@ body {
                 position: absolute;
                 bottom: 0px;
                 height: 80%;
-                z-index: -1;
                 border-radius: 14px;
                 background-color: $color-cyan-light;
             }
             .game__bttn {
                 color: $color-cyan-dark;
+                z-index: 0;
             }
         }
 
