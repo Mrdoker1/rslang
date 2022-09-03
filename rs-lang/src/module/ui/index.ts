@@ -495,6 +495,9 @@ export default class Render {
         let recordAudioCall = 0;
         let wordLearnedAudiocall = 0;
         let rightAnswersAudiocall = 0;
+        let wordTotal = 0;
+        let wordTotalSprint = 0;
+        let wordTotalAudiocall = 0;
         let header = 'Default Header';
         let subtitle = 'Ваша статистика по всем активностям';
 
@@ -528,6 +531,9 @@ export default class Render {
             wordLearnedAudiocall += statisticDay.audio.learned;
             rightAnswersSprint += statisticDay.sprint.right;
             rightAnswersAudiocall += statisticDay.audio.right;
+            wordTotalSprint += statisticDay.sprint.total;
+            wordTotalAudiocall += statisticDay.audio.total;
+            wordTotal = wordTotalSprint + wordTotalAudiocall;
             if (recordSprint < statisticDay.sprint.record) {
                 recordSprint = statisticDay.sprint.record;
             }
@@ -539,9 +545,10 @@ export default class Render {
         const stats = document.createElement('div');
         stats.classList.add('statistics');
 
-        const rightAnswersTotal = ((rightAnswers / wordLearned) * 100).toFixed(2);
-        const rightAnswersSprintTotal = ((rightAnswersSprint / wordLearnedSprint) * 100).toFixed(2);
-        const rightAnswersAudiocallTotal = ((rightAnswersAudiocall / wordLearnedAudiocall) * 100).toFixed(2);
+        const rightAnswersPercent = (rightAnswers / (wordTotal <= 0 ? 1 : wordTotal)) * 100;
+        const rightAnswersSprintPercent = (rightAnswersSprint / (wordTotalSprint <= 0 ? 1 : wordTotalSprint)) * 100;
+        const rightAnswersAudiocallPercent =
+            (rightAnswersAudiocall / (wordTotalAudiocall <= 0 ? 1 : wordTotalAudiocall)) * 100;
 
         stats.innerHTML = `
         <div class="statistics__body">
@@ -557,7 +564,7 @@ export default class Render {
                 <div class="divider-vertical"></div>
                 <div class="statistics__rightAnswersTotal">
                     <div class="statistics__rightAnswersTotal-number">
-                        ${typeof rightAnswersTotal === 'number' ? rightAnswersTotal : 0}<span>%</span>
+                        ${typeof rightAnswersPercent === 'number' ? rightAnswersPercent.toFixed(1) : 0}<span>%</span>
                     </div>
                     <div class="statistics__rightAnswersTotal-subtitle">правильных ответов</div>
                 </div>
@@ -572,7 +579,7 @@ export default class Render {
                     <div class="statistics__sprint-info">
                         <span><b>${wordLearnedSprint}</b> слов изучено</span>
                         <span><b>${
-                            typeof rightAnswersSprintTotal === 'number' ? rightAnswersTotal : 0
+                            typeof rightAnswersSprintPercent === 'number' ? rightAnswersSprintPercent.toFixed(1) : 0
                         }%</b> правильных ответов</span>
                         <span><b>${recordSprint}</b> лучшая серия правильных ответов</span>
                     </div>
@@ -589,7 +596,9 @@ export default class Render {
                     <div class="statistics__audiocall-info">
                         <span><b>${wordLearnedAudiocall}</b> слов изучено</span>
                         <span><b>${
-                            typeof rightAnswersAudiocallTotal === 'number' ? rightAnswersTotal : 0
+                            typeof rightAnswersAudiocallPercent === 'number'
+                                ? rightAnswersAudiocallPercent.toFixed(1)
+                                : 0
                         }%</b> правильных ответов</span>
                         <span><b>${recordAudioCall}</b> лучшая серия правильных ответов</span>
                     </div>
@@ -617,8 +626,6 @@ export default class Render {
         switch (type) {
             case statisticType.Daily:
                 header = 'Колличество изученных слов на сегодня';
-
-                console.log(statistics);
 
                 for (let day in statistics.optional) {
                     const statisticDay = statistics.optional[day];
