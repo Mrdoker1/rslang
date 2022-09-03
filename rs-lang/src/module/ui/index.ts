@@ -159,11 +159,11 @@ export default class Render {
                       <div class="games">
                           <div class="games__list">
                               <div class="game game--sprint">
-                                  <img src="../assets/img/icon-sprint.png" class="game__img">
+                                  <img src="../assets/img/icon-sprint.svg" class="game__img">
                                   <a href="/games/sprint" class="bttn bttn--transparent game__bttn">Спринт →</a>
                               </div>
                               <div class="game game--audio-call">
-                                  <img src="../assets/img/icon-audio-call.png" class="game__img">
+                                  <img src="../assets/img/icon-audio-call.svg" class="game__img">
                                   <a href="/games/audio-call" class="bttn bttn--transparent game__bttn">Аудио-вызов →</a>
                               </div>
                           </div>

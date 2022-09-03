@@ -191,7 +191,16 @@ body {
         text-align: center;
         &--sprint {
             width: 120px;
+            &:hover{
+                &:before{
+                    background-color: $color-pink-dark;
+                }
+                .game__bttn {
+                    color: white;
+                }
+            }
             &:before {
+                transition: $transition-1;
                 content: '';
                 display: block;
                 width: calc(100% - 5px);
@@ -203,6 +212,7 @@ body {
                 background-color: $color-pink-light;
           }
           .game__bttn {
+            transition: $transition-1;
             color: $color-pink-dark;
             z-index: 0;
           }
@@ -210,7 +220,16 @@ body {
 
         &--audio-call {
             width: 172px;
+            &:hover{
+                &:before{
+                    background-color: $color-cyan-dark;
+                }
+                .game__bttn {
+                    color: white;
+                }
+            }
             &:before {
+                transition: $transition-1;
                 content: '';
                 display: block;
                 width: 100%;
@@ -221,6 +240,7 @@ body {
                 background-color: $color-cyan-light;
             }
             .game__bttn {
+                transition: $transition-1;
                 color: $color-cyan-dark;
                 z-index: 0;
             }
