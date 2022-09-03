@@ -1,5 +1,7 @@
+//Utils
 import getHTMLElement from '../../../utils/getHTMLElement';
 import getHTMLInputElement from '../../../utils/getHTMLInputElement';
+import { createStsEntry } from '../../../utils/helpers';
 
 //Router
 import { Router } from 'routerjs';
@@ -28,7 +30,6 @@ class ModalLogin {
         this.initTriggers();
         this.initModalBtns();
 
-        //let state = new State();
         let state = this.state;
         const modal = getHTMLElement(document.querySelector('.cd-signin-modal'));
         const loginForm = getHTMLElement(modal.querySelector('[data-type="login"] form'));
@@ -122,6 +123,8 @@ class ModalLogin {
                     this.router.run();
                     tokenTimer = setTimeout(this.updateToken.bind(this), this.period);
                 }
+
+                this.addFirstStatistics();
             } else {
                 if (createUser === 422) signupMessage.textContent = 'Неверный пароль, имя или почта';
                 else if (createUser === 417) signupMessage.textContent = 'Аккаунт уже существует';
@@ -138,6 +141,21 @@ class ModalLogin {
             signupLink.classList.remove('hidden');
             logoutLink.classList.add('hidden');
             user.classList.add('hidden');
+        }
+    }
+
+    async addFirstStatistics() {
+        const stsAll = {
+            learnedWords: 0,
+            optional: {
+                1: createStsEntry(),
+            },
+        };
+
+        const updateUserStatistics = await this.data.updateUserStatistics(this.state.userId, stsAll, this.state.token);
+        if (typeof updateUserStatistics === 'number') {
+            console.log(`Ошибка updateUserStatistics ${updateUserStatistics}`);
+            return;
         }
     }
 

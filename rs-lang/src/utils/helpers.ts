@@ -12,4 +12,30 @@ const shuffle = (arr: IWord[]) => {
     }
 };
 
-export { getRandom, shuffle };
+const createStsEntry = () => {
+    const curDate = new Date();
+    const date = curDate.toString();
+    return {
+        date,
+        sprint: {
+            new: 0,
+            total: 0,
+            right: 0,
+            record: 0,
+            learned: 0,
+        },
+        audio: {
+            new: 0,
+            total: 0,
+            right: 0,
+            record: 0,
+            learned: 0,
+        },
+        book: {
+            new: 0,
+            learned: 0,
+        },
+    };
+};
+
+export { getRandom, shuffle, createStsEntry };

@@ -1,10 +1,6 @@
 // Variables
 @import '../../../variables.scss';
 
-.container {
-  height: 100%;	
-}
-
 .game {
   display: flex;
   height: 100%;	
@@ -22,9 +18,11 @@
     flex-direction: row;
     border-radius: 14px;
     padding: 20px 40px;
-    //height: 415px;
-    background: #ffffff;
     gap: 10px;
+
+    &__light {
+       background: #ffffff;
+    }
   }
 
   &__block {
@@ -69,7 +67,6 @@
   flex-direction: row;
   padding-top: 8px;
   gap: 24px;
-  //gap: 5%;
 
   &__btn {
     display: flex;
@@ -79,7 +76,6 @@
     width: 44px;
     height: 44px;
     padding: 0;
-    //background-color: transparent;
     border-radius: 50%;
     border: 3px solid black;
     font: $montserrat-16px;
@@ -112,7 +108,6 @@
 @include radioBtn($color-green, $color-yellow, $color-orange, $color-red, $color-pink,  $color-cyan);
 
 .audio {
-    background: #e6e6e6;
     display: flex;
     flex-direction: column;
     gap: 40px;
@@ -163,6 +158,7 @@
       display: flex;
       justify-content: center;
       gap: 10px;
+      padding-top: 20px;
     }
 
     &__icon-heart  {
@@ -177,10 +173,8 @@
 
     &__choices {
       display: flex;
-      // justify-content: center;
       justify-content: space-around;
       gap: 10px;
-      //row-gap: 3vw;
       width: 100%;
     }
 
@@ -225,7 +219,7 @@
   align-items: center;
   
   &__photo {
-    height: 140px;
+    height: 200px;
     border-radius: 14px;
   }
 
@@ -234,7 +228,7 @@
     justify-content: center;
     align-items: center;
     gap: 12px;
-    margin: 20px 0;
+    margin-top: 20px;
     background-color: #ffffff;
     border-radius: 14px;
     box-shadow: 0px 22px 45px -11px rgba(52, 41, 39, 0.08);
@@ -243,7 +237,7 @@
 
   &__play {
     padding: 0;
-    background-color: $color-grey-ligth;
+    background-color: $color-grey-light;
     border: none;
     width: 40px;
     height: 40px;
@@ -263,6 +257,7 @@
   &__text {
     font: $montserrat-18px;
     color: $color-grey-dark;
+
     b {
       color: $color-primary;
     }

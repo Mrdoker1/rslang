@@ -2,7 +2,7 @@
 import getHTMLElement from '../../../utils/getHTMLElement';
 import getHTMLButtonElement from '../../../utils/getHTMLButtonElement';
 import getNotNil from '../../../utils/getNotNil';
-import { shuffle, getRandom } from '../../../utils/helpers';
+import { shuffle, getRandom, createStsEntry } from '../../../utils/helpers';
 
 //Router
 import { Router } from 'routerjs';
@@ -267,12 +267,12 @@ export default class Sprint {
         }
 
         let stsAll = await this.data.getUserStatistics(this.state.userId, this.state.token);
-        if (stsAll === 404)
+        if (stsAll === 404) {
             stsAll = {
                 learnedWords: 0,
                 optional: {},
             };
-        else if (typeof stsAll === 'number') {
+        } else if (typeof stsAll === 'number') {
             console.log(`Ошибка getUserStatistics ${stsAll}`);
             return;
         }
@@ -292,7 +292,7 @@ export default class Sprint {
         }
 
         if (!sts || isNewEntry) {
-            sts = this.createEntry();
+            sts = createStsEntry();
         }
 
         let newCount = sts.sprint.new;
@@ -348,32 +348,6 @@ export default class Sprint {
             console.log(`Ошибка updateUserStatistics ${updateUserStatistics}`);
             return;
         }
-    }
-
-    createEntry() {
-        const curDate = new Date();
-        const date = curDate.toString();
-        return {
-            date,
-            sprint: {
-                new: 0,
-                total: 0,
-                right: 0,
-                record: 0,
-                learned: 0,
-            },
-            audio: {
-                new: 0,
-                total: 0,
-                right: 0,
-                record: 0,
-                learned: 0,
-            },
-            book: {
-                new: 0,
-                learned: 0,
-            },
-        };
     }
 
     isNewDay(date: string): boolean {
@@ -463,7 +437,7 @@ export default class Sprint {
         if (typeof resp !== 'number') {
             return isLearned;
         } else {
-            console.log(`Ошибка ${resp}`);
+            console.log(`Ошибка updateUserWord ${resp}`);
         }
     }
 

@@ -762,7 +762,7 @@ export default class Render {
 
         const html = `<div class="game">
             <div class="game__wrapper">
-                <div class="game__window">
+                <div class="game__window game__window__light">
                     <img src="../assets/img/${type}.svg"/>
                     <div class="game__block">
                         <h2 class="game__title">${title}</h2>

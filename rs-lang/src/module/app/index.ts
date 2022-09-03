@@ -95,7 +95,6 @@ export default class App {
                 this.showMain();
                 Render.currentLink(req.path);
                 this.login.initSecondTrigger();
-                // this.login.init();
             })
             .get('/book', (req) => {
                 this.showBook(0, 0);
