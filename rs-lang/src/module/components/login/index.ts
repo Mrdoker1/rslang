@@ -13,66 +13,24 @@ import Data from '../../api';
 let tokenTimer: ReturnType<typeof setTimeout>;
 
 class ModalLogin {
-    element: HTMLElement;
-    blocks: NodeListOf<HTMLElement>;
-    switchers: NodeListOf<HTMLElement>;
-    triggers: NodeListOf<HTMLElement>;
-    hidePassword: NodeListOf<HTMLElement>;
     data: Data;
     router: Router;
     // period: number = 1000 * 60; //a minute;
     period: number = 1000 * 60 * 60 * 3; //three hours;
+    state = new State();
 
-    constructor(element: HTMLElement, base: string, router: Router) {
+    constructor(base: string, router: Router) {
         this.data = new Data(base);
         this.router = router;
-        this.element = element;
-        this.blocks = this.element.querySelectorAll('.js-signin-modal-block');
-        this.switchers = this.element.querySelectorAll('.js-signin-modal-switcher a');
-        this.triggers = document.querySelectorAll('.js-signin-modal-trigger');
-        this.hidePassword = this.element.querySelectorAll('.js-hide-password');
-        this.init();
     }
 
     init() {
-        for (let i = 0; i < this.triggers.length; i++) {
-            this.triggers[i].addEventListener('click', (e) => {
-                const target = getHTMLElement(e.target);
-                if (target.hasAttribute('data-signin')) {
-                    e.preventDefault();
-                    const type = target.getAttribute('data-signin');
-                    if (type) this.showSigninForm(type);
-                }
-            });
-        }
-        //close modal
-        this.element.addEventListener('click', (e) => {
-            const target = getHTMLElement(e.target);
-            const messages = this.element.querySelectorAll('.cd-signin-modal__message');
-            if (target.classList.contains('js-signin-modal') || target.classList.contains('js-close')) {
-                e.preventDefault();
-                this.element.classList.remove('cd-signin-modal--is-visible');
-                messages.forEach((mes) => {
-                    mes.textContent = '';
-                });
-            }
-        });
+        this.initTriggers();
+        this.initModalBtns();
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') this.element.classList.remove('cd-signin-modal--is-visible');
-        });
-
-        //hide/show password
-        for (let i = 0; i < this.hidePassword.length; i++) {
-            this.hidePassword[i].addEventListener('click', () => {
-                this.togglePassword(this.hidePassword[i]);
-            });
-        }
-
-        let state = new State();
-        //state.token = 'qweqre'; //тест
-        //state.refreshToken = '456456'; //тест
-        const modal = this.element;
+        //let state = new State();
+        let state = this.state;
+        const modal = getHTMLElement(document.querySelector('.cd-signin-modal'));
         const loginForm = getHTMLElement(modal.querySelector('[data-type="login"] form'));
         const loginMessage = getHTMLElement(loginForm.querySelector('.js-signin-modal__message'));
         const loginEmailBox = getHTMLInputElement(loginForm.querySelector('#signin-email'));
@@ -81,6 +39,7 @@ class ModalLogin {
         const signupForm = getHTMLElement(modal.querySelector('[data-type="signup"] form'));
         const signupMessage = getHTMLElement(signupForm.querySelector('.js-signin-modal__message'));
 
+        const signupLink = getHTMLElement(document.querySelector('[data-signin="signup"]'));
         const loginLink = getHTMLElement(document.querySelector('[data-signin="login"]'));
         const logoutLink = getHTMLElement(document.querySelector('[data-signin="logout"]'));
         logoutLink.addEventListener('click', (e) => {
@@ -92,12 +51,9 @@ class ModalLogin {
             clearTimeout(tokenTimer);
             logoutLink.classList.add('hidden');
             loginLink.classList.remove('hidden');
+            signupLink.classList.remove('hidden');
             this.router.run();
         });
-
-        if (state.token) {
-            loginLink.classList.add('hidden');
-        } else logoutLink.classList.add('hidden');
 
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -113,9 +69,10 @@ class ModalLogin {
 
                 loginLink.classList.add('hidden');
                 logoutLink.classList.remove('hidden');
+                signupLink.classList.add('hidden');
                 modal.classList.remove('cd-signin-modal--is-visible');
-                this.router.run();
 
+                this.router.run();
                 tokenTimer = setTimeout(this.updateToken.bind(this), this.period);
             } else {
                 loginMessage.textContent = 'Неверный пароль или почта';
@@ -140,6 +97,7 @@ class ModalLogin {
 
                     loginLink.classList.add('hidden');
                     logoutLink.classList.remove('hidden');
+                    signupLink.classList.add('hidden');
                     modal.classList.remove('cd-signin-modal--is-visible');
                     this.router.run();
 
@@ -151,7 +109,71 @@ class ModalLogin {
             }
         });
 
-        if (state.token) this.checkToken();
+        if (state.token) {
+            this.checkToken();
+            loginLink.classList.add('hidden');
+            signupLink.classList.add('hidden');
+        } else {
+            signupLink.classList.remove('hidden');
+            logoutLink.classList.add('hidden');
+        }
+    }
+
+    initModalBtns() {
+        const modal = getHTMLElement(document.querySelector('.cd-signin-modal'));
+        modal.addEventListener('click', (e) => {
+            const target = getHTMLElement(e.target);
+            const messages = modal.querySelectorAll('.cd-signin-modal__message');
+            if (target.classList.contains('js-signin-modal') || target.classList.contains('js-close')) {
+                e.preventDefault();
+                modal.classList.remove('cd-signin-modal--is-visible');
+                messages.forEach((mes) => {
+                    mes.textContent = '';
+                });
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') modal.classList.remove('cd-signin-modal--is-visible');
+        });
+
+        //hide password
+        const hidePassword: NodeListOf<HTMLElement> = modal.querySelectorAll('.js-hide-password');
+        hidePassword.forEach((password) => {
+            password.addEventListener('click', () => {
+                this.togglePassword(password);
+            });
+        });
+    }
+
+    initTriggers() {
+        const triggers = document.querySelectorAll('.js-signin-modal-trigger');
+        triggers.forEach((trigger) => {
+            trigger.addEventListener('click', (e) => {
+                const target = getHTMLElement(e.target);
+                if (target.hasAttribute('data-signin')) {
+                    e.preventDefault();
+                    const type = target.getAttribute('data-signin');
+                    if (type) this.showSigninForm(type);
+                }
+            });
+        });
+    }
+
+    //main page
+    initSecondTrigger() {
+        const trigger = getHTMLElement(document.querySelector('main .js-signin-modal-trigger'));
+        trigger.addEventListener('click', (e) => {
+            const target = getHTMLElement(e.target);
+            if (target.hasAttribute('data-signin')) {
+                e.preventDefault();
+                const type = target.getAttribute('data-signin');
+                if (type) this.showSigninForm(type);
+            }
+        });
+
+        if (this.state.token) trigger.classList.add('hidden');
+        else trigger.classList.remove('hidden');
     }
 
     checkToken() {
@@ -185,6 +207,7 @@ class ModalLogin {
             const logoutLink = getHTMLElement(document.querySelector('[data-signin="logout"]'));
             logoutLink.classList.add('hidden');
             loginLink.classList.remove('hidden');
+
             state.userId = '';
             state.token = '';
             state.refreshToken = '';
@@ -194,28 +217,31 @@ class ModalLogin {
     }
 
     showSigninForm(type: string) {
-        if (!this.element.classList.contains('cd-signin-modal--is-visible')) {
-            this.element.classList.add('cd-signin-modal--is-visible');
+        const modal = getHTMLElement(document.querySelector('.cd-signin-modal'));
+        const blocks = modal.querySelectorAll('.js-signin-modal-block');
+        const switchers = modal.querySelectorAll('.js-signin-modal-switcher a');
+
+        if (!modal.classList.contains('cd-signin-modal--is-visible')) {
+            modal.classList.add('cd-signin-modal--is-visible');
         }
 
-        for (let i = 0; i < this.blocks.length; i++) {
-            const block = this.blocks[i];
-            if (block.getAttribute('data-type') == type) block.classList.add('cd-signin-modal__block--is-selected');
+        blocks.forEach((block) => {
+            if (block.getAttribute('data-type') === type) block.classList.add('cd-signin-modal__block--is-selected');
             else block.classList.remove('cd-signin-modal__block--is-selected');
-        }
+        });
 
         const switcherType = type == 'signup' ? 'signup' : 'login';
-        for (let i = 0; i < this.switchers.length; i++) {
-            const switcher = this.switchers[i];
-            if (switcher.getAttribute('data-type') == switcherType) switcher.classList.add('cd-selected');
+        switchers.forEach((switcher) => {
+            if (switcher.getAttribute('data-type') === switcherType) switcher.classList.add('cd-selected');
             else switcher.classList.remove('cd-selected');
-        }
+        });
     }
 
     togglePassword(target: HTMLElement) {
         const password = getHTMLInputElement(target.previousElementSibling);
         if ('password' == password.getAttribute('type')) password.setAttribute('type', 'text');
         else password.setAttribute('type', 'password');
+
         target.textContent = 'Скрыть' == target.textContent ? 'Показать' : 'Скрыть';
         this.putCursorAtEnd(password);
     }

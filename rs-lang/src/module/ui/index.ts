@@ -54,9 +54,9 @@ export default class Render {
             </nav>
         </div>    
         <div class="header__user-links">
-            <a href="#" class="bttn bttn--transparent js-signin-modal-trigger" data-router js-ignore data-signin="login">Войти →</a>
-            <a href="#" class="bttn bttn--transparent" data-router js-ignore data-signin="logout">Выйти</a>
-            <a href="#" class="bttn">Регистрация</a>
+            <a href="#" class="bttn bttn--transparent js-signin-modal-trigger" data-routerjs-ignore data-signin="login">Войти →</a>
+            <a href="#" class="bttn bttn--transparent" data-routerjs-ignore data-signin="logout">Выйти →</a>
+            <a href="#" class="bttn js-signin-modal-trigger" data-routerjs-ignore data-signin="signup">Регистрация</a>
          </div>
         `;
         return header;
@@ -80,7 +80,7 @@ export default class Render {
                 <h2 class="splash__title">Изучай английский вместе с нами.</h2>
                 <p class="splash__description">Практикуйте английский язык и изучайте &nbsp; новое с помощью платформы</p>
                 <div class="splash__buttons">
-                    <a href="#" class="bttn bttn--transparent js-signin-modal-trigger" data-router="" js-ignore="" data-signin="login">Войти →</a>
+                    <a href="#" class="bttn bttn--transparent js-signin-modal-trigger" data-routerjs-ignore="" data-signin="login">Войти →</a>
                     <a href="#" class="bttn bttn--light">О платформе →</a>
                 </div>
                 <div class="app-statistic">

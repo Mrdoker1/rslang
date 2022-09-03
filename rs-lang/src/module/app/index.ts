@@ -49,18 +49,20 @@ export default class App {
     data: Data;
     render: Render;
     router: Router;
+    login: ModalLogin;
 
     constructor(base: string) {
         this.data = new Data(base);
         this.render = new Render();
         this.router = createRouter();
+        this.login = new ModalLogin(base, this.router);
     }
 
     async start() {
         this.initState();
         this.createPage();
-        this.createLogin();
         this.initRouter();
+        this.createLogin();
     }
 
     initState() {
@@ -90,6 +92,8 @@ export default class App {
             .get('/', (req) => {
                 this.showMain();
                 Render.currentLink(req.path);
+                this.login.initSecondTrigger();
+                // this.login.init();
             })
             .get('/book', (req) => {
                 this.showBook(0, 0);
@@ -727,6 +731,8 @@ export default class App {
     createLogin() {
         const modal = this.render.modalLogin();
         document.body.append(modal);
-        new ModalLogin(modal, this.data.base, this.router);
+        //new ModalLogin(modal, this.data.base, this.router);
+        //console.log(this.router);
+        this.login.init();
     }
 }
