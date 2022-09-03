@@ -313,6 +313,22 @@ body {
     }   
 }
 
+.divider {
+    border-left: 1px solid $color-grey-medium;
+    height: 46px;
+}
+
+.label {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 4px 8px;
+    border-radius: 6px;
+    background: $color-cyan-light;
+    font: $montserrat-12px;
+    color: $color-cyan-dark;
+}
+
 .social {
     display: flex;
     gap: 30px;

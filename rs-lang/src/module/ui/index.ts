@@ -407,8 +407,8 @@ export default class Render {
     //Statistics
     pageStatistics(statistics: IStatistics) {
         //Container for content
-        const container = document.createElement('div');
-        container.classList.add('container');
+        const pageStatisticsContainer = document.createElement('div');
+        pageStatisticsContainer.classList.add('container', 'align-center');
         //Wrapper for page content
         const pageStatistics = document.createElement('div');
         pageStatistics.classList.add('statistics__wrapper');
@@ -455,15 +455,15 @@ export default class Render {
 
         pageStatistics.appendChild(pageStatisticsTabs);
         pageStatistics.appendChild(statisticsContainer);
-        container.appendChild(pageStatistics);
-        return container;
+        pageStatisticsContainer.appendChild(pageStatistics);
+        return pageStatisticsContainer;
     }
 
     pageStatisticsDenied() {
-        const container = document.createElement('div');
-        container.classList.add('container');
+        const pageStatisticsContainer = document.createElement('div');
+        pageStatisticsContainer.classList.add('container', 'align-center');
 
-        container.innerHTML = `
+        pageStatisticsContainer.innerHTML = `
             <div class="statistics-denied">
                 <div class="statistics-image"></div>
                 <div class="statistics-denied__body">
@@ -479,7 +479,7 @@ export default class Render {
             </div>
         `;
 
-        return container;
+        return pageStatisticsContainer;
     }
 
     statistics(type: statisticType, statistics: IStatistics) {
@@ -564,7 +564,7 @@ export default class Render {
                 <div class="statistics__sprint-body">
                     <div class="statistics__sprint-heading">
                         <div class="statistics__sprint-header">Спринт</div>
-                        <div class="statistics__sprint-label">на скорость</div>
+                        <div class="label statistics__sprint-label">на скорость</div>
                     </div>
                     <div class="statistics__sprint-info">
                         <span><b>${wordLearnedSprint}</b> слов изучено</span>
@@ -580,7 +580,7 @@ export default class Render {
                 <div class="statistics__audiocall-body">
                     <div class="statistics__audiocall-heading">
                         <div class="statistics__audiocall-header">Аудиовызов</div>
-                        <div class="statistics__audiocall-label">на слух</div>
+                        <div class="label statistics__audiocall-label">на слух</div>
                     </div>
                     <div class="statistics__audiocall-info">
                         <span><b>${wordLearnedAudiocall}</b> слов изучено</span>
