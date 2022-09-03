@@ -145,7 +145,7 @@ export default class Render {
         benefits.classList.add('benefits');
         benefits.classList.add('benefits');
         benefits.innerHTML += `
-          <div class="benefits__item">
+          <div class="benefits__item" id="benefits">
               <div class="container">
                   <div class="section-img">
                       <img src="../assets/img/section1-bg.png">
