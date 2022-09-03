@@ -467,8 +467,8 @@ export default class Render {
                         <div class="statistics-denied__heading-subtitle">Чтобы получать статистику и следить за своими результатами зарегистрируйтесь или войдите в аккаунт</div>
                     </div>
                     <div class="statistics-denied__buttons">
-                        <button class="statistics-denied__login">Войти →</button>
-                        <button class="statistics-denied__register">Регистрация</button>
+                        <div class="bttn bttn--transparent statistics-denied__login">Войти →</div>
+                        <div class="bttn statistics-denied__register">Регистрация</div>
                     </div>
                 </div>
             </div>
