@@ -54,13 +54,13 @@ export default class Render {
             </nav>
         </div>    
         <div class="header__user-links">
-            <a href="#" class="bttn bttn--transparent js-signin-modal-trigger" data-router js-ignore data-signin="login">Войти →</a>
+            <a href="#" class="bttn bttn--transparent js-signin-modal-trigger" data-routerjs-ignore data-signin="login">Войти →</a>
             <div class="user">
                <div class="user__avatar"></div>
                <div class="user__name"></div>
             </div>
-            <a href="#" class="bttn bttn--transparent" data-router js-ignore data-signin="logout">Выход →</a>
-            <a href="#" class="bttn" data-router data-signin="register">Регистрация</a>
+            <a href="#" class="bttn bttn--transparent" data-routerjs-ignore data-signin="logout">Выход →</a>
+            <a href="#" class="bttn js-signin-modal-trigger" data-routerjs-ignore data-signin="signup">Регистрация</a>
          </div>
         `;
         return header;
@@ -84,7 +84,7 @@ export default class Render {
                 <h2 class="splash__title">Изучай английский вместе с нами.</h2>
                 <p class="splash__description">Практикуйте английский язык и изучайте &nbsp; новое с помощью платформы</p>
                 <div class="splash__buttons">
-                    <a href="#" class="bttn bttn--transparent js-signin-modal-trigger" data-router="" js-ignore="" data-signin="login">Войти →</a>
+                    <a href="#" class="bttn bttn--transparent js-signin-modal-trigger" data-routerjs-ignore="" data-signin="login">Войти →</a>
                     <a href="#" class="bttn bttn--light">О платформе →</a>
                 </div>
                 <div class="app-statistic">
@@ -467,8 +467,8 @@ export default class Render {
                         <div class="statistics-denied__heading-subtitle">Чтобы получать статистику и следить за своими результатами зарегистрируйтесь или войдите в аккаунт</div>
                     </div>
                     <div class="statistics-denied__buttons">
-                        <div class="bttn bttn--transparent statistics-denied__login">Войти →</div>
-                        <div class="bttn statistics-denied__register">Регистрация</div>
+                        <div class="bttn bttn--transparent statistics-denied__login js-signin-modal-trigger" data-signin="login">Войти →</div>
+                        <div class="bttn statistics-denied__register js-signin-modal-trigger" data-signin="signup">Регистрация</div>
                     </div>
                 </div>
             </div>
@@ -1063,7 +1063,7 @@ export default class Render {
         gameResultWord.classList.add('gameresultword');
         gameResultWord.innerHTML = `
         <div class="gameresultword__icon">
-            <div class="play-icon"></div>
+            <div class="play-icon" data-src="${word.audio}"></div>
         </div>
         <div class="gameresultword__body">
             <div class="gameresultword__body-word">${word.word}</div>

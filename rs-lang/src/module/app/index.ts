@@ -11,6 +11,9 @@ import { getRandom } from '../../utils/helpers';
 
 //Interface
 import IUserBody from '../interface/IUserBody';
+import IWord from '../interface/IWord';
+import IAggregatedWord from '../interface/IAggregatedWord';
+import IUserWord from '../interface/IUserWord';
 
 //Style
 import '../../global.scss';
@@ -41,26 +44,25 @@ import AudioCall from '../components/audio-call';
 
 //State
 import State from './state';
-import IWord from '../interface/IWord';
-import IAggregatedWord from '../interface/IAggregatedWord';
-import IUserWord from '../interface/IUserWord';
 
 export default class App {
     data: Data;
     render: Render;
     router: Router;
+    login: ModalLogin;
 
     constructor(base: string) {
         this.data = new Data(base);
         this.render = new Render();
         this.router = createRouter();
+        this.login = new ModalLogin(base, this.router);
     }
 
     async start() {
         this.initState();
         this.createPage();
-        this.createLogin();
         this.initRouter();
+        this.createLogin();
     }
 
     initState() {
@@ -92,6 +94,8 @@ export default class App {
             .get('/', (req) => {
                 this.showMain();
                 Render.currentLink(req.path);
+                this.login.initSecondTrigger();
+                // this.login.init();
             })
             .get('/book', (req) => {
                 this.showBook(0, 0);
@@ -99,8 +103,8 @@ export default class App {
             })
             .get('/book/:group/:page', (req) => {
                 const state = new State();
-                const userId = state.userId;
-                const token = state.token;
+                //const userId = state.userId;
+                //const token = state.token;
                 const loginStatus = state.token ? true : false;
 
                 const group = Number(req.params.group);
@@ -113,6 +117,26 @@ export default class App {
                     this.showBookPage(group, page);
                 }
 
+                Render.currentLink(req.path);
+            })
+            .get('/book/sprint/:group/:page', (req) => {
+                const group = Number(req.params.group);
+                const page = Number(req.params.page);
+                if (new State().token === '') {
+                    this.router.navigate(`/book/${group}/${page}`);
+                    return;
+                }
+                this.showSprint(group, page, true);
+                Render.currentLink(req.path);
+            })
+            .get('/book/audio-call/:group/:page', (req) => {
+                const group = Number(req.params.group);
+                const page = Number(req.params.page);
+                if (new State().token === '') {
+                    this.router.navigate(`/book/${group}/${page}`);
+                    return;
+                }
+                this.showAudioCall(group, page, true);
                 Render.currentLink(req.path);
             })
             .get('/games', (req) => {
@@ -142,6 +166,7 @@ export default class App {
             .get('/stats', (req) => {
                 this.showStatistics();
                 Render.currentLink(req.path);
+                this.login.initSecondTrigger();
             })
             .error(404, () => {
                 //this.show404();
@@ -162,8 +187,8 @@ export default class App {
 
     async showBook(group: number, page: number) {
         const state = new State();
-        const userId = state.userId;
-        const token = state.token;
+        //const userId = state.userId;
+        //const token = state.token;
         const loginStatus = state.token ? true : false;
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
@@ -696,28 +721,21 @@ export default class App {
         });
     }
 
-    async showSprint(group: number, page: number) {
-        const main = getHTMLElement(document.querySelector('.main'));
-        main.innerHTML = '';
-        const words = await this.data.getWords(group, page);
-        if (typeof words === 'number') {
-            console.log(`error ${words}`);
-            return;
-        }
-        const sprint = new Sprint(this.data.base, words, group, page);
+    showSprint(group: number, page: number, isBook: boolean = false) {
+        const sprint = new Sprint(this.data.base, group, page, isBook, this.router);
         sprint.start();
-        //const gameSprint = this.render.gameSprint(group, page);
-        //main.appendChild(gameSprint);
     }
 
-    async showAudioCall(group: number, page: number) {
-        const audioCall = new AudioCall(this.data.base, group, page);
+    async showAudioCall(group: number, page: number, isBook: boolean = false) {
+        const audioCall = new AudioCall(this.data.base, group, page, isBook, this.router);
         audioCall.start();
     }
 
     createLogin() {
         const modal = this.render.modalLogin();
         document.body.append(modal);
-        new ModalLogin(modal, this.data.base, this.router);
+        //new ModalLogin(modal, this.data.base, this.router);
+        //console.log(this.router);
+        this.login.init();
     }
 }
