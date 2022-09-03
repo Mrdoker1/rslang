@@ -4,26 +4,40 @@
 .statistics{
     padding: 40px;
     background: white;
-    width: fit-content;
     border-radius: 14px;
+    box-shadow: $box-shadow-2;
     &-denied{
         display: flex;
         max-width: fit-content;
         flex-direction: row;
         background: white;
         padding: 40px;
+        border-radius: 14px;
+        gap: 30px;
+        box-shadow: $box-shadow-2;
         &__body{
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
         &__heading{
-            &-header{}
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            max-width: 490px;
+            &-header{
+                font: $dela-gothic-32px;
+            }
             &-subtitle{
-                max-width: 600px;
+                font: $montserrat-16px;
+                color: $color-grey-dark;
             }
         }
-        &__buttons{}
+        &__buttons{
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
     }
     &__tabs{
         display: flex;
@@ -48,17 +62,23 @@
         align-items: center;
         flex-direction: column;
         justify-content: center;
-        width: 400px;
+        width: 50%;
         padding: 40px;
         background: white;
+        border-radius: 14px;
+        box-shadow: $box-shadow-2;
     }
     &__container{
         display: flex;
+        gap: 20px;
+        width: 100%;
     }
     &__wrapper{
         display: flex;
         flex-direction: column;
         align-items: center;
+        width: 100%;
+        gap: 20px;
     }
     &__empty{}
     &__body{
@@ -72,7 +92,7 @@
         }
         &-info{
             display: flex;
-            justify-content: space-between;
+            justify-content: space-around;
             align-items: center;
         }
     }
@@ -114,7 +134,11 @@
     &__sprint{
         display: flex;
         flex-direction: row;
-        & .sprint-image{}
+        gap: 20px;
+        & .sprint-image {
+            max-width: 70px;
+            max-height: 112px;
+        }
         &-body{
             display: flex;
             flex-direction: column;
@@ -135,6 +159,11 @@
     &__audiocall{
         display: flex;
         flex-direction: row;
+        gap: 20px;
+        & .audiocall-image {
+            max-width: 70px;
+            max-height: 112px;
+        }
         & .sprint-image{}
         &-body{
             display: flex;
@@ -153,4 +182,8 @@
             flex-direction: column;
         }
     }
+}
+
+#Chart {
+    max-height: 400px;
 }

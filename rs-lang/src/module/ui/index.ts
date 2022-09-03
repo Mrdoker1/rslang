@@ -499,10 +499,12 @@ export default class Render {
 
         switch (type) {
             case statisticType.Daily:
-                header = 'Статистика  за  сегодня';
+                header = 'Статистика за сегодня';
                 for (let day in statistics.optional) {
                     const statisticDay = statistics.optional[day];
-                    if (today.getTime() == new Date(statisticDay.date).getTime()) {
+                    const statisticDate = new Date(statisticDay.date);
+                    statisticDate.setHours(0, 0, 0, 0);
+                    if (today.getTime() == statisticDate.getTime()) {
                         updateData(statisticDay);
                     } else {
                         //console.log('false');
@@ -510,7 +512,7 @@ export default class Render {
                 }
                 break;
             case statisticType.Total:
-                header = 'Статистика  за все время';
+                header = 'Статистика за все время';
                 for (let day in statistics.optional) {
                     const statisticDay = statistics.optional[day];
                     updateData(statisticDay);
@@ -551,7 +553,7 @@ export default class Render {
                     <div class="statistics__wordLearnedTotal-number">${wordLearned}<span>+</span></div>
                     <div class="statistics__wordLearnedTotal-subtitle">слов изучено</div>
                 </div>
-                <div class="divider vertical"></div>
+                <div class="divider-vertical"></div>
                 <div class="statistics__rightAnswersTotal">
                     <div class="statistics__rightAnswersTotal-number">
                         ${typeof rightAnswersTotal === 'number' ? rightAnswersTotal : 0}<span>%</span>
@@ -575,6 +577,7 @@ export default class Render {
                     </div>
                 </div>
             </div>
+            <div class="divider-horizontal"></div>
             <div class="statistics__audiocall">
             <div class="statistics__audiocall audiocall-image"></div>
                 <div class="statistics__audiocall-body">
@@ -613,9 +616,14 @@ export default class Render {
         switch (type) {
             case statisticType.Daily:
                 header = 'Колличество изученных слов на сегодня';
+
+                console.log(statistics);
+
                 for (let day in statistics.optional) {
                     const statisticDay = statistics.optional[day];
-                    if (today.getTime() == new Date(statisticDay.date).getTime()) {
+                    const statisticDate = new Date(statisticDay.date);
+                    statisticDate.setHours(0, 0, 0, 0);
+                    if (today.getTime() == statisticDate.getTime()) {
                         const myChart = new Chart(canvas, {
                             type: 'doughnut',
                             data: {
@@ -797,7 +805,7 @@ export default class Render {
                     <span>x${multiplier}</span>
                     <span>Множитель</span>
                 </div>
-                <div class="divider"></div>
+                <div class="divider-horizontal"></div>
                 <div class="sprint-game__points">
                     <span>${points}</span>
                     <span>Очки</span>
