@@ -836,7 +836,7 @@ export default class App {
         main.append(game);
         switch (type) {
             case gameType.AudioCall:
-                root = 'audiocall';
+                root = 'audio-call';
                 break;
             case gameType.Sprint:
                 root = 'sprint';
