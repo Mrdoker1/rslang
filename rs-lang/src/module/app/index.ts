@@ -183,21 +183,20 @@ export default class App {
         const sectionGames = this.render.sectionGames(`/games/sprint`, `/games/audio-call`);
         main.appendChild(sectionSplash);
         main.appendChild(sectionBenefits);
-        (function () {
-            document.addEventListener('mousemove', parallax);
-            const elem = getHTMLElement(document.querySelector('.parallax'));
-            function parallax(e: MouseEvent) {
-                let _w = window.innerWidth / 2;
-                let _h = window.innerHeight / 2;
-                let _mouseX = e.clientX;
-                let _mouseY = e.clientY;
-                let _depth1 = `${55 - (_mouseX - _w) * 0.002}% ${50 - (_mouseY - _h) * 0.02}%`;
-                let _depth2 = `${75 - (_mouseX - _w) * 0.002}% ${45 - (_mouseY - _h) * 0.01}%`;
-                let _depth3 = `${100 - (_mouseX - _w) * 0.007}% ${25 - (_mouseY - _h) * 0.03}%`;
-                let x = `${_depth3}, ${_depth2}, ${_depth1}`;
-                elem.style.backgroundPosition = x;
-            }
-        })();
+
+        document.addEventListener('mousemove', parallax);
+        const elem = getHTMLElement(document.querySelector('.parallax'));
+        function parallax(e: MouseEvent) {
+            let _w = window.innerWidth / 2;
+            let _h = window.innerHeight / 2;
+            let _mouseX = e.clientX;
+            let _mouseY = e.clientY;
+            let _depth1 = `${55 - (_mouseX - _w) * 0.002}% ${50 - (_mouseY - _h) * 0.02}%`;
+            let _depth2 = `${75 - (_mouseX - _w) * 0.002}% ${45 - (_mouseY - _h) * 0.01}%`;
+            let _depth3 = `${100 - (_mouseX - _w) * 0.007}% ${25 - (_mouseY - _h) * 0.03}%`;
+            let x = `${_depth3}, ${_depth2}, ${_depth1}`;
+            elem.style.backgroundPosition = x;
+        }
     }
 
     async showBook(group: number, page: number) {
