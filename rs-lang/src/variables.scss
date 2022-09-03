@@ -1,15 +1,45 @@
 // Fonts
 @font-face {
   font-family: 'Dela Gothic One';
-  src: url('./assets/fonts/DelaGothicOne-Regular.eot');
+  src: url('./assets/fonts/DelaGothicOne/DelaGothicOne-Regular.eot');
   src: local('Dela Gothic One Regular'), local('DelaGothicOne-Regular'),
-      url('./assets/fonts/DelaGothicOne-Regular.eot?#iefix') format('embedded-opentype'),
-      url('./assets/fonts/DelaGothicOne-Regular.woff2') format('woff2'),
-      url('./assets/fonts/DelaGothicOne-Regular.woff') format('woff'),
-      url('./assets/fonts/DelaGothicOne-Regular.ttf') format('truetype');
+      url('./assets/fonts/DelaGothicOne/DelaGothicOne-Regular.eot?#iefix') format('embedded-opentype'),
+      url('./assets/fonts/DelaGothicOne/DelaGothicOne-Regular.woff2') format('woff2'),
+      url('./assets/fonts/DelaGothicOne/DelaGothicOne-Regular.woff') format('woff'),
+      url('./assets/fonts/DelaGothicOne/DelaGothicOne-Regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
+}
+@font-face {
+	font-family: 'Montserrat';
+	src: url('Montserrat-Regular.eot');
+	src: local('Montserrat Regular'), local('Montserrat-Regular'),
+		url('Montserrat-Regular.eot?#iefix') format('embedded-opentype'),
+		url('Montserrat-Regular.woff') format('woff'),
+		url('Montserrat-Regular.ttf') format('truetype');
+	font-weight: 400;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'Montserrat';
+	src: url('Montserrat-SemiBold.eot');
+	src: local('Montserrat SemiBold'), local('Montserrat-SemiBold'),
+		url('Montserrat-SemiBold.eot?#iefix') format('embedded-opentype'),
+		url('Montserrat-SemiBold.woff') format('woff'),
+		url('Montserrat-SemiBold.ttf') format('truetype');
+	font-weight: 600;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'Montserrat';
+	src: url('Montserrat-Bold.eot');
+	src: local('Montserrat Bold'), local('Montserrat-Bold'),
+		url('Montserrat-Bold.eot?#iefix') format('embedded-opentype'),
+		url('Montserrat-Bold.woff') format('woff'),
+		url('Montserrat-Bold.ttf') format('truetype');
+	font-weight: 700;
+	font-style: normal;
 }
 
 $montserrat: normal 300 14px/19px 'Montserrat';

@@ -103,7 +103,7 @@ body {
           text-decoration: none;
           transition: $transition-1;
           &.active {
-              border-color: initial;
+              color: $color-primary;
           }
       }
       &:first-child {
