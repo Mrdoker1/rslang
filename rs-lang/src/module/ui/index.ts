@@ -75,29 +75,30 @@ export default class Render {
     sectionSplash() {
         const splash = document.createElement('section');
         splash.classList.add('splash');
+        splash.classList.add('parallax');
         const splashContainer = document.createElement('div');
         splashContainer.classList.add('container');
         splash.appendChild(splashContainer);
         splashContainer.innerHTML += `
-            <div class="splash__wrapper">
-                <h3 class="splash__subtitle">Онлайн Учeбник</h3>
-                <h2 class="splash__title">Изучай английский вместе с нами.</h2>
-                <p class="splash__description">Практикуйте английский язык и изучайте &nbsp; новое с помощью платформы</p>
-                <div class="splash__buttons">
-                    <a href="#" class="bttn bttn--transparent js-signin-modal-trigger" data-routerjs-ignore="" data-signin="login">Войти →</a>
-                    <a href="#benefits" class="bttn bttn--light" data-routerjs-ignore="true">О платформе</a>
-                </div>
-                <div class="app-statistic">
-                    <div class="hours">
-                        <span class="numbers">700</span>
-                        <span class="text">Часов контента</span>
-                    </div>
-                    <div class="users">
-                        <span class="numbers">575k</span>
-                        <span class="text">Пользователей</span>
-                    </div>
-                </div>
-            </div>
+        <div class="splash__wrapper">
+          <h3 class="splash__subtitle">Онлайн Учeбник</h3>
+          <h2 class="splash__title">Изучай английский вместе с нами.</h2>
+          <p class="splash__description">Практикуйте английский язык и изучайте &nbsp; новое с помощью платформы</p>
+          <div class="splash__buttons">
+              <a href="#" class="bttn bttn--transparent js-signin-modal-trigger" data-routerjs-ignore="" data-signin="login">Войти →</a>
+              <a href="#benefits" class="bttn bttn--light" data-routerjs-ignore="true">О платформе</a>
+          </div>
+          <div class="app-statistic">
+              <div class="hours">
+                  <span class="numbers">700</span>
+                  <span class="text">Часов контента</span>
+              </div>
+              <div class="users">
+                  <span class="numbers">575k</span>
+                  <span class="text">Пользователей</span>
+              </div>
+          </div>
+        </div>
         `;
         return splash;
     }
@@ -494,6 +495,9 @@ export default class Render {
         let recordAudioCall = 0;
         let wordLearnedAudiocall = 0;
         let rightAnswersAudiocall = 0;
+        let wordTotal = 0;
+        let wordTotalSprint = 0;
+        let wordTotalAudiocall = 0;
         let header = 'Default Header';
         let subtitle = 'Ваша статистика по всем активностям';
 
@@ -527,6 +531,9 @@ export default class Render {
             wordLearnedAudiocall += statisticDay.audio.learned;
             rightAnswersSprint += statisticDay.sprint.right;
             rightAnswersAudiocall += statisticDay.audio.right;
+            wordTotalSprint += statisticDay.sprint.total;
+            wordTotalAudiocall += statisticDay.audio.total;
+            wordTotal = wordTotalSprint + wordTotalAudiocall;
             if (recordSprint < statisticDay.sprint.record) {
                 recordSprint = statisticDay.sprint.record;
             }
@@ -538,9 +545,10 @@ export default class Render {
         const stats = document.createElement('div');
         stats.classList.add('statistics');
 
-        const rightAnswersTotal = ((rightAnswers / wordLearned) * 100).toFixed(2);
-        const rightAnswersSprintTotal = ((rightAnswersSprint / wordLearnedSprint) * 100).toFixed(2);
-        const rightAnswersAudiocallTotal = ((rightAnswersAudiocall / wordLearnedAudiocall) * 100).toFixed(2);
+        const rightAnswersPercent = (rightAnswers / (wordTotal <= 0 ? 1 : wordTotal)) * 100;
+        const rightAnswersSprintPercent = (rightAnswersSprint / (wordTotalSprint <= 0 ? 1 : wordTotalSprint)) * 100;
+        const rightAnswersAudiocallPercent =
+            (rightAnswersAudiocall / (wordTotalAudiocall <= 0 ? 1 : wordTotalAudiocall)) * 100;
 
         stats.innerHTML = `
         <div class="statistics__body">
@@ -556,7 +564,7 @@ export default class Render {
                 <div class="divider-vertical"></div>
                 <div class="statistics__rightAnswersTotal">
                     <div class="statistics__rightAnswersTotal-number">
-                        ${typeof rightAnswersTotal === 'number' ? rightAnswersTotal : 0}<span>%</span>
+                        ${typeof rightAnswersPercent === 'number' ? rightAnswersPercent.toFixed(1) : 0}<span>%</span>
                     </div>
                     <div class="statistics__rightAnswersTotal-subtitle">правильных ответов</div>
                 </div>
@@ -571,7 +579,7 @@ export default class Render {
                     <div class="statistics__sprint-info">
                         <span><b>${wordLearnedSprint}</b> слов изучено</span>
                         <span><b>${
-                            typeof rightAnswersSprintTotal === 'number' ? rightAnswersTotal : 0
+                            typeof rightAnswersSprintPercent === 'number' ? rightAnswersSprintPercent.toFixed(1) : 0
                         }%</b> правильных ответов</span>
                         <span><b>${recordSprint}</b> лучшая серия правильных ответов</span>
                     </div>
@@ -588,7 +596,9 @@ export default class Render {
                     <div class="statistics__audiocall-info">
                         <span><b>${wordLearnedAudiocall}</b> слов изучено</span>
                         <span><b>${
-                            typeof rightAnswersAudiocallTotal === 'number' ? rightAnswersTotal : 0
+                            typeof rightAnswersAudiocallPercent === 'number'
+                                ? rightAnswersAudiocallPercent.toFixed(1)
+                                : 0
                         }%</b> правильных ответов</span>
                         <span><b>${recordAudioCall}</b> лучшая серия правильных ответов</span>
                     </div>
@@ -616,8 +626,6 @@ export default class Render {
         switch (type) {
             case statisticType.Daily:
                 header = 'Колличество изученных слов на сегодня';
-
-                console.log(statistics);
 
                 for (let day in statistics.optional) {
                     const statisticDay = statistics.optional[day];
@@ -720,23 +728,26 @@ export default class Render {
     }
 
     //Games
-    gameDifficulty(type: string) {
+    gameDifficulty(type: gameType) {
         const container = document.createElement('div');
         container.classList.add('container');
         let levels = '';
         let title;
         let desc;
         let skill;
+        let gameImage = '';
 
-        if (type === 'audio-call') {
+        if (type === gameType.AudioCall) {
             title = 'Аудиовызов';
             desc = 'Тренировка Аудиовызов развивает словарный запас и улучшает восприятие речи на слух.';
             skill = 'на слух';
-        } else if (type === 'sprint') {
+            gameImage = 'audiocall-image';
+        } else if (type === gameType.Sprint) {
             title = 'Спринт';
             desc =
                 'Тренирует навык быстрого перевода с английского языка на русский. Вам нужно выбрать соответствует ли перевод предложенному слову.';
             skill = 'на скорость';
+            gameImage = 'sprint-image';
         }
 
         let checked;
@@ -771,7 +782,7 @@ export default class Render {
         const html = `<div class="game">
             <div class="game__wrapper">
                 <div class="game__window game__window__light">
-                    <img src="../assets/img/image-${type}.svg"/>
+                <div class="game__window ${gameImage}"></div>
                     <div class="game__block">
                         <h2 class="game__title">${title}</h2>
                         <p class="game__desc">${desc}</p>
