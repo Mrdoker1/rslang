@@ -3,7 +3,7 @@
 
 .splash {
     padding: 3.5rem 0 9rem;
-    background: url('/assets/img/splash-bg.png') no-repeat center right $color-grey-ligth;
+    //background: url('/assets/img/splash-bg.png') no-repeat center right $color-grey-ligth;
 
     &__wrapper {
         max-width: 475px;
@@ -35,5 +35,12 @@
         gap: 30px;
         align-items: center;
         margin-bottom: 50px;
+    }
+
+    &.parallax {
+      position: relative;
+      background: url('/assets/img/splash-bg-3.png') no-repeat center right, 
+      url('/assets/img/splash-bg-1.png') no-repeat 75%, 
+      url('/assets/img/splash-bg-2.png')  no-repeat 55%;
     }
 }

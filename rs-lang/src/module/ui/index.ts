@@ -75,6 +75,7 @@ export default class Render {
     sectionSplash() {
         const splash = document.createElement('section');
         splash.classList.add('splash');
+        splash.classList.add('parallax');
         const splashContainer = document.createElement('div');
         splashContainer.classList.add('container');
         splash.appendChild(splashContainer);
@@ -84,7 +85,30 @@ export default class Render {
                 <h2 class="splash__title">Изучай английский вместе с нами.</h2>
                 <p class="splash__description">Практикуйте английский язык и изучайте &nbsp; новое с помощью платформы</p>
                 <div class="splash__buttons">
-                    <a href="#" class="bttn bttn--transparent js-signin-modal-trigger" data-router="" js-ignore="" data-signin="login">Войти →</a>
+                    <a href="#" class="bttn bttn--transparent js-signin-modal-trigger" data-routerjs-ignore="" data-signin="login">Войти →</a>
+                    <a href="#" class="bttn bttn--light">О платформе →</a>
+                </div>
+                <div class="app-statistic">
+                    <div class="hours">
+                        <span class="numbers">700</span>
+                        <span class="text">Часов контента</span>
+                    </div>
+                    <div class="users">
+                        <span class="numbers">575k</span>
+                        <span class="text">Пользователей</span>
+                    </div>
+                </div>
+                <span value="-15"></span>
+                <span value="5"></span>
+                <span value="30"></span>
+            </div>
+            <!--
+            <div class="splash__wrapper">
+                <h3 class="splash__subtitle">Онлайн Учeбник</h3>
+                <h2 class="splash__title">Изучай английский вместе с нами.</h2>
+                <p class="splash__description">Практикуйте английский язык и изучайте &nbsp; новое с помощью платформы</p>
+                <div class="splash__buttons">
+                    <a href="#" class="bttn bttn--transparent js-signin-modal-trigger" data-routerjs-ignore="" data-signin="login">Войти →</a>
                     <a href="#" class="bttn bttn--light">О платформе →</a>
                 </div>
                 <div class="app-statistic">
@@ -98,6 +122,7 @@ export default class Render {
                     </div>
                 </div>
             </div>
+            -->
         `;
         return splash;
     }
