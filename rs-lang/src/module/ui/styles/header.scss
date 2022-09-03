@@ -89,4 +89,27 @@
         gap: 30px;
         align-items: center;
     }
+
+    .user {
+        display: flex;
+        gap:  10px;
+        align-items: center;
+        font: $montserrat-16px;
+
+        &__avatar {
+            padding: 11px 18px;
+            letter-spacing:  -0.04em;
+            text-align: center;
+            color: $color-cyan-dark;
+            border-radius: 50px;
+            background-color: $color-cyan-light;
+            text-transform: uppercase;
+        }
+
+        &__name {
+            color: $color-grey-dark;
+            letter-spacing:  -0.04em;
+            text-transform: capitalize;
+        }
+    }
 }

@@ -75,7 +75,9 @@ export default class App {
 
     createPage() {
         const render = new Render();
-        const header = render.header();
+        const state = new State();
+        const userName = state.name;
+        const header = render.header(userName);
         const main = render.main();
         const footer = render.footer();
         const body = getHTMLElement(document.body);

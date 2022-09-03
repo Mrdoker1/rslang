@@ -81,21 +81,33 @@ class ModalLogin {
 
         const loginLink = getHTMLElement(document.querySelector('[data-signin="login"]'));
         const logoutLink = getHTMLElement(document.querySelector('[data-signin="logout"]'));
+        const registerLink = getHTMLElement(document.querySelector('[data-signin="register"]'));
+        const userAvatar = getHTMLElement(document.querySelector('.user__avatar'));
+        const userName = getHTMLElement(document.querySelector('.user__name'));
         logoutLink.addEventListener('click', (e) => {
             e.preventDefault();
             state.token = '';
             state.userId = '';
+            state.name = '';
             state.refreshToken = '';
             state.tokenTime = '';
             clearTimeout(tokenTimer);
             logoutLink.classList.add('hidden');
             loginLink.classList.remove('hidden');
+            registerLink.classList.remove('hidden');
+            userAvatar.parentElement!.classList.add('hidden');
             this.router.run();
         });
 
         if (state.token) {
             loginLink.classList.add('hidden');
-        } else logoutLink.classList.add('hidden');
+            registerLink.classList.add('hidden');
+            userAvatar.innerHTML = state.name.charAt(0);
+            userName.innerHTML = state.name;
+        } else {
+            logoutLink.classList.add('hidden');
+            userAvatar.parentElement!.classList.add('hidden');
+        }
 
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -106,11 +118,16 @@ class ModalLogin {
             if (typeof login != 'number') {
                 state.token = login.token;
                 state.userId = login.userId;
+                state.name = login.name;
                 state.refreshToken = login.refreshToken;
                 state.tokenTime = new Date().toString();
 
                 loginLink.classList.add('hidden');
                 logoutLink.classList.remove('hidden');
+                registerLink.classList.add('hidden');
+                userAvatar.innerHTML = state.name.charAt(0);
+                userName.innerHTML = state.name;
+                userAvatar.parentElement!.classList.remove('hidden');
                 modal.classList.remove('cd-signin-modal--is-visible');
                 this.router.run();
 
@@ -132,6 +149,7 @@ class ModalLogin {
                 const login = await this.data.login({ email, password });
                 if (typeof login != 'number') {
                     state.token = login.token;
+                    state.name = login.name;
                     state.userId = login.userId;
                     state.refreshToken = login.refreshToken;
                     state.tokenTime = new Date().toString();
@@ -140,7 +158,6 @@ class ModalLogin {
                     logoutLink.classList.remove('hidden');
                     modal.classList.remove('cd-signin-modal--is-visible');
                     this.router.run();
-
                     tokenTimer = setTimeout(this.updateToken.bind(this), this.period);
                 }
             } else {
@@ -179,6 +196,7 @@ class ModalLogin {
             tokenTimer = setTimeout(this.updateToken.bind(this), this.period);
         } else {
             console.log(`Ошибка ${updToken}`);
+            state.name = '';
             state.userId = '';
             state.token = '';
             state.refreshToken = '';
