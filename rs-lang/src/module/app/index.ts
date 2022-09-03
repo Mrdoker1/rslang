@@ -7,6 +7,7 @@ import Render from '../ui';
 //Utils
 import getHTMLElement from '../../utils/getHTMLElement';
 import getHTMLInputElement from '../../utils/getHTMLInputElement';
+import { gameChart, gameType, statisticType } from '../../utils/enums';
 import { getRandom } from '../../utils/helpers';
 
 //Interface
@@ -143,7 +144,7 @@ export default class App {
                 Render.currentLink(req.path);
             })
             .get('/games/sprint', (req) => {
-                this.showGameDifficulty('sprint');
+                this.showGameDifficulty(gameType.Sprint);
                 Render.currentLink(req.path);
             })
             .get('/games/sprint/:group/:page', (req) => {
@@ -153,7 +154,7 @@ export default class App {
                 Render.currentLink(req.path);
             })
             .get('/games/audio-call', (req) => {
-                this.showGameDifficulty('audio-call');
+                this.showGameDifficulty(gameType.AudioCall);
                 Render.currentLink(req.path);
             })
             .get('/games/audio-call/:group/:page', (req) => {
@@ -706,7 +707,7 @@ export default class App {
         }
     }
 
-    showGameDifficulty(type: string) {
+    showGameDifficulty(type: gameType) {
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
         const game = this.render.gameDifficulty(type);
