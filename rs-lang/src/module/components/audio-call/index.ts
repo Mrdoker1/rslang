@@ -1,7 +1,7 @@
 //Utils
 import getHTMLElement from '../../../utils/getHTMLElement';
 import getHTMLImageElement from '../../../utils/getHTMLImageElement';
-import { shuffle } from '../../../utils/helpers';
+import { shuffle, createStsEntry } from '../../../utils/helpers';
 
 //Router
 import { Router } from 'routerjs';
@@ -287,7 +287,7 @@ export default class AudioCall {
         }
 
         if (!sts || isNewEntry) {
-            sts = this.createEntry();
+            sts = createStsEntry();
         }
 
         let newCount = sts.audio.new;
@@ -344,32 +344,6 @@ export default class AudioCall {
             console.log(`Ошибка updateUserStatistics ${updateUserStatistics}`);
             return;
         }
-    }
-
-    createEntry() {
-        const curDate = new Date();
-        const date = curDate.toString();
-        return {
-            date,
-            sprint: {
-                new: 0,
-                total: 0,
-                right: 0,
-                record: 0,
-                learned: 0,
-            },
-            audio: {
-                new: 0,
-                total: 0,
-                right: 0,
-                record: 0,
-                learned: 0,
-            },
-            book: {
-                new: 0,
-                learned: 0,
-            },
-        };
     }
 
     isNewDay(date: string): boolean {

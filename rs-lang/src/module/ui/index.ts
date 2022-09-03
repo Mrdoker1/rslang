@@ -720,23 +720,26 @@ export default class Render {
     }
 
     //Games
-    gameDifficulty(type: string) {
+    gameDifficulty(type: gameType) {
         const container = document.createElement('div');
         container.classList.add('container');
         let levels = '';
         let title;
         let desc;
         let skill;
+        let gameImage = '';
 
-        if (type === 'audio-call') {
+        if (type === gameType.AudioCall) {
             title = 'Аудиовызов';
             desc = 'Тренировка Аудиовызов развивает словарный запас и улучшает восприятие речи на слух.';
             skill = 'на слух';
-        } else if (type === 'sprint') {
+            gameImage = 'audiocall-image';
+        } else if (type === gameType.Sprint) {
             title = 'Спринт';
             desc =
                 'Тренирует навык быстрого перевода с английского языка на русский. Вам нужно выбрать соответствует ли перевод предложенному слову.';
             skill = 'на скорость';
+            gameImage = 'sprint-image';
         }
 
         let checked;
@@ -770,8 +773,8 @@ export default class Render {
 
         const html = `<div class="game">
             <div class="game__wrapper">
-                <div class="game__window">
-                    <img src="../assets/img/${type}.svg"/>
+                <div class="game__window game__window__light">
+                <div class="game__window ${gameImage}"></div>
                     <div class="game__block">
                         <h2 class="game__title">${title}</h2>
                         <p class="game__desc">${desc}</p>
@@ -834,7 +837,7 @@ export default class Render {
                 <div class="game__window audio">
                     <div class="audio__main">
                         <button class="audio__question js-play-word">
-                            <img src="../assets/img/music.svg">
+                            <img class="audio__img" src="../assets/img/music.svg">
                             <span class="audio__text-play">Play</span>
                         </button>   
                         <div class="audio__answer answer hidden">
@@ -847,11 +850,11 @@ export default class Render {
                             </div>   
                         </div>  
                         <div class="audio__attempts">
-                            <span class="audio__icon-heart"></span>
-                            <span class="audio__icon-heart"></span>
-                            <span class="audio__icon-heart"></span>
-                            <span class="audio__icon-heart"></span>
-                            <span class="audio__icon-heart"></span>
+                            <span class="audio__icon-heart">♥</span>
+                            <span class="audio__icon-heart">♥</span>
+                            <span class="audio__icon-heart">♥</span>
+                            <span class="audio__icon-heart">♥</span>
+                            <span class="audio__icon-heart">♥</span>
                         </div>
                     </div>
                     <div class="audio__choices">
