@@ -313,9 +313,14 @@ body {
     }   
 }
 
-.divider {
+.divider-vertical {
     border-left: 1px solid $color-grey-medium;
     height: 46px;
+}
+
+.divider-horizontal {
+    border-top: 1px solid $color-grey-medium;
+    width: 100%;
 }
 
 .label {
@@ -363,19 +368,33 @@ body {
 .rs-icon{
     width: 60px;
     height: 30px;
-    background: url("./assets/img/rs_school.svg") no-repeat center;
+    background: url("./assets/img/icon-rs-school.svg") no-repeat center;
 }
 
 .play-icon{
     width: 24px;
     height: 24px;
-    background: url("./assets/img/play-icon.svg") no-repeat center;
+    background: url("./assets/img/icon-play.svg") no-repeat center;
 }
 
 .statistics-image {
     width: 200px;
     height: 200px;
-    background: url("./assets/img/statistics-image.svg") no-repeat center;
+    background: url("./assets/img/image-statistics.svg") no-repeat center;
+}
+
+.sprint-image {
+    width: 250px;
+    height: 400px;
+    background: url("./assets/img/image-sprint.svg") no-repeat center;
+    background-size: contain;
+}
+
+.audiocall-image {
+    width: 250px;
+    height: 400px;
+    background: url("./assets/img/image-audiocall.svg") no-repeat center;
+    background-size: contain;
 }
 
 //Levitate animation

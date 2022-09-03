@@ -114,7 +114,11 @@
     &__sprint{
         display: flex;
         flex-direction: row;
-        & .sprint-image{}
+        gap: 20px;
+        & .sprint-image {
+            max-width: 70px;
+            max-height: 112px;
+        }
         &-body{
             display: flex;
             flex-direction: column;
@@ -135,6 +139,11 @@
     &__audiocall{
         display: flex;
         flex-direction: row;
+        gap: 20px;
+        & .audiocall-image {
+            max-width: 70px;
+            max-height: 112px;
+        }
         & .sprint-image{}
         &-body{
             display: flex;

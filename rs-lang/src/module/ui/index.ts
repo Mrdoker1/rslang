@@ -551,7 +551,7 @@ export default class Render {
                     <div class="statistics__wordLearnedTotal-number">${wordLearned}<span>+</span></div>
                     <div class="statistics__wordLearnedTotal-subtitle">слов изучено</div>
                 </div>
-                <div class="divider vertical"></div>
+                <div class="divider-vertical"></div>
                 <div class="statistics__rightAnswersTotal">
                     <div class="statistics__rightAnswersTotal-number">
                         ${typeof rightAnswersTotal === 'number' ? rightAnswersTotal : 0}<span>%</span>
@@ -575,6 +575,7 @@ export default class Render {
                     </div>
                 </div>
             </div>
+            <div class="divider-horizontal"></div>
             <div class="statistics__audiocall">
             <div class="statistics__audiocall audiocall-image"></div>
                 <div class="statistics__audiocall-body">
@@ -797,7 +798,7 @@ export default class Render {
                     <span>x${multiplier}</span>
                     <span>Множитель</span>
                 </div>
-                <div class="divider"></div>
+                <div class="divider-horizontal"></div>
                 <div class="sprint-game__points">
                     <span>${points}</span>
                     <span>Очки</span>
