@@ -711,12 +711,21 @@ export default class App {
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
         const game = this.render.gameDifficulty(type);
+        let root = '';
         main.append(game);
+        switch (type) {
+            case gameType.AudioCall:
+                root = 'audiocall';
+                break;
+            case gameType.Sprint:
+                root = 'sprint';
+                break;
+        }
 
         const start = getHTMLElement(game.querySelector('.game__start'));
         start.addEventListener('click', (e) => {
             const checked = getHTMLInputElement(game.querySelector('[type="radio"]:checked'));
-            const href = `/games/${type}/${checked.value}/${getRandom(0, 29)}`;
+            const href = `/games/${root}/${checked.value}/${getRandom(0, 29)}`;
             this.router.navigate(href);
         });
     }
