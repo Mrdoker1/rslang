@@ -3,7 +3,7 @@
 
 .footer {
     padding: 2.5rem 0 2.5rem;
-    background-color: $color-grey-ligth;
+    background-color: $color-grey-light;
 
     &__wrapper {
         display: flex;
@@ -33,10 +33,13 @@
     }
 
     &__copyright {
+        font: $montserrat-12px;
+        color: $color-grey-dark;
         a {
-          font: $montserrat-12px;
-          text-decoration: none;
-          color: $color-grey-dark;
+            color: $color-grey-dark;
+            &:hover {
+                color: $color-primary;
+            }
         }
     }
 }

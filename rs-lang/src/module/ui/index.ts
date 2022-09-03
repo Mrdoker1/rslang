@@ -54,13 +54,13 @@ export default class Render {
             </nav>
         </div>    
         <div class="header__user-links">
-            <a href="#" class="bttn bttn--transparent js-signin-modal-trigger" data-router js-ignore data-signin="login">Войти →</a>
+            <a href="#" class="bttn bttn--transparent js-signin-modal-trigger" data-routerjs-ignore data-signin="login">Войти →</a>
             <div class="user">
                <div class="user__avatar"></div>
                <div class="user__name"></div>
             </div>
-            <a href="#" class="bttn bttn--transparent" data-router js-ignore data-signin="logout">Выход →</a>
-            <a href="#" class="bttn" data-router data-signin="register">Регистрация</a>
+            <a href="#" class="bttn bttn--transparent" data-routerjs-ignore data-signin="logout">Выход →</a>
+            <a href="#" class="bttn js-signin-modal-trigger" data-routerjs-ignore data-signin="signup">Регистрация</a>
          </div>
         `;
         return header;
@@ -121,6 +121,9 @@ export default class Render {
                         <span class="text">Пользователей</span>
                     </div>
                 </div>
+                <span value="-15"></span>
+                <span value="5"></span>
+                <span value="30"></span>
             </div>
             -->
         `;
@@ -170,7 +173,7 @@ export default class Render {
         benefits.classList.add('benefits');
         benefits.classList.add('benefits');
         benefits.innerHTML += `
-          <div class="benefits__item">
+          <div class="benefits__item" id="benefits">
               <div class="container">
                   <div class="section-img">
                       <img src="../assets/img/section1-bg.png">
@@ -285,7 +288,7 @@ export default class Render {
                 </nav>
             </div>
             <div class="footer__copyright">
-                <a href="https://rs.school/js/" target="_blank">©2022 RS LANG. Project for RS School JS Course.</a>
+                ©2022 RS LANG. <a href="https://rs.school/js/" target="_blank">Project for RS School JS Course.</a>
             </div>
         </div>
      
@@ -432,8 +435,8 @@ export default class Render {
     //Statistics
     pageStatistics(statistics: IStatistics) {
         //Container for content
-        const container = document.createElement('div');
-        container.classList.add('container');
+        const pageStatisticsContainer = document.createElement('div');
+        pageStatisticsContainer.classList.add('container', 'align-center');
         //Wrapper for page content
         const pageStatistics = document.createElement('div');
         pageStatistics.classList.add('statistics__wrapper');
@@ -441,15 +444,18 @@ export default class Render {
         //Tabs
         const pageStatisticsTabs = document.createElement('div');
         pageStatisticsTabs.classList.add('statistics__tabs');
-        const pageStatisticsDailyTab = document.createElement('button');
-        const pageStatisticsTotalTab = document.createElement('button');
+        const pageStatisticsDailyTab = document.createElement('div');
+        const pageStatisticsTotalTab = document.createElement('div');
         pageStatisticsDailyTab.classList.add('statistics__tabs-tab');
+        pageStatisticsDailyTab.classList.add('active');
         pageStatisticsTotalTab.classList.add('statistics__tabs-tab');
-        pageStatisticsDailyTab.textContent = 'Tab 1';
-        pageStatisticsTotalTab.textContent = 'Tab 2';
+        pageStatisticsDailyTab.textContent = 'За день';
+        pageStatisticsTotalTab.textContent = 'За все время';
 
         pageStatisticsDailyTab.addEventListener('click', () => {
             console.log('Daily');
+            pageStatisticsDailyTab.classList.add('active');
+            pageStatisticsTotalTab.classList.remove('active');
             const container = getHTMLElement(document.querySelector('.statistics__container'));
             container.innerHTML = '';
             container.appendChild(this.statistics(statisticType.Daily, statistics));
@@ -458,6 +464,8 @@ export default class Render {
 
         pageStatisticsTotalTab.addEventListener('click', () => {
             console.log('Total');
+            pageStatisticsTotalTab.classList.add('active');
+            pageStatisticsDailyTab.classList.remove('active');
             const container = getHTMLElement(document.querySelector('.statistics__container'));
             container.innerHTML = '';
             container.appendChild(this.statistics(statisticType.Total, statistics));
@@ -475,15 +483,15 @@ export default class Render {
 
         pageStatistics.appendChild(pageStatisticsTabs);
         pageStatistics.appendChild(statisticsContainer);
-        container.appendChild(pageStatistics);
-        return container;
+        pageStatisticsContainer.appendChild(pageStatistics);
+        return pageStatisticsContainer;
     }
 
     pageStatisticsDenied() {
-        const container = document.createElement('div');
-        container.classList.add('container');
+        const pageStatisticsContainer = document.createElement('div');
+        pageStatisticsContainer.classList.add('container', 'align-center');
 
-        container.innerHTML = `
+        pageStatisticsContainer.innerHTML = `
             <div class="statistics-denied">
                 <div class="statistics-image"></div>
                 <div class="statistics-denied__body">
@@ -492,14 +500,14 @@ export default class Render {
                         <div class="statistics-denied__heading-subtitle">Чтобы получать статистику и следить за своими результатами зарегистрируйтесь или войдите в аккаунт</div>
                     </div>
                     <div class="statistics-denied__buttons">
-                        <button class="statistics-denied__login">Войти →</button>
-                        <button class="statistics-denied__register">Регистрация</button>
+                        <div class="bttn bttn--transparent statistics-denied__login js-signin-modal-trigger" data-signin="login">Войти →</div>
+                        <div class="bttn statistics-denied__register js-signin-modal-trigger" data-signin="signup">Регистрация</div>
                     </div>
                 </div>
             </div>
         `;
 
-        return container;
+        return pageStatisticsContainer;
     }
 
     statistics(type: statisticType, statistics: IStatistics) {
@@ -519,10 +527,12 @@ export default class Render {
 
         switch (type) {
             case statisticType.Daily:
-                header = 'Статистика  за  сегодня';
+                header = 'Статистика за сегодня';
                 for (let day in statistics.optional) {
                     const statisticDay = statistics.optional[day];
-                    if (today.getTime() == new Date(statisticDay.date).getTime()) {
+                    const statisticDate = new Date(statisticDay.date);
+                    statisticDate.setHours(0, 0, 0, 0);
+                    if (today.getTime() == statisticDate.getTime()) {
                         updateData(statisticDay);
                     } else {
                         //console.log('false');
@@ -530,7 +540,7 @@ export default class Render {
                 }
                 break;
             case statisticType.Total:
-                header = 'Статистика  за все время';
+                header = 'Статистика за все время';
                 for (let day in statistics.optional) {
                     const statisticDay = statistics.optional[day];
                     updateData(statisticDay);
@@ -571,7 +581,7 @@ export default class Render {
                     <div class="statistics__wordLearnedTotal-number">${wordLearned}<span>+</span></div>
                     <div class="statistics__wordLearnedTotal-subtitle">слов изучено</div>
                 </div>
-                <div class="divider vertical"></div>
+                <div class="divider-vertical"></div>
                 <div class="statistics__rightAnswersTotal">
                     <div class="statistics__rightAnswersTotal-number">
                         ${typeof rightAnswersTotal === 'number' ? rightAnswersTotal : 0}<span>%</span>
@@ -584,7 +594,7 @@ export default class Render {
                 <div class="statistics__sprint-body">
                     <div class="statistics__sprint-heading">
                         <div class="statistics__sprint-header">Спринт</div>
-                        <div class="statistics__sprint-label">на скорость</div>
+                        <div class="label statistics__sprint-label">на скорость</div>
                     </div>
                     <div class="statistics__sprint-info">
                         <span><b>${wordLearnedSprint}</b> слов изучено</span>
@@ -595,12 +605,13 @@ export default class Render {
                     </div>
                 </div>
             </div>
+            <div class="divider-horizontal"></div>
             <div class="statistics__audiocall">
             <div class="statistics__audiocall audiocall-image"></div>
                 <div class="statistics__audiocall-body">
                     <div class="statistics__audiocall-heading">
                         <div class="statistics__audiocall-header">Аудиовызов</div>
-                        <div class="statistics__audiocall-label">на слух</div>
+                        <div class="label statistics__audiocall-label">на слух</div>
                     </div>
                     <div class="statistics__audiocall-info">
                         <span><b>${wordLearnedAudiocall}</b> слов изучено</span>
@@ -633,9 +644,14 @@ export default class Render {
         switch (type) {
             case statisticType.Daily:
                 header = 'Колличество изученных слов на сегодня';
+
+                console.log(statistics);
+
                 for (let day in statistics.optional) {
                     const statisticDay = statistics.optional[day];
-                    if (today.getTime() == new Date(statisticDay.date).getTime()) {
+                    const statisticDate = new Date(statisticDay.date);
+                    statisticDate.setHours(0, 0, 0, 0);
+                    if (today.getTime() == statisticDate.getTime()) {
                         const myChart = new Chart(canvas, {
                             type: 'doughnut',
                             data: {
@@ -782,7 +798,7 @@ export default class Render {
 
         const html = `<div class="game">
             <div class="game__wrapper">
-                <div class="game__window">
+                <div class="game__window game__window__light">
                     <img src="../assets/img/${type}.svg"/>
                     <div class="game__block">
                         <h2 class="game__title">${title}</h2>
@@ -817,7 +833,7 @@ export default class Render {
                     <span>x${multiplier}</span>
                     <span>Множитель</span>
                 </div>
-                <div class="divider"></div>
+                <div class="divider-horizontal"></div>
                 <div class="sprint-game__points">
                     <span>${points}</span>
                     <span>Очки</span>
@@ -846,7 +862,7 @@ export default class Render {
                 <div class="game__window audio">
                     <div class="audio__main">
                         <button class="audio__question js-play-word">
-                            <img src="../assets/img/music.svg">
+                            <img class="audio__img" src="../assets/img/music.svg">
                             <span class="audio__text-play">Play</span>
                         </button>   
                         <div class="audio__answer answer hidden">
@@ -859,11 +875,11 @@ export default class Render {
                             </div>   
                         </div>  
                         <div class="audio__attempts">
-                            <span class="audio__icon-heart"></span>
-                            <span class="audio__icon-heart"></span>
-                            <span class="audio__icon-heart"></span>
-                            <span class="audio__icon-heart"></span>
-                            <span class="audio__icon-heart"></span>
+                            <span class="audio__icon-heart">♥</span>
+                            <span class="audio__icon-heart">♥</span>
+                            <span class="audio__icon-heart">♥</span>
+                            <span class="audio__icon-heart">♥</span>
+                            <span class="audio__icon-heart">♥</span>
                         </div>
                     </div>
                     <div class="audio__choices">
@@ -1088,7 +1104,7 @@ export default class Render {
         gameResultWord.classList.add('gameresultword');
         gameResultWord.innerHTML = `
         <div class="gameresultword__icon">
-            <div class="play-icon"></div>
+            <div class="play-icon" data-src="${word.audio}"></div>
         </div>
         <div class="gameresultword__body">
             <div class="gameresultword__body-word">${word.word}</div>

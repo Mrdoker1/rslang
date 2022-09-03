@@ -1,5 +1,7 @@
+//Utils
 import getHTMLElement from '../../../utils/getHTMLElement';
 import getHTMLInputElement from '../../../utils/getHTMLInputElement';
+import { createStsEntry } from '../../../utils/helpers';
 
 //Router
 import { Router } from 'routerjs';
@@ -13,64 +15,23 @@ import Data from '../../api';
 let tokenTimer: ReturnType<typeof setTimeout>;
 
 class ModalLogin {
-    element: HTMLElement;
-    blocks: NodeListOf<HTMLElement>;
-    switchers: NodeListOf<HTMLElement>;
-    triggers: NodeListOf<HTMLElement>;
-    hidePassword: NodeListOf<HTMLElement>;
     data: Data;
     router: Router;
     // period: number = 1000 * 60; //a minute;
     period: number = 1000 * 60 * 60 * 3; //three hours;
+    state = new State();
 
-    constructor(element: HTMLElement, base: string, router: Router) {
+    constructor(base: string, router: Router) {
         this.data = new Data(base);
         this.router = router;
-        this.element = element;
-        this.blocks = this.element.querySelectorAll('.js-signin-modal-block');
-        this.switchers = this.element.querySelectorAll('.js-signin-modal-switcher a');
-        this.triggers = document.querySelectorAll('.js-signin-modal-trigger');
-        this.hidePassword = this.element.querySelectorAll('.js-hide-password');
-        this.init();
     }
 
     init() {
-        for (let i = 0; i < this.triggers.length; i++) {
-            this.triggers[i].addEventListener('click', (e) => {
-                const target = getHTMLElement(e.target);
-                if (target.hasAttribute('data-signin')) {
-                    e.preventDefault();
-                    const type = target.getAttribute('data-signin');
-                    if (type) this.showSigninForm(type);
-                }
-            });
-        }
-        //close modal
-        this.element.addEventListener('click', (e) => {
-            const target = getHTMLElement(e.target);
-            const messages = this.element.querySelectorAll('.cd-signin-modal__message');
-            if (target.classList.contains('js-signin-modal') || target.classList.contains('js-close')) {
-                e.preventDefault();
-                this.element.classList.remove('cd-signin-modal--is-visible');
-                messages.forEach((mes) => {
-                    mes.textContent = '';
-                });
-            }
-        });
+        this.initTriggers();
+        this.initModalBtns();
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') this.element.classList.remove('cd-signin-modal--is-visible');
-        });
-
-        //hide/show password
-        for (let i = 0; i < this.hidePassword.length; i++) {
-            this.hidePassword[i].addEventListener('click', () => {
-                this.togglePassword(this.hidePassword[i]);
-            });
-        }
-
-        let state = new State();
-        const modal = this.element;
+        let state = this.state;
+        const modal = getHTMLElement(document.querySelector('.cd-signin-modal'));
         const loginForm = getHTMLElement(modal.querySelector('[data-type="login"] form'));
         const loginMessage = getHTMLElement(loginForm.querySelector('.js-signin-modal__message'));
         const loginEmailBox = getHTMLInputElement(loginForm.querySelector('#signin-email'));
@@ -79,11 +40,13 @@ class ModalLogin {
         const signupForm = getHTMLElement(modal.querySelector('[data-type="signup"] form'));
         const signupMessage = getHTMLElement(signupForm.querySelector('.js-signin-modal__message'));
 
+        const signupLink = getHTMLElement(document.querySelector('[data-signin="signup"]'));
         const loginLink = getHTMLElement(document.querySelector('[data-signin="login"]'));
         const logoutLink = getHTMLElement(document.querySelector('[data-signin="logout"]'));
-        const registerLink = getHTMLElement(document.querySelector('[data-signin="register"]'));
-        const userAvatar = getHTMLElement(document.querySelector('.user__avatar'));
-        const userName = getHTMLElement(document.querySelector('.user__name'));
+
+        const user = getHTMLElement(document.querySelector('.user'));
+        const userAvatar = getHTMLElement(user.querySelector('.user__avatar'));
+        const userName = getHTMLElement(user.querySelector('.user__name'));
         logoutLink.addEventListener('click', (e) => {
             e.preventDefault();
             state.token = '';
@@ -92,22 +55,14 @@ class ModalLogin {
             state.refreshToken = '';
             state.tokenTime = '';
             clearTimeout(tokenTimer);
+
             logoutLink.classList.add('hidden');
             loginLink.classList.remove('hidden');
-            registerLink.classList.remove('hidden');
-            userAvatar.parentElement!.classList.add('hidden');
+            signupLink.classList.remove('hidden');
+
+            user.classList.add('hidden');
             this.router.run();
         });
-
-        if (state.token) {
-            loginLink.classList.add('hidden');
-            registerLink.classList.add('hidden');
-            userAvatar.innerHTML = state.name.charAt(0);
-            userName.innerHTML = state.name;
-        } else {
-            logoutLink.classList.add('hidden');
-            userAvatar.parentElement!.classList.add('hidden');
-        }
 
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -124,13 +79,15 @@ class ModalLogin {
 
                 loginLink.classList.add('hidden');
                 logoutLink.classList.remove('hidden');
-                registerLink.classList.add('hidden');
+                signupLink.classList.add('hidden');
+
                 userAvatar.innerHTML = state.name.charAt(0);
                 userName.innerHTML = state.name;
-                userAvatar.parentElement!.classList.remove('hidden');
-                modal.classList.remove('cd-signin-modal--is-visible');
-                this.router.run();
+                user.classList.remove('hidden');
 
+                modal.classList.remove('cd-signin-modal--is-visible');
+
+                this.router.run();
                 tokenTimer = setTimeout(this.updateToken.bind(this), this.period);
             } else {
                 loginMessage.textContent = 'Неверный пароль или почта';
@@ -144,8 +101,8 @@ class ModalLogin {
             const email = getHTMLInputElement(signupForm.querySelector('#signup-email')).value;
             const password = getHTMLInputElement(signupForm.querySelector('#signup-password')).value;
 
-            const user = await this.data.createUser({ name, email, password });
-            if (typeof user != 'number') {
+            const createUser = await this.data.createUser({ name, email, password });
+            if (typeof createUser != 'number') {
                 const login = await this.data.login({ email, password });
                 if (typeof login != 'number') {
                     state.token = login.token;
@@ -156,17 +113,108 @@ class ModalLogin {
 
                     loginLink.classList.add('hidden');
                     logoutLink.classList.remove('hidden');
+                    signupLink.classList.add('hidden');
+
+                    userAvatar.innerHTML = state.name.charAt(0);
+                    userName.innerHTML = state.name;
+                    user.classList.remove('hidden');
+
                     modal.classList.remove('cd-signin-modal--is-visible');
                     this.router.run();
                     tokenTimer = setTimeout(this.updateToken.bind(this), this.period);
                 }
+
+                this.addFirstStatistics();
             } else {
-                if (user === 422) signupMessage.textContent = 'Неверный пароль, имя или почта';
-                else if (user === 417) signupMessage.textContent = 'Аккаунт уже существует';
+                if (createUser === 422) signupMessage.textContent = 'Неверный пароль, имя или почта';
+                else if (createUser === 417) signupMessage.textContent = 'Аккаунт уже существует';
             }
         });
 
-        if (state.token) this.checkToken();
+        if (state.token) {
+            this.checkToken();
+            loginLink.classList.add('hidden');
+            signupLink.classList.add('hidden');
+            userAvatar.innerHTML = state.name.charAt(0);
+            userName.innerHTML = state.name;
+        } else {
+            signupLink.classList.remove('hidden');
+            logoutLink.classList.add('hidden');
+            user.classList.add('hidden');
+        }
+    }
+
+    async addFirstStatistics() {
+        const stsAll = {
+            learnedWords: 0,
+            optional: {
+                1: createStsEntry(),
+            },
+        };
+
+        const updateUserStatistics = await this.data.updateUserStatistics(this.state.userId, stsAll, this.state.token);
+        if (typeof updateUserStatistics === 'number') {
+            console.log(`Ошибка updateUserStatistics ${updateUserStatistics}`);
+            return;
+        }
+    }
+
+    initModalBtns() {
+        const modal = getHTMLElement(document.querySelector('.cd-signin-modal'));
+        modal.addEventListener('click', (e) => {
+            const target = getHTMLElement(e.target);
+            const messages = modal.querySelectorAll('.cd-signin-modal__message');
+            if (target.classList.contains('js-signin-modal') || target.classList.contains('js-close')) {
+                e.preventDefault();
+                modal.classList.remove('cd-signin-modal--is-visible');
+                messages.forEach((mes) => {
+                    mes.textContent = '';
+                });
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') modal.classList.remove('cd-signin-modal--is-visible');
+        });
+
+        //hide password
+        const hidePassword: NodeListOf<HTMLElement> = modal.querySelectorAll('.js-hide-password');
+        hidePassword.forEach((password) => {
+            password.addEventListener('click', () => {
+                this.togglePassword(password);
+            });
+        });
+    }
+
+    initTriggers() {
+        const triggers = document.querySelectorAll('.js-signin-modal-trigger');
+        triggers.forEach((trigger) => {
+            trigger.addEventListener('click', (e) => {
+                const target = getHTMLElement(e.target);
+                if (target.hasAttribute('data-signin')) {
+                    e.preventDefault();
+                    const type = target.getAttribute('data-signin');
+                    if (type) this.showSigninForm(type);
+                }
+            });
+        });
+    }
+
+    //main page
+    initSecondTrigger() {
+        const triggers: NodeListOf<HTMLElement> = document.querySelectorAll('main .js-signin-modal-trigger');
+        triggers.forEach((trigger) => {
+            trigger.addEventListener('click', (e) => {
+                const target = getHTMLElement(e.target);
+                if (target.hasAttribute('data-signin')) {
+                    e.preventDefault();
+                    const type = target.getAttribute('data-signin');
+                    if (type) this.showSigninForm(type);
+                }
+            });
+            if (this.state.token) trigger.classList.add('hidden');
+            else trigger.classList.remove('hidden');
+        });
     }
 
     checkToken() {
@@ -188,14 +236,26 @@ class ModalLogin {
 
         const updToken = await this.data.updateToken(state.userId, state.refreshToken);
         if (typeof updToken !== 'number') {
-            //console.log('updToken working');
+            console.log('updToken working');
+
             const curTime = new Date();
             state.tokenTime = curTime.toString();
             state.token = updToken.token;
             state.refreshToken = updToken.refreshToken;
+
             tokenTimer = setTimeout(this.updateToken.bind(this), this.period);
         } else {
-            console.log(`Ошибка ${updToken}`);
+            console.log(`Не могу обновить токен: ${updToken}`);
+
+            const loginLink = getHTMLElement(document.querySelector('[data-signin="login"]'));
+            const logoutLink = getHTMLElement(document.querySelector('[data-signin="logout"]'));
+            const signupLink = getHTMLElement(document.querySelector('[data-signin="signup"]'));
+            const user = getHTMLElement(document.querySelector('.user'));
+            logoutLink.classList.add('hidden');
+            loginLink.classList.remove('hidden');
+            signupLink.classList.remove('hidden');
+            user.classList.add('hidden');
+
             state.name = '';
             state.userId = '';
             state.token = '';
@@ -206,35 +266,38 @@ class ModalLogin {
     }
 
     showSigninForm(type: string) {
-        // show modal if not visible
-        if (!this.element.classList.contains('cd-signin-modal--is-visible'))
-            this.element.classList.add('cd-signin-modal--is-visible');
-        // show selected form
-        for (var i = 0; i < this.blocks.length; i++) {
-            const block = this.blocks[i];
-            if (block.getAttribute('data-type') == type) block.classList.add('cd-signin-modal__block--is-selected');
+        const modal = getHTMLElement(document.querySelector('.cd-signin-modal'));
+        const blocks = modal.querySelectorAll('.js-signin-modal-block');
+        const switchers = modal.querySelectorAll('.js-signin-modal-switcher a');
+
+        if (!modal.classList.contains('cd-signin-modal--is-visible')) {
+            modal.classList.add('cd-signin-modal--is-visible');
+        }
+
+        blocks.forEach((block) => {
+            if (block.getAttribute('data-type') === type) block.classList.add('cd-signin-modal__block--is-selected');
             else block.classList.remove('cd-signin-modal__block--is-selected');
-        }
-        //update switcher appearance
-        var switcherType = type == 'signup' ? 'signup' : 'login';
-        for (var i = 0; i < this.switchers.length; i++) {
-            const switcher = this.switchers[i];
-            if (switcher.getAttribute('data-type') == switcherType) switcher.classList.add('cd-selected');
+        });
+
+        const switcherType = type == 'signup' ? 'signup' : 'login';
+        switchers.forEach((switcher) => {
+            if (switcher.getAttribute('data-type') === switcherType) switcher.classList.add('cd-selected');
             else switcher.classList.remove('cd-selected');
-        }
+        });
     }
 
     togglePassword(target: HTMLElement) {
         const password = getHTMLInputElement(target.previousElementSibling);
         if ('password' == password.getAttribute('type')) password.setAttribute('type', 'text');
         else password.setAttribute('type', 'password');
+
         target.textContent = 'Скрыть' == target.textContent ? 'Показать' : 'Скрыть';
         this.putCursorAtEnd(password);
     }
 
     putCursorAtEnd(input: HTMLInputElement) {
         if (input.setSelectionRange) {
-            var len = input.value.length * 2;
+            const len = input.value.length * 2;
             input.focus();
             input.setSelectionRange(len, len);
         }
