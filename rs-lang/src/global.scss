@@ -71,6 +71,30 @@ button {
     }
 }
 
+.bttn--green {
+    width: 100%;
+    padding: 14px 10px;
+    border-radius: 100px;
+    background-color: $color-green;
+
+    &:hover {
+      color: $color-green;
+      background-color: $color-green-light;
+  }
+} 
+
+.bttn--red {
+    width: 100%;
+    padding: 14px 10px;
+    border-radius: 100px;
+    background-color: $color-orange;
+
+    &:hover {
+      color: $color-orange;
+      background-color: $color-orange-light;
+    }
+}
+
 .bttn--transparent {
     padding: 0;
     background: none;
@@ -325,8 +349,6 @@ body {
   }
 }
 
-
-
 .divider-vertical {
     border-left: 1px solid $color-grey-medium;
     height: 46px;
@@ -346,6 +368,34 @@ body {
     background: $color-cyan-light;
     font: $montserrat-12px;
     color: $color-cyan-dark;
+    transition: $transition-1;
+
+    &--green {
+        background-color: $color-green-light;
+        color: $color-green;
+        &.active {
+           background-color: $color-green;
+           color: #fff; 
+        }
+    }
+
+    &--yellow {
+        background-color: $color-yellow-light;
+        color: $color-yellow;
+        &.active {
+            background-color: $color-yellow;
+            color: #fff; 
+        }
+    }
+
+    &--red {
+        background-color: $color-orange-light;
+        color: $color-orange;
+        &.active {
+            background-color: $color-orange;
+            color: #fff; 
+        }
+    }
 }
 
 .social {
@@ -368,6 +418,21 @@ body {
     &--yt {
         background: url("./assets/img/icon-yt.svg") no-repeat center;
     }
+    &--bookmark {
+        width: 16px;
+        height: 16px;
+        background: url("./assets/img/icon-bookmark.svg") no-repeat center;
+    }
+    &--star {
+        width: 16px;
+        height: 16px;
+        background: url("./assets/img/icon-star.svg") no-repeat center;
+    }
+    &--lightning {
+        width: 16px;
+        height: 16px;
+        background: url("./assets/img/icon-lightning.svg") no-repeat center;
+    }
     &:hover {
         filter: brightness(0);
     }
@@ -389,6 +454,18 @@ body {
     width: 24px;
     height: 24px;
     background: url("./assets/img/icon-play.svg") no-repeat center;
+}
+
+.book-icon {
+    width: 32px;
+    height: 32px;
+    background: url("./assets/img/icon-book.svg") no-repeat center;
+}
+
+.hat-icon {
+    width: 32px;
+    height: 32px;
+    background: url("./assets/img/icon-hat.svg") no-repeat center;
 }
 
 .statistics-image {

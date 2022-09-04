@@ -211,11 +211,13 @@ export default class App {
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
         const pageBook = this.render.pageBook();
+        const pageHeader = getHTMLElement(pageBook.querySelector('.page-header'));
+        getHTMLElement(pageHeader.querySelectorAll('.menu__item')[0]).classList.add('active');
         const sectionGames = this.render.sectionGames(
             `/book/sprint/${group}/${page}`,
             `/book/audio-call/${group}/${page}`
         );
-        pageBook.appendChild(sectionGames);
+        pageHeader.appendChild(sectionGames);
         const dataWords = await this.data.getWords(group, page);
 
         if (typeof dataWords === 'number') {
@@ -235,7 +237,7 @@ export default class App {
 
             if (state.token) {
                 const hardWords = this.render.hardWords();
-                getHTMLElement(pageBook.querySelector('.word-levels__list')).innerHTML += hardWords;
+                getHTMLElement(pageHeader.querySelector('.page__menu')).innerHTML += hardWords;
             }
 
             //const pagination = this.render.bookPagination(group, 29);
@@ -257,6 +259,14 @@ export default class App {
             const linkActive = pageBook.querySelectorAll(`a[href='/book/${group}/${page}']`);
             linkActive[0].classList.add('active');
 
+            const linkActiveLevel = wordLevels.querySelectorAll(`a[href='/book/${group}/0']`);
+            getHTMLElement(pageBook.querySelector('.page__book')).append(wordLevels);
+            if (linkActiveLevel[0] !== undefined) {
+                linkActiveLevel[0].children[0]!.classList.add('active');
+                linkActiveLevel[0].classList.add('active');
+            }
+            pageBook.children[0].classList.add(`A${group}`);
+
             main.appendChild(pageBook);
         }
     }
@@ -265,6 +275,7 @@ export default class App {
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
         const pageBook = this.render.pageBook();
+        const pageHeader = getHTMLElement(pageBook.querySelector('.page-header'));
 
         let state = new State();
         const userId = state.userId;
@@ -291,7 +302,7 @@ export default class App {
 
             if (state.token) {
                 const hardWords = this.render.hardWords();
-                getHTMLElement(pageBook.querySelector('.word-levels__list')).innerHTML += hardWords;
+                getHTMLElement(pageHeader.querySelector('.page__menu')).innerHTML += hardWords;
             }
 
             let wordsCount = 0;
@@ -335,7 +346,7 @@ export default class App {
                 const pagesCount = Math.ceil(wordsCount / 20);
                 const pagination = this.render.bookPagination(6, pagesCount);
                 getHTMLElement(pageBook.querySelector('.page__book')).append(pagination);
-
+                getHTMLElement(pageBook.querySelectorAll('.menu__item')[1]).classList.add('active');
                 const bttn = pageBook.querySelectorAll('[data-handle]');
 
                 bttn.forEach((item) => {
@@ -368,6 +379,50 @@ export default class App {
                             if (typeof dataWords === 'number') {
                                 console.log('error');
                             } else {
+                                let stsAll = await this.data.getUserStatistics(state.userId, state.token);
+                                if (stsAll === 404)
+                                    stsAll = {
+                                        learnedWords: 0,
+                                        optional: {},
+                                    };
+                                else if (typeof stsAll === 'number') {
+                                    console.log(`Ошибка getUserStatistics ${stsAll}`);
+                                    return;
+                                }
+
+                                let sts;
+                                let isNewEntry = true;
+                                const keys = Object.keys(stsAll.optional);
+                                let lastKey = 0;
+
+                                if (keys.length) {
+                                    lastKey = Number(keys[keys.length - 1]);
+                                    const lastSts = stsAll.optional[lastKey];
+                                    if (!this.isNewDay(lastSts.date)) {
+                                        sts = lastSts; //key?
+                                        isNewEntry = false;
+                                    }
+                                }
+                                if (!sts || isNewEntry) {
+                                    sts = createStsEntry();
+                                }
+                                if (sts.book.learned < 0) {
+                                    sts.book.learned = 0;
+                                }
+                                sts.book.learned += 1;
+                                if (isNewEntry) stsAll.optional[lastKey + 1] = sts;
+                                else stsAll.optional[lastKey] = sts;
+
+                                delete stsAll.id;
+                                const updateUserStatistics = await this.data.updateUserStatistics(
+                                    state.userId,
+                                    stsAll,
+                                    state.token
+                                );
+                                if (typeof updateUserStatistics === 'number') {
+                                    console.log(`Ошибка updateUserStatistics ${updateUserStatistics}`);
+                                    return;
+                                }
                                 const parent = target.parentElement!.parentElement!.closest('.card-word');
                                 parent!.remove();
                                 this.showBookPageHard(group, page);
@@ -380,7 +435,9 @@ export default class App {
                 }
                 main.appendChild(pageBook);
             } else {
-                main.innerHTML = '<div class="container">Пусто</div>';
+                const emptyMessage = this.render.hardWordsEmpty();
+                main.innerHTML = emptyMessage;
+                //main.innerHTML = '<div class="container">Пусто</div>';
             }
         }
     }
@@ -390,13 +447,13 @@ export default class App {
         const userId = state.userId;
         const token = state.token;
         const loginStatus = state.token ? true : false;
-
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
         const pageBook = this.render.pageBook();
-
+        const pageHeader = getHTMLElement(pageBook.querySelector('.page-header'));
         const dataWords = await this.data.getWords(group, page);
         const userWords = await this.data.getUserWords(userId, token);
+        getHTMLElement(pageHeader.querySelectorAll('.menu__item')[0]).classList.add('active');
 
         const easyWords = await this.data.getUserAggregatedWordsTest(
             userId,
@@ -433,15 +490,17 @@ export default class App {
             } else {
                 const arr = [...dataWords];
                 const uWrods = [...userWords];
+                const audioArr: HTMLAudioElement[] = [];
                 let cards: string[] = [];
 
-                cards = arr.map((item) => {
+                cards = arr.map((item, i) => {
                     const user = uWrods.findIndex((x) => x.wordId === item.id);
                     const hard = hardWordsArr.findIndex((x) => x._id === item.id);
                     const easy = easyWordsArr.findIndex((x) => x._id === item.id);
                     const hardWord: IWord = hardWordsArr[hard];
                     const easyWord: IWord = easyWordsArr[easy];
                     const userWord: IUserWord = uWrods[user];
+                    audioArr.push(new Audio(`https://rslang-learnwords-app.herokuapp.com/${item.audioExample}`));
 
                     if (userWord !== undefined && hardWord !== undefined) {
                         return this.render.cardWord(item, loginStatus, item.id, true, false, userWord);
@@ -457,6 +516,12 @@ export default class App {
                 });
 
                 const bttn = pageBook.querySelectorAll('[data-handle]');
+                const bttnPlay = pageBook.querySelectorAll('.play-icon');
+                bttnPlay.forEach((button, i) => {
+                    button.addEventListener('click', () => {
+                        audioArr[i].play();
+                    });
+                });
 
                 bttn.forEach((item) => {
                     item.addEventListener('click', async (e) => {
@@ -477,10 +542,9 @@ export default class App {
                                 console.log('error');
                             } else {
                                 const parent = target.parentElement!.parentElement!.closest('.card-word');
-                                target.innerHTML = 'Добавить в сложные';
+                                target.innerHTML = 'Добавить в словарь';
                                 parent!.className = 'card card-word';
                                 target.setAttribute('data-handle', 'add-to-hard');
-                                console.log('delete from hard');
                                 const userWords = await this.data.getUserWords(userId, token);
                                 if (typeof userWords === 'number') {
                                     console.log('error');
@@ -495,6 +559,49 @@ export default class App {
                             if (typeof userWords === 'number') {
                                 console.log('error');
                             } else {
+                                checkUserWord = userWords.findIndex((x) => x.wordId === wordId);
+
+                                if (Object.values(easyWords[0])[0].length === 20) {
+                                    if (linkActive[0] !== undefined)
+                                        linkActive[0].className = 'pagination__item active learned';
+                                    pageBook.children[0].classList.add('learned');
+                                    const sectionGames = this.render.sectionGames(
+                                        `/book/sprint/${group}/${page}`,
+                                        `/book/audio-call/${group}/${page}`,
+                                        'disabled'
+                                    );
+                                    //pageHeader.querySelector('.games')?.remove();
+                                    //pageHeader.appendChild(sectionGames);
+                                } else {
+                                    if (linkActive[0] !== undefined)
+                                        linkActive[0].className = 'pagination__item active';
+                                    pageBook.children[0].classList.remove('learned');
+                                    const sectionGames = this.render.sectionGames(
+                                        `/book/sprint/${group}/${page}`,
+                                        `/book/audio-call/${group}/${page}`
+                                    );
+                                    pageHeader.querySelector('.games')?.remove();
+                                    pageHeader.appendChild(sectionGames);
+                                }
+                            }
+
+                            if (checkUserWord === -1) {
+                                const dataWords = await this.data.createUserWord(
+                                    state.userId,
+                                    wordId!,
+                                    { difficulty: 'hard' },
+                                    state.token
+                                );
+
+                                let checkUserWord;
+                                const userWords = await this.data.getUserWords(userId, token);
+
+                                if (typeof userWords === 'number') {
+                                    console.log('error');
+                                } else {
+                                    checkUserWord = userWords.findIndex((x) => x.wordId === wordId);
+                                }
+
                                 let stsAll = await this.data.getUserStatistics(state.userId, state.token);
                                 if (stsAll === 404)
                                     stsAll = {
@@ -514,7 +621,6 @@ export default class App {
                                 if (keys.length) {
                                     lastKey = Number(keys[keys.length - 1]);
                                     const lastSts = stsAll.optional[lastKey];
-                                    console.log(lastSts, this.isNewDay(lastSts.date));
                                     if (!this.isNewDay(lastSts.date)) {
                                         sts = lastSts; //key?
                                         isNewEntry = false;
@@ -524,17 +630,13 @@ export default class App {
                                 if (!sts || isNewEntry) {
                                     sts = createStsEntry();
                                 }
-                                if (sts.book.learned > 0) {
-                                    sts.book.learned -= 1;
-                                } else {
-                                    sts.book.learned = 0;
-                                }
+
+                                sts.book.new += 1;
 
                                 if (isNewEntry) stsAll.optional[lastKey + 1] = sts;
                                 else stsAll.optional[lastKey] = sts;
 
                                 delete stsAll.id;
-                                console.log(stsAll);
                                 const updateUserStatistics = await this.data.updateUserStatistics(
                                     state.userId,
                                     stsAll,
@@ -545,16 +647,6 @@ export default class App {
                                     return;
                                 }
 
-                                checkUserWord = userWords.findIndex((x) => x.wordId === wordId);
-                            }
-
-                            if (checkUserWord === -1) {
-                                const dataWords = await this.data.createUserWord(
-                                    state.userId,
-                                    wordId!,
-                                    { difficulty: 'hard' },
-                                    state.token
-                                );
                                 console.log('Word not in user words, add to User Words');
                             } else {
                                 const dataWords = await this.data.updateUserWord(
@@ -570,7 +662,8 @@ export default class App {
                                 console.log('error');
                             } else {
                                 const parent = target.parentElement!.parentElement!.closest('.card-word');
-                                target.innerHTML = 'Удалить из сложных';
+                                getHTMLElement(parent!.querySelector('.card-word__status')).innerHTML = 'сложное';
+                                target.innerHTML = 'Удалить из словаря';
                                 target.setAttribute('data-handle', 'delete-from-hard');
                                 parent!.className = 'card card-word hard';
 
@@ -583,7 +676,6 @@ export default class App {
                                         .setAttribute('data-handle', 'add-to-easy');
                                 }
 
-                                console.log('add to hard');
                                 const userWords = await this.data.getUserWords(userId, token);
                                 if (typeof userWords === 'number') {
                                     console.log('error');
@@ -628,7 +720,6 @@ export default class App {
                                 if (keys.length) {
                                     lastKey = Number(keys[keys.length - 1]);
                                     const lastSts = stsAll.optional[lastKey];
-                                    console.log(lastSts, this.isNewDay(lastSts.date));
                                     if (!this.isNewDay(lastSts.date)) {
                                         sts = lastSts; //key?
                                         isNewEntry = false;
@@ -646,7 +737,6 @@ export default class App {
                                 else stsAll.optional[lastKey] = sts;
 
                                 delete stsAll.id;
-                                console.log(stsAll);
                                 const updateUserStatistics = await this.data.updateUserStatistics(
                                     state.userId,
                                     stsAll,
@@ -681,11 +771,9 @@ export default class App {
                                 let isNewEntry = true;
                                 const keys = Object.keys(stsAll.optional);
                                 let lastKey = 0;
-
                                 if (keys.length) {
                                     lastKey = Number(keys[keys.length - 1]);
                                     const lastSts = stsAll.optional[lastKey];
-                                    console.log(lastSts, this.isNewDay(lastSts.date));
                                     if (!this.isNewDay(lastSts.date)) {
                                         sts = lastSts; //key?
                                         isNewEntry = false;
@@ -702,7 +790,6 @@ export default class App {
                                 else stsAll.optional[lastKey] = sts;
 
                                 delete stsAll.id;
-                                console.log(stsAll);
                                 const updateUserStatistics = await this.data.updateUserStatistics(
                                     state.userId,
                                     stsAll,
@@ -719,8 +806,10 @@ export default class App {
                                 console.log('error');
                             } else {
                                 const parent = target.parentElement!.parentElement!.closest('.card-word');
+                                getHTMLElement(parent!.querySelector('.card-word__status')).innerHTML = 'изученное';
                                 target.innerHTML = 'Удалить из изученных';
                                 target.setAttribute('data-handle', 'delete-from-easy');
+                                parent!.classList.remove('hard');
                                 parent!.classList.add('easy');
 
                                 const bttn = target.parentElement;
@@ -729,7 +818,7 @@ export default class App {
                                         .querySelector('[data-handle="delete-from-hard"]')!
                                         .setAttribute('data-handle', 'add-to-hard');
                                     bttn!.querySelector('[data-handle="add-to-hard"]')!.innerHTML =
-                                        'Добавить в сложные';
+                                        'Добавить в словарь';
                                 }
                                 const easyWords = await this.data.getUserAggregatedWordsTest(
                                     userId,
@@ -751,16 +840,16 @@ export default class App {
                                             `/book/audio-call/${group}/${page}`,
                                             'disabled'
                                         );
-                                        pageBook.querySelector('.games')?.remove();
-                                        pageBook.appendChild(sectionGames);
+                                        pageHeader.querySelector('.games')?.remove();
+                                        pageHeader.appendChild(sectionGames);
                                     } else {
                                         pageBook.children[0].classList.remove('learned');
                                         const sectionGames = this.render.sectionGames(
                                             `/book/sprint/${group}/${page}`,
                                             `/book/audio-call/${group}/${page}`
                                         );
-                                        pageBook.querySelector('.games')?.remove();
-                                        pageBook.appendChild(sectionGames);
+                                        pageHeader.querySelector('.games')?.remove();
+                                        pageHeader.appendChild(sectionGames);
                                     }
                                 }
                             }
@@ -775,54 +864,6 @@ export default class App {
                             if (typeof dataWords === 'number') {
                                 console.log('error');
                             } else {
-                                let stsAll = await this.data.getUserStatistics(state.userId, state.token);
-                                if (stsAll === 404)
-                                    stsAll = {
-                                        learnedWords: 0,
-                                        optional: {},
-                                    };
-                                else if (typeof stsAll === 'number') {
-                                    console.log(`Ошибка getUserStatistics ${stsAll}`);
-                                    return;
-                                }
-
-                                let sts;
-                                let isNewEntry = true;
-                                const keys = Object.keys(stsAll.optional);
-                                let lastKey = 0;
-
-                                if (keys.length) {
-                                    lastKey = Number(keys[keys.length - 1]);
-                                    const lastSts = stsAll.optional[lastKey];
-                                    console.log(lastSts, this.isNewDay(lastSts.date));
-                                    if (!this.isNewDay(lastSts.date)) {
-                                        sts = lastSts; //key?
-                                        isNewEntry = false;
-                                    }
-                                }
-                                if (!sts || isNewEntry) {
-                                    sts = createStsEntry();
-                                }
-                                if (sts.book.learned > 0) {
-                                    sts.book.learned -= 1;
-                                } else {
-                                    sts.book.learned = 0;
-                                }
-                                if (isNewEntry) stsAll.optional[lastKey + 1] = sts;
-                                else stsAll.optional[lastKey] = sts;
-
-                                delete stsAll.id;
-                                console.log(stsAll);
-                                const updateUserStatistics = await this.data.updateUserStatistics(
-                                    state.userId,
-                                    stsAll,
-                                    state.token
-                                );
-                                if (typeof updateUserStatistics === 'number') {
-                                    console.log(`Ошибка updateUserStatistics ${updateUserStatistics}`);
-                                    return;
-                                }
-
                                 const parent = target.parentElement!.parentElement!.closest('.card-word');
                                 target.innerHTML = 'Добавить в изученные';
                                 parent!.className = 'card card-word';
@@ -849,8 +890,8 @@ export default class App {
                                         `/book/audio-call/${group}/${page}`,
                                         'disabled'
                                     );
-                                    pageBook.querySelector('.games')?.remove();
-                                    pageBook.appendChild(sectionGames);
+                                    //pageHeader.querySelector('.games')?.remove();
+                                    //pageHeader.appendChild(sectionGames);
                                 } else {
                                     if (linkActive[0] !== undefined)
                                         linkActive[0].className = 'pagination__item active';
@@ -859,23 +900,25 @@ export default class App {
                                         `/book/sprint/${group}/${page}`,
                                         `/book/audio-call/${group}/${page}`
                                     );
-                                    pageBook.querySelector('.games')?.remove();
-                                    pageBook.appendChild(sectionGames);
+                                    pageHeader.querySelector('.games')?.remove();
+                                    pageHeader.appendChild(sectionGames);
                                 }
                             }
                         }
                     });
                 });
                 const wordLevels = this.render.wordLevels();
-                const linkActiveLevel = wordLevels.querySelectorAll(`a[href='/book/${group}/${page}']`);
+                const linkActiveLevel = wordLevels.querySelectorAll(`a[href='/book/${group}/0']`);
                 getHTMLElement(pageBook.querySelector('.page__book')).append(wordLevels);
-                if (linkActiveLevel[0] !== undefined) linkActiveLevel[0].classList.add('active');
-
+                if (linkActiveLevel[0] !== undefined) {
+                    linkActiveLevel[0].children[0]!.classList.add('active');
+                    linkActiveLevel[0].classList.add('active');
+                }
                 pageBook.children[0].classList.add(`A${group}`);
 
                 if (state.token) {
                     const hardWords = this.render.hardWords();
-                    getHTMLElement(pageBook.querySelector('.word-levels__list')).innerHTML += hardWords;
+                    getHTMLElement(pageHeader.querySelector('.page__menu')).innerHTML += hardWords;
                 }
 
                 const pagination = this.render.bookPagination(group, 29);
@@ -891,14 +934,14 @@ export default class App {
                         `/book/audio-call/${group}/${page}`,
                         'disabled'
                     );
-                    pageBook.appendChild(sectionGames);
+                    pageHeader.appendChild(sectionGames);
                 } else {
                     linkActive[0].classList.add('active');
                     const sectionGames = this.render.sectionGames(
                         `/book/sprint/${group}/${page}`,
                         `/book/audio-call/${group}/${page}`
                     );
-                    pageBook.appendChild(sectionGames);
+                    pageHeader.appendChild(sectionGames);
                 }
                 main.appendChild(pageBook);
             }
@@ -909,7 +952,6 @@ export default class App {
         const prevDate = new Date(date);
         let currDate = new Date();
         currDate.setHours(0, 0, 0, 0);
-        console.log(currDate);
         // return true; //Тест
         return (
             currDate.getDate() !== prevDate.getDate() ||
