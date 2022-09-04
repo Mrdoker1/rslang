@@ -20,7 +20,7 @@ import Data from '../../api';
 import Render from '../../ui';
 
 //Enums
-import { gameChart, gameType } from '../../../utils/enums';
+import { gameChart, gameType, gameStatus } from '../../../utils/enums';
 
 //State
 import State from '../../app/state';
@@ -61,6 +61,7 @@ export default class Sprint {
             points: 0,
             multiplier: 1,
             strike: 0,
+            status: gameStatus.Started,
         };
         this.render = new Render();
         this.isBook = isBook;
@@ -147,6 +148,7 @@ export default class Sprint {
         this.gameState.wordEnglish = word.word;
         this.gameState.wordTranslation = word.wordTranslate;
         this.gameState.possibleTranslation = possibleTranslation;
+        this.gameState.status = gameStatus.Started;
     }
 
     renderNewGameBody(playZone: HTMLDivElement) {
@@ -195,6 +197,58 @@ export default class Sprint {
             }
         });
 
+        document.onkeydown = (e) => {
+            e = e || window.event;
+            const newspaperSpinning = [
+                { transform: 'rotate(0) scale(1)' },
+                { transform: 'rotate(0) scale(1.2)' },
+                { transform: 'rotate(0) scale(1)' },
+            ];
+            const newspaperTiming = {
+                duration: 100,
+                iterations: 1,
+            };
+            if (e.keyCode === 37) {
+                if (this.counter > 0 && this.gameState.status == gameStatus.Started) {
+                    if (this.gameState.possibleTranslation == this.gameState.wordTranslation) {
+                        rightAnswerHandler();
+                    } else {
+                        wrongAnswerHandler();
+                    }
+                    if (this.count > this.words.length - 1) {
+                        endGameHandler();
+                    } else this.renderNewGameBody(playZone);
+                    try {
+                        const button = getHTMLElement(document.querySelector('.sprint-game__true-button'));
+                        if (button) {
+                            //button.style.backgroundColor = '#70c680';
+                            //button.style.transform = 'scale(1.1)';
+                            button.animate(newspaperSpinning, newspaperTiming);
+                        }
+                    } catch {}
+                }
+            } else if (e.keyCode === 39) {
+                if (this.counter > 0 && this.gameState.status == gameStatus.Started) {
+                    if (this.gameState.possibleTranslation != this.gameState.wordTranslation) {
+                        rightAnswerHandler();
+                    } else {
+                        wrongAnswerHandler();
+                    }
+                    if (this.count > this.words.length - 1) {
+                        endGameHandler();
+                    } else this.renderNewGameBody(playZone);
+                    try {
+                        const button = getHTMLElement(document.querySelector('.sprint-game__false-button'));
+                        if (button) {
+                            //button.style.backgroundColor = '#d84a7c';
+                            //button.style.transform = 'scale(1.1)';
+                            button.animate(newspaperSpinning, newspaperTiming);
+                        }
+                    } catch {}
+                }
+            }
+        };
+
         const wrongAnswerHandler = () => {
             // console.log('Wrong Answer!');
             this.playBadSound();
@@ -233,6 +287,7 @@ export default class Sprint {
         };
 
         const endGameHandler = () => {
+            this.gameState.status = gameStatus.Ended;
             clearInterval(interval);
             if (this.state.token) this.saveStatistics();
             this.showResult();

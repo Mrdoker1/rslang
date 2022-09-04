@@ -1,6 +1,9 @@
 //Interfaces
 import IWord from '../interface/IWord';
 
+//Enums
+import { gameStatus } from '../../utils/enums';
+
 export default interface ISprintState {
     word: IWord | null;
     wordEnglish: string;
@@ -9,4 +12,5 @@ export default interface ISprintState {
     points: number;
     multiplier: number;
     strike: number;
+    status: gameStatus;
 }

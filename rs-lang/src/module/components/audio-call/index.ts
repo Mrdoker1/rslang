@@ -1,5 +1,6 @@
 //Utils
 import getHTMLElement from '../../../utils/getHTMLElement';
+import getHTMLButtonElement from '../../../utils/getHTMLButtonElement';
 import getHTMLImageElement from '../../../utils/getHTMLImageElement';
 import { shuffle, createStsEntry } from '../../../utils/helpers';
 import Particles from '../../../utils/particles';
@@ -8,7 +9,7 @@ import Particles from '../../../utils/particles';
 import { Router } from 'routerjs';
 
 //Enums
-import { gameChart, gameType } from '../../../utils/enums';
+import { gameChart, gameType, gameStatus } from '../../../utils/enums';
 
 //Interfaces
 import IWord from '../../interface/IWord';
@@ -37,6 +38,7 @@ export default class AudioCall {
     isBook: boolean;
     router: Router;
     learned = 0;
+    gameStatus: gameStatus;
     constructor(base: string, group: number, page: number, isBook: boolean = false, router: Router) {
         this.group = group;
         this.page = page;
@@ -48,6 +50,7 @@ export default class AudioCall {
         };
         this.isBook = isBook;
         this.router = router;
+        this.gameStatus = gameStatus.Started;
     }
 
     async start() {
@@ -70,43 +73,7 @@ export default class AudioCall {
         answerBtns.forEach((btn) => {
             btn.addEventListener('click', (e) => {
                 const target = getHTMLElement(e.target);
-                this.showAnswer(target);
-                const answer = target.dataset.answer;
-
-                if (answer === undefined) {
-                    this.playBadSound();
-                    attempt -= 1;
-                    const hearts = document.querySelectorAll('.audio__icon-heart');
-                    hearts[attempt].classList.add('audio__icon-heart_miss');
-                    this.result.unknowingWords.push(words[count]);
-                    if (this.series > this.record) this.record = this.series;
-                    this.series = 0;
-                    const heartBody = getHTMLElement(document.querySelector('.audio__icon-heart_miss'));
-                    const particles = new Particles();
-                    particles.create(
-                        particles.getOffset(heartBody).x,
-                        particles.getOffset(heartBody).y,
-                        `♥`,
-                        '',
-                        'audiocall-heart'
-                    );
-                } else {
-                    this.playGoodSound();
-                    this.result.knowingWords.push(words[count]);
-                    this.series += 1;
-
-                    for (let i = 0; i < 5; i++) {
-                        const heartBody = getHTMLElement(document.querySelector('.active-answer'));
-                        const particles = new Particles();
-                        particles.create(
-                            particles.getOffset(heartBody).x,
-                            particles.getOffset(heartBody).y,
-                            `👍`,
-                            '',
-                            'audiocall-rightAnswer'
-                        );
-                    }
-                }
+                buttonPressHandler(target);
             });
         });
 
@@ -119,11 +86,13 @@ export default class AudioCall {
                 if (this.state.token) this.saveStatistics();
                 this.showResult(attempt, words);
                 this.playEndSound();
+                this.gameStatus = gameStatus.Ended;
                 return;
             }
             count += 1;
             this.showQuestion(words, count);
             this.hideAnswer();
+            this.gameStatus = gameStatus.Started;
         });
 
         const playBtn = document.querySelectorAll('.js-play-word');
@@ -138,6 +107,85 @@ export default class AudioCall {
                 this.sayWord(path);
             });
         });
+
+        const buttonPressHandler = (target: HTMLElement) => {
+            this.showAnswer(target);
+            this.gameStatus = gameStatus.Paused;
+            const answer = target.dataset.answer;
+
+            if (answer === undefined) {
+                this.playBadSound();
+                attempt -= 1;
+                const hearts = document.querySelectorAll('.audio__icon-heart');
+                hearts[attempt].classList.add('audio__icon-heart_miss');
+                this.result.unknowingWords.push(words[count]);
+                if (this.series > this.record) this.record = this.series;
+                this.series = 0;
+                const heartBody = getHTMLElement(document.querySelector('.audio__icon-heart_miss'));
+                const particles = new Particles();
+                particles.create(
+                    particles.getOffset(heartBody).x,
+                    particles.getOffset(heartBody).y,
+                    `♥`,
+                    '',
+                    'audiocall-heart'
+                );
+            } else {
+                this.playGoodSound();
+                this.result.knowingWords.push(words[count]);
+                this.series += 1;
+
+                for (let i = 0; i < 5; i++) {
+                    const heartBody = getHTMLElement(document.querySelector('.active-answer'));
+                    const particles = new Particles();
+                    particles.create(
+                        particles.getOffset(heartBody).x,
+                        particles.getOffset(heartBody).y,
+                        `👍`,
+                        '',
+                        'audiocall-rightAnswer'
+                    );
+                }
+            }
+        };
+
+        const keyPressHandler = () => {
+            document.onkeydown = (e) => {
+                e = e || window.event;
+                const newspaperSpinning = [
+                    { transform: 'rotate(0) scale(1)' },
+                    { transform: 'rotate(0) scale(1.2)' },
+                    { transform: 'rotate(0) scale(1)' },
+                ];
+                const newspaperTiming = {
+                    duration: 100,
+                    iterations: 1,
+                };
+                if (e.keyCode === 49 && this.gameStatus == gameStatus.Started) {
+                    const target = getHTMLElement(document.querySelectorAll('.audio__choice')[0]);
+                    buttonPressHandler(target);
+                    target.animate(newspaperSpinning, newspaperTiming);
+                } else if (e.keyCode === 50 && this.gameStatus == gameStatus.Started) {
+                    const target = document.querySelectorAll('.audio__choice')[1] as HTMLElement;
+                    buttonPressHandler(target);
+                    target.animate(newspaperSpinning, newspaperTiming);
+                } else if (e.keyCode === 51 && this.gameStatus == gameStatus.Started) {
+                    const target = document.querySelectorAll('.audio__choice')[2] as HTMLElement;
+                    buttonPressHandler(target);
+                    target.animate(newspaperSpinning, newspaperTiming);
+                } else if (e.keyCode === 52 && this.gameStatus == gameStatus.Started) {
+                    const target = document.querySelectorAll('.audio__choice')[3] as HTMLElement;
+                    buttonPressHandler(target);
+                    target.animate(newspaperSpinning, newspaperTiming);
+                } else if (e.keyCode === 53 && this.gameStatus == gameStatus.Started) {
+                    const target = document.querySelectorAll('.audio__choice')[4] as HTMLElement;
+                    buttonPressHandler(target);
+                    target.animate(newspaperSpinning, newspaperTiming);
+                }
+            };
+        };
+
+        keyPressHandler();
     }
 
     async getWords() {
