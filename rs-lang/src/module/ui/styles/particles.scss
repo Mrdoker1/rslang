@@ -1,0 +1,32 @@
+// Variables
+@import '../../../variables.scss';
+
+.particle {
+    &.sprint-multiplier {
+        display: flex;
+        justify-content: center;
+        padding: 11px 18px;
+        width: 44px;
+        height: 44px;
+        letter-spacing: -0.04em;
+        text-align: center;
+        border-radius: 50px;
+        align-items: center;
+        background-color: transparent !important;
+        color: black !important;
+        font: $dela-gothic-48px;
+        //font: $montserrat-button-16px;
+    }
+    &.sprint-points {
+        display: flex;
+        justify-content: center;
+        padding: 11px 18px;
+        width: 44px;
+        height: 44px;
+        letter-spacing: -0.04em;
+        text-align: center;
+        border-radius: 50px;
+        align-items: center;
+        font: $montserrat-button-16px;
+    }
+}

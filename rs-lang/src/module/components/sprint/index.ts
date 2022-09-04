@@ -3,6 +3,7 @@ import getHTMLElement from '../../../utils/getHTMLElement';
 import getHTMLButtonElement from '../../../utils/getHTMLButtonElement';
 import getNotNil from '../../../utils/getNotNil';
 import { shuffle, getRandom, createStsEntry } from '../../../utils/helpers';
+import Particles from '../../../utils/particles';
 
 //Router
 import { Router } from 'routerjs';
@@ -148,26 +149,15 @@ export default class Sprint {
     setHandlers(playZone: HTMLDivElement) {
         const buttonTrue = getHTMLButtonElement(document.querySelector('.sprint-game__true-button'));
         const buttonFalse = getHTMLButtonElement(document.querySelector('.sprint-game__false-button'));
-
+        const multiplierBody = getHTMLElement(document.querySelector('.sprint-game__multiplier'));
+        const pointsBody = getHTMLElement(document.querySelector('.sprint-game__points'));
+        const particles = new Particles();
         buttonTrue.addEventListener('click', () => {
             if (this.counter > 0) {
                 if (this.gameState.possibleTranslation == this.gameState.wordTranslation) {
-                    this.result.knowingWords.push(getNotNil(this.gameState.word));
-                    //console.log('Right Answer!');
-                    this.series += 1;
-                    if (this.gameState.strike == 3) {
-                        this.gameState.multiplier += 1;
-                        this.gameState.strike = 0;
-                    }
-                    this.gameState.points += this.gameState.multiplier * 10;
-                    this.gameState.strike += 1;
+                    rightAnswerHandler();
                 } else {
-                    // console.log('Wrong Answer!');
-                    if (this.series > this.record) this.record = this.series;
-                    this.series = 0;
-                    this.result.unknowingWords.push(getNotNil(this.gameState.word));
-                    this.gameState.strike = 0;
-                    this.gameState.multiplier = 1;
+                    wrongAnswerHandler();
                 }
                 this.renderNewGameBody(playZone);
             }
@@ -176,26 +166,48 @@ export default class Sprint {
         buttonFalse.addEventListener('click', () => {
             if (this.counter > 0) {
                 if (this.gameState.possibleTranslation != this.gameState.wordTranslation) {
-                    this.result.knowingWords.push(getNotNil(this.gameState.word));
-                    this.series += 1;
-                    //console.log('Right Answer!');
-                    if (this.gameState.strike == 3) {
-                        this.gameState.multiplier += 1;
-                        this.gameState.strike = 0;
-                    }
-                    this.gameState.points += this.gameState.multiplier * 10;
-                    this.gameState.strike += 1;
+                    rightAnswerHandler();
                 } else {
-                    //console.log('Wrong Answer!');
-                    if (this.series > this.record) this.record = this.series;
-                    this.series = 0;
-                    this.result.unknowingWords.push(getNotNil(this.gameState.word));
-                    this.gameState.strike = 0;
-                    this.gameState.multiplier = 1;
+                    wrongAnswerHandler();
                 }
                 this.renderNewGameBody(playZone);
             }
         });
+
+        const rightAnswerHandler = () => {
+            //console.log('Right Answer!');
+            this.result.knowingWords.push(getNotNil(this.gameState.word));
+            this.series += 1;
+            if (this.gameState.strike == 3) {
+                this.gameState.multiplier += 1;
+                this.gameState.strike = 0;
+                particles.create(
+                    particles.getOffset(multiplierBody).x,
+                    particles.getOffset(multiplierBody).y,
+                    `x${this.gameState.multiplier}`,
+                    '#000',
+                    'sprint-multiplier'
+                );
+            }
+            this.gameState.points += this.gameState.multiplier * 10;
+            this.gameState.strike += 1;
+            particles.create(
+                particles.getOffset(pointsBody).x,
+                particles.getOffset(pointsBody).y,
+                `${this.gameState.points}`,
+                '#2B788B',
+                'sprint-points'
+            );
+        };
+
+        const wrongAnswerHandler = () => {
+            //console.log('Wrong Answer!');
+            if (this.series > this.record) this.record = this.series;
+            this.series = 0;
+            this.result.unknowingWords.push(getNotNil(this.gameState.word));
+            this.gameState.strike = 0;
+            this.gameState.multiplier = 1;
+        };
     }
 
     setPlayZone() {
