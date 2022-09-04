@@ -321,6 +321,23 @@ export default class Render {
         return bookPagination;
     }
 
+    pagination(level: number, pagesSequence: number[]) {
+        const bookPagination = document.createElement('div');
+        bookPagination.classList.add('pagination');
+        let pagination = `
+            <a href="/book/${level}/0" class="pagination__item"><<</a>`;
+        pagesSequence.forEach((page) => {
+            pagination += `
+                <a href="/book/${level}/${page - 1}" class="pagination__item">
+                    ${page}
+                </a>`;
+        });
+        pagination += `
+            <a href="/book/${level}/29" class="pagination__item">>></a>`;
+        bookPagination.innerHTML = pagination;
+        return bookPagination;
+    }
+
     cardWord(data: IWord, loginStatus: Boolean, id: string, hardWord?: Boolean, easyWord?: Boolean, stats?: IUserWord) {
         let bttnAddToHard;
         let bttnAddToEasy;
