@@ -88,6 +88,22 @@
     &__empty-strike{
         color:$color-cyan-light;
     }
-    &__true-button{}
-    &__false-button{}
+    &__true-button{
+        background-color: $color-green;
+        color: white;
+        &:hover{
+            color: $color-green;
+            background-color: transparent;
+            outline: 3px solid $color-green;
+        }
+    }
+    &__false-button{
+        background-color: $color-red;
+        color: white;
+        &:hover{
+            color: $color-red;
+            background-color: transparent;
+            outline: 3px solid $color-red;
+        }
+    }
   }

@@ -132,6 +132,7 @@
     }
 
     &__question {
+      cursor: pointer;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -145,7 +146,7 @@
       color: $color-cyan-dark; 
       opacity: 1;
       visibility: visible;
-      transition: $transition-2;
+      transition: $transition-1;
       
       &:hover {
         background-color: $color-cyan-dark;
@@ -159,11 +160,11 @@
     }
 
     &__img {
-      transition: $transition-2;
+      transition: $transition-1;
     }
 
     &__text-play {
-      transition: $transition-2;
+      transition: $transition-1;
     }
 
     &__attempts {
@@ -175,7 +176,7 @@
 
     &__icon-heart  {
       font: $dela-gothic-32px;
-      color: $color-pink-dark;
+      color: $color-red;
       transition: $transition-1;
 
       &_miss {
@@ -191,6 +192,7 @@
     }
 
     &__choice {
+      cursor: pointer;
       padding: 10px; 
       border-radius: 100px;
       border: 3px solid $color-grey-icon;
@@ -208,15 +210,17 @@
       &.disabled{
         pointer-events: none;
         &[data-answer] {
-          border-color: $color-pink-dark;
-          color: $color-pink-dark;
+          border-color:  $color-red;
+          background-color: $color-red;
+          color: white;
         }
       }
 
-      &.active{
+      &.active-answer{
         &[data-answer] {
-          border-color: $color-green;
-          color: $color-green;
+          border-color:  $color-green;
+          background-color: $color-green;
+          color: white;
         }
         border-color: $color-cyan-dark;
         color: $color-cyan-dark;
@@ -236,34 +240,49 @@
   }
 
   &__word {
+    transition: $transition-1;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 12px;
     margin-top: 20px;
     background-color: #ffffff;
-    border-radius: 14px;
-    box-shadow: 0px 22px 45px -11px rgba(52, 41, 39, 0.08);
+    border-radius: 50px;
+    box-shadow: $box-shadow-2;
     padding: 10px 20px;
   }
 
   &__play {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding: 0;
     background-color: $color-grey-light;
     border: none;
     width: 40px;
     height: 40px;
-    border-radius: 0;
-    
+    border-radius: 4px;
+    transition: $transition-1;
+    cursor: pointer;
+    //transform: translateZ(0);
     &:hover {
-      border: none;
-      background-color: transparent;
+      background-color: $color-cyan-dark;
+
+      img {
+        //transform: translateZ(0);
+        -webkit-filter: brightness(0) saturate(100%) invert(100%) sepia(10%) saturate(0%) hue-rotate(269deg) brightness(107%) contrast(107%);
+        filter: brightness(0) saturate(100%) invert(100%) sepia(10%) saturate(0%) hue-rotate(269deg) brightness(107%) contrast(107%);
+      }
     }
   }
 
   &__icon-music {
     width: 24px;
     height: 24px;
+    transition: $transition-1;
+    // transform: translateZ(0);
+    // perspective: 1000;
+    // backface-visibility: hidden;
   }
 
   &__text {
@@ -273,5 +292,15 @@
     b {
       color: $color-primary;
     }
+  }
+}
+
+.game-container {
+  gap: 10px;
+  max-width: 1400px;
+  padding: 0;
+  @media (max-width: 1320px) {
+    width: 500px;
+    flex-direction: column;
   }
 }

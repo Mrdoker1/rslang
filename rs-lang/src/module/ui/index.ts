@@ -89,13 +89,13 @@ export default class Render {
               <a href="#benefits" class="bttn bttn--light" data-routerjs-ignore="true">О платформе</a>
           </div>
           <div class="app-statistic">
-              <div class="hours">
-                  <span class="numbers">700</span>
-                  <span class="text">Часов контента</span>
+              <div class="words">
+                  <span class="numbers">600</span>
+                  <span class="text">Популярных слов</span>
               </div>
-              <div class="users">
-                  <span class="numbers">575k</span>
-                  <span class="text">Пользователей</span>
+              <div class="games">
+                  <span class="numbers">2</span>
+                  <span class="text">Мини-игры</span>
               </div>
           </div>
         </div>
@@ -372,6 +372,23 @@ export default class Render {
         }
         //bookPagination.insertAdjacentHTML('afterbegin', paginationPrev);
         //bookPagination.insertAdjacentHTML('beforeend', paginationNext);
+        return bookPagination;
+    }
+
+    pagination(level: number, pagesSequence: number[]) {
+        const bookPagination = document.createElement('div');
+        bookPagination.classList.add('pagination');
+        let pagination = `
+            <a href="/book/${level}/0" class="pagination__item"><<</a>`;
+        pagesSequence.forEach((page) => {
+            pagination += `
+                <a href="/book/${level}/${page - 1}" class="pagination__item">
+                    ${page}
+                </a>`;
+        });
+        pagination += `
+            <a href="/book/${level}/29" class="pagination__item">>></a>`;
+        bookPagination.innerHTML = pagination;
         return bookPagination;
     }
 
@@ -785,6 +802,7 @@ export default class Render {
                 container.appendChild(canvas);
                 break;
         }
+
         return container;
     }
 
@@ -852,7 +870,7 @@ export default class Render {
                         <p class="game__desc">${desc}</p>
                         <p class="game__text">Выберите уровень:</p>
                         <ul class="game__levels levels">${levels}</ul>
-                        <button class="game__start">Начать</button>
+                        <button class="bttn game__start">Начать</button>
                     </div>
                 </div>
             </div>
@@ -893,7 +911,7 @@ export default class Render {
                 </div>
             </div>
             <div class="sprint-game__body-actions">
-                <button class="sprint-game__true-button">Верно</button> <button class="sprint-game__false-button">Неверно</button>
+                <button class="bttn sprint-game__true-button">Верно</button> <button class="bttn sprint-game__false-button">Неверно</button>
             </div>
         `;
         return container;
@@ -936,8 +954,8 @@ export default class Render {
                         <button class="audio__choice"></button>  
                     </div>
                     <div class="audio__next">
-                        <button class="audio__know-btn">Не знаю</button>  
-                        <button class="audio__next-btn hidden">Дальше</button>  
+                        <button class="bttn audio__know-btn">Не знаю</button>  
+                        <button class="bttn audio__next-btn hidden">Дальше</button>  
                     </div>
                 </div>
             </div>
@@ -972,7 +990,7 @@ export default class Render {
                         </p>
                         <p class="cd-signin-modal__message js-signin-modal__message"></p>
                         <p class="cd-signin-modal__fieldset">
-                            <input class="cd-signin-modal__input cd-signin-modal__input--full-width" type="submit" value="Войти">
+                            <input class="bttn cd-signin-modal__input--full-width" type="submit" value="Войти">
                         </p>
                     </form>
                 </div>
@@ -999,7 +1017,7 @@ export default class Render {
                         </p>
                         <p class="cd-signin-modal__message js-signin-modal__message"></p>
                         <p class="cd-signin-modal__fieldset">
-                            <input class="cd-signin-modal__input cd-signin-modal__input--full-width cd-signin-modal__input--has-padding" type="submit" value="Создать аккаунт">
+                            <input class="bttn cd-signin-modal__input--full-width cd-signin-modal__input--has-padding" type="submit" value="Создать аккаунт">
                         </p>
                     </form>
                 </div>
@@ -1041,6 +1059,7 @@ export default class Render {
         return chart;
     }
 
+    //GameResult
     gameResult(
         gameType: gameType,
         message: string,
@@ -1074,7 +1093,7 @@ export default class Render {
                 color = '#945069';
                 backgroundColor = '#F2D4DC';
                 upperLabel = 'осталось';
-                value = `<span class="gameresult-chart__heart">♥</span> ${currentValue}`;
+                value = `<span class="gameresult-chart__heart">♥</span>${currentValue}`;
                 if (currentValue == 1) {
                     buttomLabel = 'жизнь';
                 } else if (currentValue > 1 && currentValue < 5) {
@@ -1149,19 +1168,20 @@ export default class Render {
         }
 
         container.innerHTML = `
-        <div class="gameresult__info">
-            <img src="../assets/img/result.svg">
-            <div class="gameresult__info-body">
-                <div class="gameresult__header">${header}</div>
-                <div class="gameresult__message">${resultMessage}</div>
-                <div class="gameresult__charts">${charts.innerHTML}</div>
+        <div class="container">
+            <div class="gameresult__info">
+                <img src="../assets/img/result.svg">
+                <div class="gameresult__info-body">
+                    <div class="gameresult__header">${header}</div>
+                    <div class="gameresult__message">${resultMessage}</div>
+                    <div class="gameresult__charts">${charts.innerHTML}</div>
+                </div>
             </div>
-        </div>
-        <div class="gameresult__actions">
-            <button class="gameresult__button-replay">Сыграть еще раз</button>
-            <button class="gameresult__button-tobook">Перейти в учебник</button>  
-        </div>
-        `;
+            <div class="gameresult__actions">
+                <button class="bttn bttn--transparent gameresult__button-replay">Сыграть еще раз</button>
+                <button class="gameresult__button-tobook bttn bttn--light">Перейти в учебник</button>  
+            </div>
+        </div>`;
         return container;
     }
 
@@ -1169,8 +1189,8 @@ export default class Render {
         const gameResultWord = document.createElement('div');
         gameResultWord.classList.add('gameresultword');
         gameResultWord.innerHTML = `
-        <div class="gameresultword__icon">
-            <div class="play-icon" data-src="${word.audio}"></div>
+        <div class="gameresultword__icon" data-src="${word.audio}">
+            <div class="play-icon"></div>
         </div>
         <div class="gameresultword__body">
             <div class="gameresultword__body-word">${word.word}</div>
@@ -1178,13 +1198,6 @@ export default class Render {
             <div class="gameresultword__body-translation">${word.wordTranslate}</div>
         </div>
         `;
-        gameResultWord.addEventListener('click', () => {
-            const audio = new Audio();
-            audio.loop = false;
-            audio.src = `${base}/${word.audio}`;
-            audio.autoplay = true;
-        });
-
         return gameResultWord;
     }
 
@@ -1220,13 +1233,13 @@ export default class Render {
         unknowingWordsHeader.classList.add('unknowingwords__header');
 
         knowingWordsHeader.innerHTML = `
-        <div class="unknowingwords__header-title">Я знаю</div>
-        <div class="unknowingwords__header-label">${knowingWords.length}</div>
+        <div class="knowingwords__header-title">Я знаю</div>
+        <div class="knowingwords__header-label">${knowingWords.length} слов</div>
         `;
 
         unknowingWordsHeader.innerHTML = `
         <div class="unknowingwords__header-title">Я не знаю</div>
-        <div class="unknowingwords__header-label">${unknowingWords.length}</div>
+        <div class="unknowingwords__header-label">${unknowingWords.length} слов</div>
         `;
 
         knowingWordsContainer.appendChild(knowingWordsHeader);

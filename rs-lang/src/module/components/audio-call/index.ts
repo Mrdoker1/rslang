@@ -1,13 +1,15 @@
 //Utils
 import getHTMLElement from '../../../utils/getHTMLElement';
+import getHTMLButtonElement from '../../../utils/getHTMLButtonElement';
 import getHTMLImageElement from '../../../utils/getHTMLImageElement';
 import { shuffle, createStsEntry } from '../../../utils/helpers';
+import Particles from '../../../utils/particles';
 
 //Router
 import { Router } from 'routerjs';
 
 //Enums
-import { gameChart, gameType } from '../../../utils/enums';
+import { gameChart, gameType, gameStatus } from '../../../utils/enums';
 
 //Interfaces
 import IWord from '../../interface/IWord';
@@ -22,6 +24,7 @@ import Render from '../../ui';
 //State
 import State from '../../app/state';
 import IUserWord from '../../interface/IUserWord';
+import getNotNil from '../../../utils/getNotNil';
 
 export default class AudioCall {
     group: number;
@@ -34,6 +37,8 @@ export default class AudioCall {
     state = new State();
     isBook: boolean;
     router: Router;
+    learned = 0;
+    gameStatus: gameStatus;
     constructor(base: string, group: number, page: number, isBook: boolean = false, router: Router) {
         this.group = group;
         this.page = page;
@@ -45,6 +50,7 @@ export default class AudioCall {
         };
         this.isBook = isBook;
         this.router = router;
+        this.gameStatus = gameStatus.Started;
     }
 
     async start() {
@@ -53,12 +59,13 @@ export default class AudioCall {
         const game = this.render.gameAudioCall();
         main.append(game);
 
+        //gameWindow audio
         let count = 0;
         let attempt: number = 5;
 
         const words = await this.getWords();
         if (words.length < 5) {
-            this.showResult(attempt);
+            this.showResult(attempt, words);
             return;
         }
         this.showQuestion(words, count);
@@ -67,36 +74,26 @@ export default class AudioCall {
         answerBtns.forEach((btn) => {
             btn.addEventListener('click', (e) => {
                 const target = getHTMLElement(e.target);
-                this.showAnswer(target);
-                const answer = target.dataset.answer;
-
-                if (answer === undefined) {
-                    attempt -= 1;
-                    const hearts = document.querySelectorAll('.audio__icon-heart');
-                    hearts[attempt].classList.add('audio__icon-heart_miss');
-                    this.result.unknowingWords.push(words[count]);
-                    if (this.series > this.record) this.record = this.series;
-                    this.series = 0;
-                } else {
-                    this.result.knowingWords.push(words[count]);
-                    this.series += 1;
-                }
+                buttonPressHandler(target);
             });
         });
 
         const nextBtn = getHTMLElement(document.querySelector('.audio__next-btn'));
         nextBtn.addEventListener('click', () => {
-            if (typeof words === 'number') return;
+            //if (typeof words === 'number') return;
             const len = words.length - 1;
             if (count === len || attempt === 0) {
                 if (this.series > this.record) this.record = this.series;
                 if (this.state.token) this.saveStatistics();
-                this.showResult(attempt);
+                this.showResult(attempt, words);
+                this.playEndSound();
+                this.gameStatus = gameStatus.Ended;
                 return;
             }
             count += 1;
             this.showQuestion(words, count);
             this.hideAnswer();
+            this.gameStatus = gameStatus.Started;
         });
 
         const playBtn = document.querySelectorAll('.js-play-word');
@@ -111,6 +108,85 @@ export default class AudioCall {
                 this.sayWord(path);
             });
         });
+
+        const buttonPressHandler = (target: HTMLElement) => {
+            this.showAnswer(target);
+            this.gameStatus = gameStatus.Paused;
+            const answer = target.dataset.answer;
+
+            if (answer === undefined) {
+                this.playBadSound();
+                attempt -= 1;
+                const hearts = document.querySelectorAll('.audio__icon-heart');
+                hearts[attempt].classList.add('audio__icon-heart_miss');
+                this.result.unknowingWords.push(words[count]);
+                if (this.series > this.record) this.record = this.series;
+                this.series = 0;
+                const heartBody = getHTMLElement(document.querySelector('.audio__icon-heart_miss'));
+                const particles = new Particles();
+                particles.create(
+                    particles.getOffset(heartBody).x,
+                    particles.getOffset(heartBody).y,
+                    `♥`,
+                    '',
+                    'audiocall-heart'
+                );
+            } else {
+                this.playGoodSound();
+                this.result.knowingWords.push(words[count]);
+                this.series += 1;
+
+                for (let i = 0; i < 5; i++) {
+                    const heartBody = getHTMLElement(document.querySelector('.active-answer'));
+                    const particles = new Particles();
+                    particles.create(
+                        particles.getOffset(heartBody).x,
+                        particles.getOffset(heartBody).y,
+                        `👍`,
+                        '',
+                        'audiocall-rightAnswer'
+                    );
+                }
+            }
+        };
+
+        const keyPressHandler = () => {
+            document.onkeydown = (e) => {
+                e = e || window.event;
+                const newspaperSpinning = [
+                    { transform: 'rotate(0) scale(1)' },
+                    { transform: 'rotate(0) scale(1.2)' },
+                    { transform: 'rotate(0) scale(1)' },
+                ];
+                const newspaperTiming = {
+                    duration: 100,
+                    iterations: 1,
+                };
+                if (e.keyCode === 49 && this.gameStatus == gameStatus.Started) {
+                    const target = getHTMLElement(document.querySelectorAll('.audio__choice')[0]);
+                    buttonPressHandler(target);
+                    target.animate(newspaperSpinning, newspaperTiming);
+                } else if (e.keyCode === 50 && this.gameStatus == gameStatus.Started) {
+                    const target = document.querySelectorAll('.audio__choice')[1] as HTMLElement;
+                    buttonPressHandler(target);
+                    target.animate(newspaperSpinning, newspaperTiming);
+                } else if (e.keyCode === 51 && this.gameStatus == gameStatus.Started) {
+                    const target = document.querySelectorAll('.audio__choice')[2] as HTMLElement;
+                    buttonPressHandler(target);
+                    target.animate(newspaperSpinning, newspaperTiming);
+                } else if (e.keyCode === 52 && this.gameStatus == gameStatus.Started) {
+                    const target = document.querySelectorAll('.audio__choice')[3] as HTMLElement;
+                    buttonPressHandler(target);
+                    target.animate(newspaperSpinning, newspaperTiming);
+                } else if (e.keyCode === 53 && this.gameStatus == gameStatus.Started) {
+                    const target = document.querySelectorAll('.audio__choice')[4] as HTMLElement;
+                    buttonPressHandler(target);
+                    target.animate(newspaperSpinning, newspaperTiming);
+                }
+            };
+        };
+
+        keyPressHandler();
     }
 
     async getWords() {
@@ -165,7 +241,7 @@ export default class AudioCall {
 
         const choices = document.querySelectorAll('.audio__choice');
         choices.forEach((choice, i) => {
-            choice.classList.remove('.active');
+            choice.classList.remove('.active-answer');
             choice.textContent = qWords[i].wordTranslate;
             if (qWords[i] === word) choice.setAttribute('data-answer', '');
             else choice.removeAttribute('data-answer');
@@ -185,7 +261,7 @@ export default class AudioCall {
     }
 
     showAnswer(el: HTMLElement) {
-        el.classList.add('active');
+        el.classList.add('active-answer');
         document.querySelector('.audio__know-btn')?.classList.add('hidden');
         document.querySelector('.audio__next-btn')?.classList.remove('hidden');
         document.querySelector('.audio__question')?.classList.add('hidden');
@@ -201,7 +277,7 @@ export default class AudioCall {
     hideAnswer() {
         const choices = document.querySelectorAll('.audio__choice');
         choices.forEach((choice) => {
-            choice.classList.remove('active', 'disabled');
+            choice.classList.remove('active-answer', 'disabled');
         });
         document.querySelector('.audio__know-btn')?.classList.remove('hidden');
         document.querySelector('.audio__next-btn')?.classList.add('hidden');
@@ -209,11 +285,9 @@ export default class AudioCall {
         document.querySelector('.audio__answer')?.classList.add('hidden');
     }
 
-    showResult(attempt: number) {
+    showResult(attempt: number, words: IWord[]) {
         const knowingWords = this.result.knowingWords;
         const unknowingWords = this.result.unknowingWords;
-        // const knowingWordsSet = [...new Set(knowingWords)];
-        // const unknowingWordsSet = [...new Set(unknowingWords)];
 
         const chart1 = {
             type: gameChart.Healths,
@@ -228,26 +302,26 @@ export default class AudioCall {
         };
 
         let charts = [chart1, chart2];
+        const message: string = this.getResultMessage(knowingWords, unknowingWords);
 
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
         main.append(
-            this.render.gameResult(
-                gameType.Sprint,
-                'test message',
-                charts,
-                knowingWords,
-                unknowingWords,
-                this.data.base
-            )
+            this.render.gameResult(gameType.AudioCall, message, charts, knowingWords, unknowingWords, this.data.base)
         );
 
-        // main.append(this.render.gameResultWords(knowingWordsSet, unknowingWordsSet, this.data.base));
-
-        const playBtns = document.querySelectorAll('[data-src]').forEach((btn) => {
-            const path = getHTMLElement(btn).dataset.src;
-            if (!path) return false;
-            this.sayWord(path);
+        const playBtns: NodeListOf<HTMLElement> = main.querySelectorAll('.gameresultword__icon');
+        playBtns.forEach((playBtn) => {
+            playBtn.addEventListener('click', (e) => {
+                let target = getHTMLElement(e.target);
+                if (target.classList.contains('play-icon')) {
+                    target = getHTMLElement(target.closest('.gameresultword__icon'));
+                }
+                const src = target.dataset.src;
+                const audio = new Audio();
+                audio.src = `${this.data.base}/${src}`;
+                audio.autoplay = true;
+            });
         });
 
         const btnReplay = getHTMLElement(main.querySelector('.gameresult__button-replay'));
@@ -259,6 +333,23 @@ export default class AudioCall {
         btnToBook.addEventListener('click', () => {
             this.router.navigate(`/book/${this.group}/${this.page}`);
         });
+    }
+
+    getResultMessage(rightWords: IWord[], wrongWords: IWord[]) {
+        const result: number = rightWords.length / (wrongWords.length + rightWords.length);
+
+        let message: string;
+
+        if (result >= 0.8) {
+            message = 'Отличный результат!';
+        } else if (result >= 0.5 && result < 0.8) {
+            message = 'Вы неплохо справились!';
+        } else if (result > 0.2 && result < 0.5) {
+            message = 'Вы можете лучше!';
+        } else {
+            message = 'Продолжайте учиться!'; //NaN
+        }
+        return message;
     }
 
     async saveStatistics() {
@@ -307,12 +398,11 @@ export default class AudioCall {
         if (!record || this.record > record) record = this.record;
 
         knowingWords.forEach(async (word, i) => {
-            let learnedInGame = 0;
             const matchedUserWord = userWords.find(
                 (userWord) => userWord.wordId === word.id || userWord.wordId === word._id
             );
             if (matchedUserWord) {
-                learnedInGame = (await this.updateUserWord(word, matchedUserWord, true)) || 0;
+                this.updateUserWord(word, matchedUserWord, true);
             } else {
                 this.createUserWord(word, true);
                 newCount += 1;
@@ -320,7 +410,7 @@ export default class AudioCall {
 
             total += 1;
             right += 1;
-            learned += learnedInGame;
+            learned += this.learned;
         });
 
         unknowingWords.forEach((word) => {
@@ -353,6 +443,30 @@ export default class AudioCall {
             console.log(`Ошибка updateUserStatistics ${updateUserStatistics}`);
             return;
         }
+    }
+
+    playGoodSound() {
+        const audio = new Audio();
+        audio.volume = 0.2;
+        audio.loop = false;
+        audio.src = `../../../assets/music/good.mp3`;
+        audio.autoplay = true;
+    }
+
+    playBadSound() {
+        const audio = new Audio();
+        audio.volume = 0.2;
+        audio.loop = false;
+        audio.src = `../../../assets/music/bad1.mp3`;
+        audio.autoplay = true;
+    }
+
+    playEndSound() {
+        const audio = new Audio();
+        audio.volume = 0.2;
+        audio.loop = false;
+        audio.src = `../../../assets/music/lucky.mp3`;
+        audio.autoplay = true;
     }
 
     isNewDay(date: string): boolean {
@@ -400,7 +514,6 @@ export default class AudioCall {
     }
 
     async updateUserWord(word: IWord, userWord: IUserWord, isRight: boolean) {
-        let isLearned;
         let updUserWord;
         let difficulty;
         let total;
@@ -415,8 +528,8 @@ export default class AudioCall {
 
             if ((series === 3 && difficulty === 'normal') || (series === 5 && difficulty === 'hard')) {
                 difficulty = 'easy';
-                isLearned = 1;
-            } else isLearned = 0;
+                this.learned = 1;
+            } else this.learned = 0;
         } else {
             difficulty = userWord.difficulty === 'easy' ? 'normal' : difficulty;
             if (!difficulty) difficulty = 'normal';
@@ -440,7 +553,6 @@ export default class AudioCall {
 
         const resp = await this.data.updateUserWord(this.state.userId, wordId, updUserWord, this.state.token);
         if (typeof resp !== 'number') {
-            return isLearned;
         } else {
             console.log(`Ошибка ${resp}`);
         }

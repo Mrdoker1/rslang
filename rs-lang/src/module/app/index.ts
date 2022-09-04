@@ -32,6 +32,10 @@ import '../ui/styles/chart.scss';
 import '../ui/styles/gameResult.scss';
 import '../ui/styles/gameResultWords.scss';
 import '../ui/styles/statistics.scss';
+import '../ui/styles/particles.scss';
+
+//Pagination
+import paginate from 'do-paginate';
 
 //Router
 import { createRouter, Router } from 'routerjs';
@@ -236,7 +240,16 @@ export default class App {
                 getHTMLElement(pageHeader.querySelector('.page__menu')).innerHTML += hardWords;
             }
 
-            const pagination = this.render.bookPagination(group, 29);
+            //const pagination = this.render.bookPagination(group, 29);
+            const index: number = page + 1;
+            const items_per_page: number = 20;
+            const items_total: number = 600;
+            const offset: number = 3;
+            const sequence: number[] = paginate(index, items_per_page, items_total, offset);
+
+            console.log(sequence);
+
+            const pagination = this.render.pagination(group, sequence);
             getHTMLElement(pageBook.querySelector('.page__book')).append(pagination);
 
             cards.forEach((card) => {
@@ -974,21 +987,21 @@ export default class App {
     showGameDifficulty(type: gameType) {
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
-        const game = this.render.gameDifficulty(type);
+        const gameDifficulty = this.render.gameDifficulty(type);
         let root = '';
-        main.append(game);
+        main.append(gameDifficulty);
         switch (type) {
             case gameType.AudioCall:
-                root = 'audiocall';
+                root = 'audio-call';
                 break;
             case gameType.Sprint:
                 root = 'sprint';
                 break;
         }
 
-        const start = getHTMLElement(game.querySelector('.game__start'));
+        const start = getHTMLElement(gameDifficulty.querySelector('.game__start'));
         start.addEventListener('click', (e) => {
-            const checked = getHTMLInputElement(game.querySelector('[type="radio"]:checked'));
+            const checked = getHTMLInputElement(gameDifficulty.querySelector('[type="radio"]:checked'));
             const href = `/games/${root}/${checked.value}/${getRandom(0, 29)}`;
             this.router.navigate(href);
         });

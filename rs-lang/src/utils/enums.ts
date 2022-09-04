@@ -9,9 +9,15 @@ enum gameType {
     AudioCall = 2,
 }
 
+enum gameStatus {
+    Started = 1,
+    Paused = 2,
+    Ended = 3,
+}
+
 enum statisticType {
     Daily = 1,
     Total = 2,
 }
 
-export { gameChart, gameType, statisticType };
+export { gameChart, gameType, gameStatus, statisticType };

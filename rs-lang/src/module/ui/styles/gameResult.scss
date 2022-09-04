@@ -3,10 +3,16 @@
 
 .gameresult{
     display: flex;
-    padding: 20px;
+    //padding: 20px;
+    padding: 60px 25px;
     background: white;
     flex-direction: column;
-    max-width: fit-content;
+    //max-width: fit-content;
+    width: 670px;
+    // height: 400px;
+    box-shadow: $box-shadow-2;
+    border-radius: 14px;
+
     align-items: center;
     &__wrapper{
         display: flex;
@@ -20,13 +26,66 @@
             flex-direction: column;
         }
     }
-    &__header{}
-    &__message{}
+    &__header{
+        font: $dela-gothic-32px;
+        color: $color-primary;
+    }
+    &__message{
+        padding-top: 12px;
+        font: $montserrat-16px;
+        color: $color-grey-dark;
+    }
     &__charts{
         display: flex;
         flex-direction: row;
+        padding-top: 20px;
+        gap: 20px;
     }
-    &__actions{}
-    &__button-replay{}
-    &__button-tobook{}
+    &__actions{
+        display: flex;
+        justify-content: center;
+        padding-top: 30px;
+        gap: 20px;
+    }
+    &__button-replay{
+        &:hover {
+            background-color: transparent;
+
+            &::after {
+                filter: brightness(0) saturate(100%) invert(45%) sepia(15%) saturate(1788%) hue-rotate(145deg) brightness(86%) contrast(86%);
+            }
+        }
+        &::after {
+            content: '';
+            position: relative;
+            top: 1px;
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            color: #000;
+            background: url("../../../assets/img/icon-replay.svg") no-repeat left center;
+            margin: 0px 5px;
+            vertical-align: bottom;
+            transition: $transition-1;
+        }
+    }
+
+    &-chart__body{
+        text-align: center;
+        &-upper{
+            font: $montserrat-14px;
+            color: $color-primary;
+        }
+        &-value{
+            font: $dela-gothic-32px;
+            color: $color-primary;
+        }     
+        &-buttom{
+            font: $montserrat-16px;
+            color: $color-grey-dark;
+        }
+    }
+    &-chart__heart {
+        color: $color-pink-dark;
+    }
 }
