@@ -104,39 +104,20 @@ export default class Render {
     }
 
     sectionGames(gameLinkSprintGame: string, gameLinkAudioGame: string, disableButton?: string) {
-        const games = document.createElement('section');
-        const gamesContainer = document.createElement('div');
-        gamesContainer.classList.add('container');
+        const games = document.createElement('div');
+        games.classList.add('page__games');
         games.classList.add('games');
-        games.appendChild(gamesContainer);
-        gamesContainer.innerHTML += `
-        <h3 class="section__title">Игры</h3>
-        <div class="games__list">
-            <div class="card">
-              <div class="card__image">
-                  <img src="https://via.placeholder.com/150/FF0000/FFFFFF?Text=Down.comC/O" alt="Игра 1">
+        games.innerHTML += `
+          <div class="games__list">
+              <div class="game game--sprint">
+                    <img src="../assets/img/icon-sprint.svg" class="game__img">
+                    <a href="${gameLinkSprintGame}" class="bttn bttn--transparent game__bttn ${disableButton}">Спринт</a>
               </div>
-              <div class="card__title">
-                  Спринт
+              <div class="game game--audio-call">
+                    <img src="../assets/img/icon-audio-call.svg" class="game__img">
+                    <a href="${gameLinkAudioGame}" class="bttn bttn--transparent game__bttn ${disableButton}">Аудио-вызов</a>
               </div>
-              <p class="card__description">
-                  Описание игры 1
-              </p>
-              <a href="${gameLinkSprintGame}" class="bttn ${disableButton}">Запустить игру</a>
-            </div>
-            <div class="card">
-              <div class="card__image">
-                  <img src="https://via.placeholder.com/150/FF0000/FFFFFF?Text=Down.comC/O" alt="Игра 2">
-              </div>
-              <div class="card__title">
-                  Аудиовызов
-              </div>
-              <p class="card__description">
-                  Описание игры 2
-              </p>
-              <a href="${gameLinkAudioGame}" class="bttn ${disableButton}">Запустить игру</a>
-            </div>
-        </div>
+          </div>
       `;
         return games;
     }
@@ -277,7 +258,13 @@ export default class Render {
         const pageBookContainer = document.createElement('div');
         pageBookContainer.classList.add('container');
         pageBookContainer.appendChild(pageBook);
-        pageBook.innerHTML += `<h2 class="page__title">Учебник</h2>`;
+        pageBook.innerHTML += `
+            <div class="page-header">
+                <div class="page__menu">
+                    <a href="/book/0/0" class="menu__item hat-icon">Учебник</a>
+                </div>
+            </div>
+        `;
         const wordsList = document.createElement('div');
         wordsList.classList.add('words__list');
         pageBook.append(wordsList);
@@ -287,10 +274,45 @@ export default class Render {
     wordLevels() {
         const wordLevelsList = document.createElement('div');
         wordLevelsList.classList.add('word-levels__list');
-        for (let i = 0; i <= 5; i++) {
+        wordLevelsList.classList.add('align-center');
+
+        for (let i: number = 1; i <= 6; i++) {
+            let levelDiff;
+            let levelName;
+            let className;
+            let counter;
+            if (i <= 2) {
+                if (i % 2) {
+                    counter = 1;
+                } else {
+                    counter = 2;
+                }
+                levelName = 'A';
+                levelDiff = 'Easy';
+                className = 'label--green';
+            } else if (i > 2 && i <= 4) {
+                if (i % 2) {
+                    counter = 1;
+                } else {
+                    counter = 2;
+                }
+                levelName = 'B';
+                levelDiff = 'Medium';
+                className = 'label--yellow';
+            } else if ((i: number) => 4 && i <= 8) {
+                if (i % 2) {
+                    counter = 1;
+                } else {
+                    counter = 2;
+                }
+                levelName = 'C';
+                levelDiff = 'Hard';
+                className = 'label--red';
+            }
+
             const wordLevels = `  
-                <a href="/book/${i}/0" class="word-levels__item">
-                    Уровень ${i}
+                <a href="/book/${i - 1}/0" class="word-levels__item">
+                    ${levelName}${counter} <span class="label ${className}">${levelDiff}</span>
                 </a>
             `;
             wordLevelsList.innerHTML += wordLevels;
@@ -300,16 +322,46 @@ export default class Render {
 
     hardWords() {
         const hardWords = `
-            <a href="/book/6/0" class="word-levels__item">
-                Сложные слова
-            </a>
+            <a href="/book/6/0" class="menu__item book-icon">Словарь</a>
         `;
         return hardWords;
+    }
+
+    hardWordsEmpty() {
+        const emptyMessage = `
+            <div class="container align-center">
+              <div class="empty-message">
+                  <div class="empty__img">
+                      <img src="./assets/img/empty-img.png">
+                  </div>
+                  <div class="empty__info">
+                      <h2 class="empty__title">
+                          В этом разделе пока нет слов
+                      </h2>
+                      <p class="empty__description">
+                          Чтобы сохранять сложные слова для дальнейшего изучения перейдите в учебник и выбирите ‘добавить в словарь’
+                      </p>
+                      <a href="/book/0/0" class="bttn empty__bttn">В учебник</a>
+                  </div>
+              </div>
+            </div>  
+        `;
+        return emptyMessage;
     }
 
     bookPagination(levelNumber: number, pagesNumber: number) {
         const bookPagination = document.createElement('div');
         bookPagination.classList.add('pagination');
+        const paginationPrev = `
+            <a href="/book/${levelNumber}/0" class="pagination__item">
+            ←
+            </a>
+        `;
+        const paginationNext = `
+            <a href="/book/${levelNumber}/0" class="pagination__item">
+            →
+            </a>
+        `;
         for (let i = 0; i < pagesNumber; i++) {
             const pagination = `
                 <a href="/book/${levelNumber}/${i}" class="pagination__item">
@@ -318,6 +370,8 @@ export default class Render {
             `;
             bookPagination.innerHTML += pagination;
         }
+        //bookPagination.insertAdjacentHTML('afterbegin', paginationPrev);
+        //bookPagination.insertAdjacentHTML('beforeend', paginationNext);
         return bookPagination;
     }
 
@@ -325,22 +379,26 @@ export default class Render {
         let bttnAddToHard;
         let bttnAddToEasy;
         if (loginStatus) {
-            bttnAddToHard = `<button class="bttn" data-handle="add-to-hard" data-id="${id}">Добавить в сложные</button>`;
-            bttnAddToEasy = `<button class="bttn" data-handle="add-to-easy" data-id="${id}">Добавить в изученные</button>`;
+            bttnAddToHard = `<button class="bttn bttn--red" data-handle="add-to-hard" data-id="${id}">Добавить в словарь</button>`;
+            bttnAddToEasy = `<button class="bttn bttn--green" data-handle="add-to-easy" data-id="${id}">Добавить в изученные</button>`;
         } else {
             bttnAddToHard = '';
             bttnAddToEasy = '';
         }
 
         let stateClass;
+        let stateText;
         if (hardWord) {
             stateClass = 'hard';
-            bttnAddToHard = `<button class="bttn" data-handle="delete-from-hard" data-id="${id}">Удалить из сложных</button>`;
+            stateText = 'сложное';
+            bttnAddToHard = `<button class="bttn bttn--red" data-handle="delete-from-hard" data-id="${id}">Удалить из словаря</button>`;
         } else if (easyWord) {
             stateClass = 'easy';
-            bttnAddToEasy = `<button class="bttn" data-handle="delete-from-easy" data-id="${id}">Удалить из изученых</button>`;
+            stateText = 'изученное';
+            bttnAddToEasy = `<button class="bttn bttn--green" data-handle="delete-from-easy" data-id="${id}">Удалить из изученых</button>`;
         } else {
             stateClass = '';
+            stateText = '';
         }
 
         let statisctic = '';
@@ -351,10 +409,10 @@ export default class Render {
             stats?.optional?.series !== undefined
         ) {
             statisctic = `
-              <ul>
-                  <li><b>total:</b> ${stats?.optional?.total}</li>
-                  <li><b>right:</b> ${stats?.optional?.right}</li>
-                  <li><b>series:</b> ${stats?.optional?.series}</li>
+              <ul class="stat__list">
+                  <li><span class="icon icon--bookmark"></span>${stats?.optional?.total} <span class="text">встретилось</span></li>
+                  <li><span class="icon icon--star"></span>${stats?.optional?.right} <span class="text">изучено</span></li>
+                  <li><span class="icon icon--lightning"></span>${stats?.optional?.series} <span class="text">лучшая серия</span></li>
               </ul>
           `;
         }
@@ -362,37 +420,35 @@ export default class Render {
         const card = `
           <div class="card card-word ${stateClass}">
               <div class="card-left">
+                  ${statisctic}
                   <img src="https://rslang-learnwords-app.herokuapp.com/${data.image}" class="card__image">
               </div>
               <div class="card-right">
-                <div class="card__title">
-                    <div class="card-word__translate">
-                        ${data.word}&nbsp;/&nbsp;${data.wordTranslate}
-                        <span class="card-word__trnscription">${data.transcription}</span>
-                    </div>
-                    <div class="card-word__audio">
-                        <button class="play-icon"></button>
-                    </div
-                </div>
-                <div class="card-word__text-example">
-                    <span>Пример</span>
-                    <p>${data.textExample}</p>
-                </div>
-                <div class="card-word__text-translate">
-                    <p>${data.textExampleTranslate}</p>
-                </div>
-                <div class="card-word__text-meaning">
-                    <span>Значение</span>
-                    <p>${data.textMeaning}</p>
-                </div>
-                <div class="card-word__text-meaning-translate">
-                    <p>${data.textMeaningTranslate}</p>
-                </div>
-                ${statisctic}
-                ${bttnAddToHard}
-                ${bttnAddToEasy}
-              </div>  
-          </div>
+                  <div class="card__header">
+                      <div class="card__title">
+                          <span class="word-title">${data.word}&nbsp;/&nbsp;</span><span class="word-translate">${data.wordTranslate}</span>
+                          <div class="card__sub-title">
+                              <span class="card-word__transcription">${data.transcription}</span>
+                              <span class="card-word__status label">${stateText}</span>
+                          </div>
+                      </div> 
+                      <div class="card-word__audio">
+                          <button class="play-icon"></button>
+                      </div>
+                  </div>
+                  <div class="card-word__text-meaning">
+                      <p>${data.textMeaning}&nbsp;&ndash;&nbsp;${data.textMeaningTranslate}</p>
+                  </div>
+                  <div class="card-word__text-example">
+                      <p>${data.textExample}&nbsp;&ndash;&nbsp;${data.textExampleTranslate}</p>
+                  </div>
+
+                  <div class="card__bottom">
+                      ${bttnAddToEasy}
+                      ${bttnAddToHard}
+                  </div>
+              </div> 
+            </div> 
         `;
         return card;
     }
@@ -1187,6 +1243,7 @@ export default class Render {
 
     static currentLink(path: string) {
         const navLinks = document.querySelectorAll('.header__menu a:not([href^="#"])');
+        const levelLinks = document.querySelectorAll('.word-levels__list a:not([href^="#"])');
         const parts = path.split('/').reverse();
 
         for (let link of navLinks) {
