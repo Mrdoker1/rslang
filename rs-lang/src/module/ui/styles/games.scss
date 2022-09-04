@@ -210,15 +210,17 @@
       &.disabled{
         pointer-events: none;
         &[data-answer] {
-          border-color: $color-pink-dark;
-          color: $color-pink-dark;
+          border-color:  $color-red;
+          background-color: $color-red;
+          color: white;
         }
       }
 
       &.active{
         &[data-answer] {
-          border-color: $color-green;
-          color: $color-green;
+          border-color:  $color-green;
+          background-color: $color-green;
+          color: white;
         }
         border-color: $color-cyan-dark;
         color: $color-cyan-dark;
@@ -248,9 +250,6 @@
     border-radius: 50px;
     box-shadow: $box-shadow-2;
     padding: 10px 20px;
-    &:hover {
-      box-shadow: $box-shadow-1;
-    }
   }
 
   &__play {
