@@ -212,8 +212,6 @@ export default class AudioCall {
     showResult(attempt: number) {
         const knowingWords = this.result.knowingWords;
         const unknowingWords = this.result.unknowingWords;
-        // const knowingWordsSet = [...new Set(knowingWords)];
-        // const unknowingWordsSet = [...new Set(unknowingWords)];
 
         const chart1 = {
             type: gameChart.Healths,
@@ -233,8 +231,8 @@ export default class AudioCall {
         main.innerHTML = '';
         main.append(
             this.render.gameResult(
-                gameType.Sprint,
-                'test message',
+                gameType.AudioCall,
+                'Вы хорошо справились',
                 charts,
                 knowingWords,
                 unknowingWords,

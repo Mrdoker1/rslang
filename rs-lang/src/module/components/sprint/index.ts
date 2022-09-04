@@ -3,7 +3,6 @@ import getHTMLElement from '../../../utils/getHTMLElement';
 import getHTMLButtonElement from '../../../utils/getHTMLButtonElement';
 import getNotNil from '../../../utils/getNotNil';
 import { shuffle, getRandom, createStsEntry } from '../../../utils/helpers';
-import Particles from '../../../utils/particles';
 
 //Router
 import { Router } from 'routerjs';
@@ -25,6 +24,8 @@ import { gameChart, gameType } from '../../../utils/enums';
 //State
 import State from '../../app/state';
 
+let interval: ReturnType<typeof setInterval>;
+
 export default class Sprint {
     group: number;
     page: number;
@@ -35,11 +36,12 @@ export default class Sprint {
     result: Record<string, IWord[]>;
     render: Render;
     state = new State();
-    series: number = 0;
-    record: number = 0;
     isBook: boolean;
     data: Data;
     router: Router;
+    series = 0;
+    record = 0;
+    count = 0;
     constructor(base: string, group: number, page: number, isBook: boolean = false, router: Router) {
         this.group = group;
         this.page = page;
@@ -71,10 +73,10 @@ export default class Sprint {
         this.setNewWord();
         const playZone = this.setPlayZone();
         this.setHandlers(playZone);
-        const interval = window.setInterval(() => {
+        interval = setInterval(() => {
             try {
                 if (this.counter <= 0) {
-                    window.clearInterval(interval);
+                    clearInterval(interval);
                     if (this.state.token) this.saveStatistics();
                     this.showResult();
                     //console.log('Sprint Game Finished!');
@@ -83,7 +85,7 @@ export default class Sprint {
                 const newChart = this.render.chart(500, 8, (this.counter -= this.speed), '#2B788B', '#C3DCE3');
                 playZone.replaceChild(newChart, oldChart);
             } catch {
-                window.clearInterval(interval);
+                clearInterval(interval);
             }
         }, 10);
     }
@@ -123,12 +125,23 @@ export default class Sprint {
     }
 
     setNewWord() {
-        const rightWordIndex = getRandom(0, this.words.length - 1);
-        const word = this.words[rightWordIndex];
+        const word = this.words[this.count];
+        this.count += 1;
+        let possibleTranslation = word.wordTranslate;
 
-        let possibleTranslation;
-        if (getRandom(0, 1)) possibleTranslation = this.words[rightWordIndex].wordTranslate;
-        else possibleTranslation = this.words[getRandom(0, this.words.length - 1)].wordTranslate;
+        if (getRandom(0, 1)) {
+            const qWords = this.words.slice();
+            qWords.splice(this.count, 1);
+            shuffle(qWords);
+            possibleTranslation = qWords[0].wordTranslate;
+        }
+
+        // const rightWordIndex = getRandom(0, this.words.length - 1);
+        // const word = this.words[rightWordIndex];
+
+        // let possibleTranslation;
+        // if (getRandom(0, 1)) possibleTranslation = this.words[rightWordIndex].wordTranslate;
+        // else possibleTranslation = this.words[getRandom(0, this.words.length - 1)].wordTranslate;
 
         this.gameState.word = word;
         this.gameState.wordEnglish = word.word;
@@ -153,65 +166,63 @@ export default class Sprint {
     setHandlers(playZone: HTMLDivElement) {
         const buttonTrue = getHTMLButtonElement(document.querySelector('.sprint-game__true-button'));
         const buttonFalse = getHTMLButtonElement(document.querySelector('.sprint-game__false-button'));
-        const multiplierBody = getHTMLElement(document.querySelector('.sprint-game__multiplier'));
-        const pointsBody = getHTMLElement(document.querySelector('.sprint-game__points'));
-        const particles = new Particles();
+
         buttonTrue.addEventListener('click', () => {
             if (this.counter > 0) {
                 if (this.gameState.possibleTranslation == this.gameState.wordTranslation) {
-                    rightAnswerHandler();
+                    this.result.knowingWords.push(getNotNil(this.gameState.word));
+                    //console.log('Right Answer!');
+                    this.series += 1;
+                    if (this.gameState.strike == 3) {
+                        this.gameState.multiplier += 1;
+                        this.gameState.strike = 0;
+                    }
+                    this.gameState.points += this.gameState.multiplier * 10;
+                    this.gameState.strike += 1;
                 } else {
-                    wrongAnswerHandler();
+                    // console.log('Wrong Answer!');
+                    if (this.series > this.record) this.record = this.series;
+                    this.series = 0;
+                    this.result.unknowingWords.push(getNotNil(this.gameState.word));
+                    this.gameState.strike = 0;
+                    this.gameState.multiplier = 1;
                 }
-                this.renderNewGameBody(playZone);
+                //console.log(this.count);
+                if (this.count > this.words.length - 1) {
+                    clearInterval(interval);
+                    if (this.state.token) this.saveStatistics();
+                    this.showResult();
+                } else this.renderNewGameBody(playZone);
             }
         });
 
         buttonFalse.addEventListener('click', () => {
             if (this.counter > 0) {
                 if (this.gameState.possibleTranslation != this.gameState.wordTranslation) {
-                    rightAnswerHandler();
+                    this.result.knowingWords.push(getNotNil(this.gameState.word));
+                    this.series += 1;
+                    //console.log('Right Answer!');
+                    if (this.gameState.strike == 3) {
+                        this.gameState.multiplier += 1;
+                        this.gameState.strike = 0;
+                    }
+                    this.gameState.points += this.gameState.multiplier * 10;
+                    this.gameState.strike += 1;
                 } else {
-                    wrongAnswerHandler();
+                    //console.log('Wrong Answer!');
+                    if (this.series > this.record) this.record = this.series;
+                    this.series = 0;
+                    this.result.unknowingWords.push(getNotNil(this.gameState.word));
+                    this.gameState.strike = 0;
+                    this.gameState.multiplier = 1;
                 }
-                this.renderNewGameBody(playZone);
+                if (this.count > this.words.length - 1) {
+                    clearInterval(interval);
+                    if (this.state.token) this.saveStatistics();
+                    this.showResult();
+                } else this.renderNewGameBody(playZone);
             }
         });
-
-        const rightAnswerHandler = () => {
-            //console.log('Right Answer!');
-            this.result.knowingWords.push(getNotNil(this.gameState.word));
-            this.series += 1;
-            if (this.gameState.strike == 3) {
-                this.gameState.multiplier += 1;
-                this.gameState.strike = 0;
-                particles.create(
-                    particles.getOffset(multiplierBody).x,
-                    particles.getOffset(multiplierBody).y,
-                    `x${this.gameState.multiplier}`,
-                    '#000',
-                    'sprint-multiplier'
-                );
-            }
-            this.gameState.points += this.gameState.multiplier * 10;
-            this.gameState.strike += 1;
-            particles.create(
-                particles.getOffset(pointsBody).x,
-                particles.getOffset(pointsBody).y,
-                `${this.gameState.points}`,
-                '#2B788B',
-                'sprint-points'
-            );
-        };
-
-        const wrongAnswerHandler = () => {
-            //console.log('Wrong Answer!');
-            if (this.series > this.record) this.record = this.series;
-            this.series = 0;
-            this.result.unknowingWords.push(getNotNil(this.gameState.word));
-            this.gameState.strike = 0;
-            this.gameState.multiplier = 1;
-        };
     }
 
     setPlayZone() {
@@ -327,7 +338,7 @@ export default class Sprint {
         let record = sts.sprint.record;
         if (!record || this.record > record) record = this.record;
 
-        knowingWords.forEach(async (word, i) => {
+        knowingWords.forEach(async (word) => {
             let learnedInGame = 0;
 
             const matchedUserWord = userWords.find(
