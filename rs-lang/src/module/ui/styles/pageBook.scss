@@ -1,3 +1,6 @@
+// Variables
+@import '../../../variables.scss';
+
 .page__book {
     display: flex;
     flex-direction: column;
@@ -6,7 +9,7 @@
 .words__list {
     display: flex;
     flex-wrap: wrap;
-    gap: 2rem 1rem;
+    gap: 40px;
     flex: 1 1 0;
     order: 2;
     position: relative;
@@ -17,4 +20,51 @@
 .word-levels {
     display: flex;
     order: 1;
+}
+
+.card {
+  display: flex;
+  flex-direction: row;
+  flex-basis: 100%;
+  border-radius: 14px;
+  box-shadow: $box-shadow-2;
+  background-color: #fff;
+  
+  &-right {
+      padding: 40px;
+  }
+
+  &__image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 14px 0 0 14px;
+  }
+
+  &.hard {
+      border: 2px solid red;
+  }
+
+  &.easy {
+      border: 2px solid blue;
+  }
+}
+
+.pagination {
+  display: flex;
+  gap: 1rem;
+  order: 3;
+
+  &__item {
+      color: black;
+      border: 1px solid;
+      text-decoration: none;
+
+      &.active {
+          color: red;
+      }
+      &.learned {
+        color: blue
+    }
+  }   
 }
