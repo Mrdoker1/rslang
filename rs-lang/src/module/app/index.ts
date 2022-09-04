@@ -34,6 +34,9 @@ import '../ui/styles/gameResultWords.scss';
 import '../ui/styles/statistics.scss';
 import '../ui/styles/particles.scss';
 
+//Pagination
+import paginate from 'do-paginate';
+
 //Router
 import { createRouter, Router } from 'routerjs';
 
@@ -235,7 +238,16 @@ export default class App {
                 getHTMLElement(pageBook.querySelector('.word-levels__list')).innerHTML += hardWords;
             }
 
-            const pagination = this.render.bookPagination(group, 29);
+            //const pagination = this.render.bookPagination(group, 29);
+            const index: number = page + 1;
+            const items_per_page: number = 20;
+            const items_total: number = 600;
+            const offset: number = 3;
+            const sequence: number[] = paginate(index, items_per_page, items_total, offset);
+
+            console.log(sequence);
+
+            const pagination = this.render.pagination(group, sequence);
             getHTMLElement(pageBook.querySelector('.page__book')).append(pagination);
 
             cards.forEach((card) => {

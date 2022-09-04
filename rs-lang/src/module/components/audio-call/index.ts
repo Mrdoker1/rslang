@@ -59,6 +59,7 @@ export default class AudioCall {
         const game = this.render.gameAudioCall();
         main.append(game);
 
+        //gameWindow audio
         let count = 0;
         let attempt: number = 5;
 
@@ -446,6 +447,7 @@ export default class AudioCall {
 
     playGoodSound() {
         const audio = new Audio();
+        audio.volume = 0.2;
         audio.loop = false;
         audio.src = `../../../assets/music/good.mp3`;
         audio.autoplay = true;
@@ -453,6 +455,7 @@ export default class AudioCall {
 
     playBadSound() {
         const audio = new Audio();
+        audio.volume = 0.2;
         audio.loop = false;
         audio.src = `../../../assets/music/bad1.mp3`;
         audio.autoplay = true;
@@ -460,6 +463,7 @@ export default class AudioCall {
 
     playEndSound() {
         const audio = new Audio();
+        audio.volume = 0.2;
         audio.loop = false;
         audio.src = `../../../assets/music/lucky.mp3`;
         audio.autoplay = true;
