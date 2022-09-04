@@ -180,7 +180,8 @@ class ModalLogin {
         //hide password
         const hidePassword: NodeListOf<HTMLElement> = modal.querySelectorAll('.js-hide-password');
         hidePassword.forEach((password) => {
-            password.addEventListener('click', () => {
+            password.addEventListener('click', (e) => {
+                e.preventDefault();
                 this.togglePassword(password);
             });
         });

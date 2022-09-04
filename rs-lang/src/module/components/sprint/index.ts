@@ -325,6 +325,7 @@ export default class Sprint {
 
     playGoodSound() {
         const audio = new Audio();
+        audio.volume = 0.2;
         audio.loop = false;
         audio.src = `../../../assets/music/good.mp3`;
         audio.autoplay = true;
@@ -332,6 +333,7 @@ export default class Sprint {
 
     playBadSound() {
         const audio = new Audio();
+        audio.volume = 0.2;
         audio.loop = false;
         audio.src = `../../../assets/music/bad2.mp3`;
         audio.autoplay = true;
@@ -339,6 +341,7 @@ export default class Sprint {
 
     playEndSound() {
         const audio = new Audio();
+        audio.volume = 0.2;
         audio.loop = false;
         audio.src = `../../../assets/music/lucky.mp3`;
         audio.autoplay = true;

@@ -2,6 +2,7 @@
 import getHTMLElement from '../../../utils/getHTMLElement';
 import getHTMLImageElement from '../../../utils/getHTMLImageElement';
 import { shuffle, createStsEntry } from '../../../utils/helpers';
+import Particles from '../../../utils/particles';
 
 //Router
 import { Router } from 'routerjs';
@@ -55,6 +56,7 @@ export default class AudioCall {
         const game = this.render.gameAudioCall();
         main.append(game);
 
+        //gameWindow audio
         let count = 0;
         let attempt: number = 5;
 
@@ -80,6 +82,15 @@ export default class AudioCall {
                     this.result.unknowingWords.push(words[count]);
                     if (this.series > this.record) this.record = this.series;
                     this.series = 0;
+
+                    // const particles = new Particles();
+                    // particles.create(
+                    //     particles.getOffset(pointsBody).x,
+                    //     particles.getOffset(pointsBody).y,
+                    //     `${this.gameState.points}`,
+                    //     '#2B788B',
+                    //     'sprint-points'
+                    // );
                 } else {
                     this.playGoodSound();
                     this.result.knowingWords.push(words[count]);
@@ -376,6 +387,7 @@ export default class AudioCall {
 
     playGoodSound() {
         const audio = new Audio();
+        audio.volume = 0.2;
         audio.loop = false;
         audio.src = `../../../assets/music/good.mp3`;
         audio.autoplay = true;
@@ -383,6 +395,7 @@ export default class AudioCall {
 
     playBadSound() {
         const audio = new Audio();
+        audio.volume = 0.2;
         audio.loop = false;
         audio.src = `../../../assets/music/bad1.mp3`;
         audio.autoplay = true;
@@ -390,6 +403,7 @@ export default class AudioCall {
 
     playEndSound() {
         const audio = new Audio();
+        audio.volume = 0.2;
         audio.loop = false;
         audio.src = `../../../assets/music/lucky.mp3`;
         audio.autoplay = true;
