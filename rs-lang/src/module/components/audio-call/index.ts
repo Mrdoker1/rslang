@@ -22,6 +22,7 @@ import Render from '../../ui';
 //State
 import State from '../../app/state';
 import IUserWord from '../../interface/IUserWord';
+import getNotNil from '../../../utils/getNotNil';
 
 export default class AudioCall {
     group: number;
@@ -240,13 +241,18 @@ export default class AudioCall {
             )
         );
 
-        // main.append(this.render.gameResultWords(knowingWordsSet, unknowingWordsSet, this.data.base));
-        //main.append(container);
-
-        const playBtns = document.querySelectorAll('[data-src]').forEach((btn) => {
-            const path = getHTMLElement(btn).dataset.src;
-            if (!path) return false;
-            this.sayWord(path);
+        const playBtns: NodeListOf<HTMLElement> = main.querySelectorAll('.gameresultword__icon');
+        playBtns.forEach((playBtn) => {
+            playBtn.addEventListener('click', (e) => {
+                let target = getHTMLElement(e.target);
+                if (target.classList.contains('play-icon')) {
+                    target = getHTMLElement(target.closest('.gameresultword__icon'));
+                }
+                const src = target.dataset.src;
+                const audio = new Audio();
+                audio.src = `${this.data.base}/${src}`;
+                audio.autoplay = true;
+            });
         });
 
         const btnReplay = getHTMLElement(main.querySelector('.gameresult__button-replay'));

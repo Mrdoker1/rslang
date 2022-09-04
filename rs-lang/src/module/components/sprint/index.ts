@@ -274,6 +274,20 @@ export default class Sprint {
             )
         );
 
+        const playBtns: NodeListOf<HTMLElement> = main.querySelectorAll('.gameresultword__icon');
+        playBtns.forEach((playBtn) => {
+            playBtn.addEventListener('click', (e) => {
+                let target = getHTMLElement(e.target);
+                if (target.classList.contains('play-icon')) {
+                    target = getHTMLElement(target.closest('.gameresultword__icon'));
+                }
+                const src = target.dataset.src;
+                const audio = new Audio();
+                audio.src = `${this.data.base}/${src}`;
+                audio.autoplay = true;
+            });
+        });
+
         const btnReplay = getHTMLElement(main.querySelector('.gameresult__button-replay'));
         btnReplay.addEventListener('click', () => {
             this.router.run();

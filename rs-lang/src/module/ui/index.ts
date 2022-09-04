@@ -1114,8 +1114,8 @@ export default class Render {
         const gameResultWord = document.createElement('div');
         gameResultWord.classList.add('gameresultword');
         gameResultWord.innerHTML = `
-        <div class="gameresultword__icon">
-            <div class="play-icon" data-src="${word.audio}"></div>
+        <div class="gameresultword__icon" data-src="${word.audio}">
+            <div class="play-icon"></div>
         </div>
         <div class="gameresultword__body">
             <div class="gameresultword__body-word">${word.word}</div>
@@ -1123,13 +1123,6 @@ export default class Render {
             <div class="gameresultword__body-translation">${word.wordTranslate}</div>
         </div>
         `;
-        gameResultWord.addEventListener('click', () => {
-            const audio = new Audio();
-            audio.loop = false;
-            audio.src = `${base}/${word.audio}`;
-            audio.autoplay = true;
-        });
-
         return gameResultWord;
     }
 
