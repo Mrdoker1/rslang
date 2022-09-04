@@ -42,6 +42,7 @@ export default class Sprint {
     series = 0;
     record = 0;
     count = 0;
+    learned = 0;
     constructor(base: string, group: number, page: number, isBook: boolean = false, router: Router) {
         this.group = group;
         this.page = page;
@@ -69,6 +70,10 @@ export default class Sprint {
     async start() {
         //console.log('Sprint Game Started!');
         this.words = await this.getWords();
+        if (this.words.length < 1) {
+            this.showResult();
+            return;
+        }
 
         this.setNewWord();
         const playZone = this.setPlayZone();
@@ -256,17 +261,19 @@ export default class Sprint {
 
         const chart2 = {
             type: gameChart.Words,
-            maxValue: knowingWords.length + unknowingWords.length,
+            maxValue: this.words.length,
             currentValue: knowingWords.length,
         };
 
         const main = getHTMLElement(document.querySelector('main'));
         main.innerHTML = '';
 
+        const message: string = this.getResultMessage(knowingWords, this.words);
+
         main.append(
             this.render.gameResult(
                 gameType.Sprint,
-                'Вы неплохо справились!',
+                message,
                 [chart1, chart2],
                 knowingWords,
                 unknowingWords,
@@ -297,6 +304,23 @@ export default class Sprint {
         btnToBook.addEventListener('click', () => {
             this.router.navigate(`/book/${this.group}/${this.page}`);
         });
+    }
+
+    getResultMessage(rightWords: IWord[], words: IWord[]) {
+        const result: number = rightWords.length / words.length;
+        //console.log(result);
+        let message: string;
+
+        if (result >= 0.8) {
+            message = 'Отличный результат!';
+        } else if (result >= 0.5 && result < 0.8) {
+            message = 'Вы неплохо справились!';
+        } else if (result > 0.2 && result < 0.5) {
+            message = 'Вы можете лучше!';
+        } else {
+            message = 'Продолжайте учиться!'; //NaN
+        }
+        return message;
     }
 
     async saveStatistics() {
@@ -346,20 +370,20 @@ export default class Sprint {
         if (!record || this.record > record) record = this.record;
 
         knowingWords.forEach(async (word) => {
-            let learnedInGame = 0;
-
             const matchedUserWord = userWords.find(
                 (userWord) => userWord.wordId === word.id || userWord.wordId === word._id
             );
             if (matchedUserWord) {
-                learnedInGame = (await this.updateUserWord(word, matchedUserWord, true)) || 0;
+                this.updateUserWord(word, matchedUserWord, true);
             } else {
                 this.createUserWord(word, true);
                 newCount += 1;
             }
+
+            console.log(this.learned);
             total += 1;
             right += 1;
-            learned += learnedInGame;
+            learned += this.learned;
         });
 
         unknowingWords.forEach((word) => {
@@ -384,7 +408,7 @@ export default class Sprint {
         if (isNewEntry) stsAll.optional[lastKey + 1] = sts;
         else stsAll.optional[lastKey] = sts;
 
-        // console.log(stsAll);
+        console.log(stsAll);
         delete stsAll.id;
         const updateUserStatistics = await this.data.updateUserStatistics(this.state.userId, stsAll, this.state.token);
         if (typeof updateUserStatistics === 'number') {
@@ -438,7 +462,7 @@ export default class Sprint {
     }
 
     async updateUserWord(word: IWord, userWord: IUserWord, isRight: boolean) {
-        let isLearned;
+        //let isLearned;
         let updUserWord;
         let difficulty;
         let total;
@@ -453,8 +477,8 @@ export default class Sprint {
 
             if ((series === 3 && difficulty === 'normal') || (series === 5 && difficulty === 'hard')) {
                 difficulty = 'easy';
-                isLearned = 1;
-            } else isLearned = 0;
+                this.learned = 1;
+            } else this.learned = 0;
         } else {
             difficulty = userWord.difficulty === 'easy' ? 'normal' : difficulty;
             if (!difficulty) difficulty = 'normal';
@@ -478,7 +502,7 @@ export default class Sprint {
 
         const resp = await this.data.updateUserWord(this.state.userId, wordId, updUserWord, this.state.token);
         if (typeof resp !== 'number') {
-            return isLearned;
+            //return isLearned;
         } else {
             console.log(`Ошибка updateUserWord ${resp}`);
         }

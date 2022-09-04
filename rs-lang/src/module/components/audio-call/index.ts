@@ -35,6 +35,7 @@ export default class AudioCall {
     state = new State();
     isBook: boolean;
     router: Router;
+    learned = 0;
     constructor(base: string, group: number, page: number, isBook: boolean = false, router: Router) {
         this.group = group;
         this.page = page;
@@ -59,7 +60,7 @@ export default class AudioCall {
 
         const words = await this.getWords();
         if (words.length < 5) {
-            this.showResult(attempt);
+            this.showResult(attempt, words);
             return;
         }
         this.showQuestion(words, count);
@@ -87,12 +88,12 @@ export default class AudioCall {
 
         const nextBtn = getHTMLElement(document.querySelector('.audio__next-btn'));
         nextBtn.addEventListener('click', () => {
-            if (typeof words === 'number') return;
+            //if (typeof words === 'number') return;
             const len = words.length - 1;
             if (count === len || attempt === 0) {
                 if (this.series > this.record) this.record = this.series;
                 if (this.state.token) this.saveStatistics();
-                this.showResult(attempt);
+                this.showResult(attempt, words);
                 return;
             }
             count += 1;
@@ -210,7 +211,7 @@ export default class AudioCall {
         document.querySelector('.audio__answer')?.classList.add('hidden');
     }
 
-    showResult(attempt: number) {
+    showResult(attempt: number, words: IWord[]) {
         const knowingWords = this.result.knowingWords;
         const unknowingWords = this.result.unknowingWords;
 
@@ -227,18 +228,12 @@ export default class AudioCall {
         };
 
         let charts = [chart1, chart2];
+        const message: string = this.getResultMessage(knowingWords, unknowingWords);
 
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
         main.append(
-            this.render.gameResult(
-                gameType.AudioCall,
-                'Вы хорошо справились',
-                charts,
-                knowingWords,
-                unknowingWords,
-                this.data.base
-            )
+            this.render.gameResult(gameType.AudioCall, message, charts, knowingWords, unknowingWords, this.data.base)
         );
 
         const playBtns: NodeListOf<HTMLElement> = main.querySelectorAll('.gameresultword__icon');
@@ -264,6 +259,23 @@ export default class AudioCall {
         btnToBook.addEventListener('click', () => {
             this.router.navigate(`/book/${this.group}/${this.page}`);
         });
+    }
+
+    getResultMessage(rightWords: IWord[], wrongWords: IWord[]) {
+        const result: number = rightWords.length / (wrongWords.length + rightWords.length);
+
+        let message: string;
+
+        if (result >= 0.8) {
+            message = 'Отличный результат!';
+        } else if (result >= 0.5 && result < 0.8) {
+            message = 'Вы неплохо справились!';
+        } else if (result > 0.2 && result < 0.5) {
+            message = 'Вы можете лучше!';
+        } else {
+            message = 'Продолжайте учиться!'; //NaN
+        }
+        return message;
     }
 
     async saveStatistics() {
@@ -312,12 +324,11 @@ export default class AudioCall {
         if (!record || this.record > record) record = this.record;
 
         knowingWords.forEach(async (word, i) => {
-            let learnedInGame = 0;
             const matchedUserWord = userWords.find(
                 (userWord) => userWord.wordId === word.id || userWord.wordId === word._id
             );
             if (matchedUserWord) {
-                learnedInGame = (await this.updateUserWord(word, matchedUserWord, true)) || 0;
+                this.updateUserWord(word, matchedUserWord, true);
             } else {
                 this.createUserWord(word, true);
                 newCount += 1;
@@ -325,7 +336,7 @@ export default class AudioCall {
 
             total += 1;
             right += 1;
-            learned += learnedInGame;
+            learned += this.learned;
         });
 
         unknowingWords.forEach((word) => {
@@ -405,7 +416,6 @@ export default class AudioCall {
     }
 
     async updateUserWord(word: IWord, userWord: IUserWord, isRight: boolean) {
-        let isLearned;
         let updUserWord;
         let difficulty;
         let total;
@@ -420,8 +430,8 @@ export default class AudioCall {
 
             if ((series === 3 && difficulty === 'normal') || (series === 5 && difficulty === 'hard')) {
                 difficulty = 'easy';
-                isLearned = 1;
-            } else isLearned = 0;
+                this.learned = 1;
+            } else this.learned = 0;
         } else {
             difficulty = userWord.difficulty === 'easy' ? 'normal' : difficulty;
             if (!difficulty) difficulty = 'normal';
@@ -445,7 +455,6 @@ export default class AudioCall {
 
         const resp = await this.data.updateUserWord(this.state.userId, wordId, updUserWord, this.state.token);
         if (typeof resp !== 'number') {
-            return isLearned;
         } else {
             console.log(`Ошибка ${resp}`);
         }
