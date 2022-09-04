@@ -243,6 +243,7 @@ export default class AudioCall {
         );
 
         // main.append(this.render.gameResultWords(knowingWordsSet, unknowingWordsSet, this.data.base));
+        //main.append(container);
 
         const playBtns = document.querySelectorAll('[data-src]').forEach((btn) => {
             const path = getHTMLElement(btn).dataset.src;

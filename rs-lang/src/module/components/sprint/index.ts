@@ -123,8 +123,12 @@ export default class Sprint {
     }
 
     setNewWord() {
-        const word = this.words[getRandom(0, this.words.length - 1)];
-        const possibleTranslation = this.words[getRandom(0, this.words.length - 1)].wordTranslate;
+        const rightWordIndex = getRandom(0, this.words.length - 1);
+        const word = this.words[rightWordIndex];
+
+        let possibleTranslation;
+        if (getRandom(0, 1)) possibleTranslation = this.words[rightWordIndex].wordTranslate;
+        else possibleTranslation = this.words[getRandom(0, this.words.length - 1)].wordTranslate;
 
         this.gameState.word = word;
         this.gameState.wordEnglish = word.word;

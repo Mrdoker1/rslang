@@ -1016,7 +1016,7 @@ export default class Render {
                 color = '#945069';
                 backgroundColor = '#F2D4DC';
                 upperLabel = 'осталось';
-                value = `<span class="gameresult-chart__heart">♥</span> ${currentValue}`;
+                value = `<span class="gameresult-chart__heart">♥</span>${currentValue}`;
                 if (currentValue == 1) {
                     buttomLabel = 'жизнь';
                 } else if (currentValue > 1 && currentValue < 5) {
@@ -1091,19 +1091,20 @@ export default class Render {
         }
 
         container.innerHTML = `
-        <div class="gameresult__info">
-            <img src="../assets/img/result.svg">
-            <div class="gameresult__info-body">
-                <div class="gameresult__header">${header}</div>
-                <div class="gameresult__message">${resultMessage}</div>
-                <div class="gameresult__charts">${charts.innerHTML}</div>
+        <div class="container">
+            <div class="gameresult__info">
+                <img src="../assets/img/result.svg">
+                <div class="gameresult__info-body">
+                    <div class="gameresult__header">${header}</div>
+                    <div class="gameresult__message">${resultMessage}</div>
+                    <div class="gameresult__charts">${charts.innerHTML}</div>
+                </div>
             </div>
-        </div>
-        <div class="gameresult__actions">
-            <button class="gameresult__button-replay">Сыграть еще раз</button>
-            <button class="gameresult__button-tobook">Перейти в учебник</button>  
-        </div>
-        `;
+            <div class="gameresult__actions">
+                <button class="gameresult__button-replay bttn--transparent">Сыграть еще раз</button>
+                <button class="gameresult__button-tobook bttn bttn--light">Перейти в учебник</button>  
+            </div>
+        </div>`;
         return container;
     }
 
@@ -1162,13 +1163,13 @@ export default class Render {
         unknowingWordsHeader.classList.add('unknowingwords__header');
 
         knowingWordsHeader.innerHTML = `
-        <div class="unknowingwords__header-title">Я знаю</div>
-        <div class="unknowingwords__header-label">${knowingWords.length}</div>
+        <div class="knowingwords__header-title">Я знаю</div>
+        <div class="knowingwords__header-label">${knowingWords.length} слов</div>
         `;
 
         unknowingWordsHeader.innerHTML = `
         <div class="unknowingwords__header-title">Я не знаю</div>
-        <div class="unknowingwords__header-label">${unknowingWords.length}</div>
+        <div class="unknowingwords__header-label">${unknowingWords.length} слов</div>
         `;
 
         knowingWordsContainer.appendChild(knowingWordsHeader);

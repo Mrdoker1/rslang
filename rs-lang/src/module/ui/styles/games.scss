@@ -145,7 +145,7 @@
       color: $color-cyan-dark; 
       opacity: 1;
       visibility: visible;
-      transition: $transition-2;
+      transition: $transition-1;
       
       &:hover {
         background-color: $color-cyan-dark;
@@ -159,11 +159,11 @@
     }
 
     &__img {
-      transition: $transition-2;
+      transition: $transition-1;
     }
 
     &__text-play {
-      transition: $transition-2;
+      transition: $transition-1;
     }
 
     &__attempts {
@@ -257,17 +257,27 @@
     border: none;
     width: 40px;
     height: 40px;
-    border-radius: 0;
-    
+    border-radius: 4px;
+    transition: $transition-1;
+    //transform: translateZ(0);
     &:hover {
-      border: none;
-      background-color: transparent;
+      background-color: $color-cyan-dark;
+
+      img {
+        //transform: translateZ(0);
+        -webkit-filter: brightness(0) saturate(100%) invert(100%) sepia(10%) saturate(0%) hue-rotate(269deg) brightness(107%) contrast(107%);
+        filter: brightness(0) saturate(100%) invert(100%) sepia(10%) saturate(0%) hue-rotate(269deg) brightness(107%) contrast(107%);
+      }
     }
   }
 
   &__icon-music {
     width: 24px;
     height: 24px;
+    transition: $transition-1;
+    // transform: translateZ(0);
+    // perspective: 1000;
+    // backface-visibility: hidden;
   }
 
   &__text {
@@ -277,5 +287,15 @@
     b {
       color: $color-primary;
     }
+  }
+}
+
+.game-container {
+  gap: 10px;
+  max-width: 1400px;
+  padding: 0;
+  @media (max-width: 1320px) {
+    width: 500px;
+    flex-direction: column;
   }
 }
