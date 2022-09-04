@@ -82,19 +82,31 @@ export default class AudioCall {
                     this.result.unknowingWords.push(words[count]);
                     if (this.series > this.record) this.record = this.series;
                     this.series = 0;
-
-                    // const particles = new Particles();
-                    // particles.create(
-                    //     particles.getOffset(pointsBody).x,
-                    //     particles.getOffset(pointsBody).y,
-                    //     `${this.gameState.points}`,
-                    //     '#2B788B',
-                    //     'sprint-points'
-                    // );
+                    const heartBody = getHTMLElement(document.querySelector('.audio__icon-heart_miss'));
+                    const particles = new Particles();
+                    particles.create(
+                        particles.getOffset(heartBody).x,
+                        particles.getOffset(heartBody).y,
+                        `♥`,
+                        '',
+                        'audiocall-heart'
+                    );
                 } else {
                     this.playGoodSound();
                     this.result.knowingWords.push(words[count]);
                     this.series += 1;
+
+                    for (let i = 0; i < 5; i++) {
+                        const heartBody = getHTMLElement(document.querySelector('.active-answer'));
+                        const particles = new Particles();
+                        particles.create(
+                            particles.getOffset(heartBody).x,
+                            particles.getOffset(heartBody).y,
+                            `👍`,
+                            '',
+                            'audiocall-rightAnswer'
+                        );
+                    }
                 }
             });
         });
@@ -181,7 +193,7 @@ export default class AudioCall {
 
         const choices = document.querySelectorAll('.audio__choice');
         choices.forEach((choice, i) => {
-            choice.classList.remove('.active');
+            choice.classList.remove('.active-answer');
             choice.textContent = qWords[i].wordTranslate;
             if (qWords[i] === word) choice.setAttribute('data-answer', '');
             else choice.removeAttribute('data-answer');
@@ -201,7 +213,7 @@ export default class AudioCall {
     }
 
     showAnswer(el: HTMLElement) {
-        el.classList.add('active');
+        el.classList.add('active-answer');
         document.querySelector('.audio__know-btn')?.classList.add('hidden');
         document.querySelector('.audio__next-btn')?.classList.remove('hidden');
         document.querySelector('.audio__question')?.classList.add('hidden');
@@ -217,7 +229,7 @@ export default class AudioCall {
     hideAnswer() {
         const choices = document.querySelectorAll('.audio__choice');
         choices.forEach((choice) => {
-            choice.classList.remove('active', 'disabled');
+            choice.classList.remove('active-answer', 'disabled');
         });
         document.querySelector('.audio__know-btn')?.classList.remove('hidden');
         document.querySelector('.audio__next-btn')?.classList.add('hidden');

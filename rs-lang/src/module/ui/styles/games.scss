@@ -176,7 +176,7 @@
 
     &__icon-heart  {
       font: $dela-gothic-32px;
-      color: $color-pink-dark;
+      color: $color-red;
       transition: $transition-1;
 
       &_miss {
@@ -216,7 +216,7 @@
         }
       }
 
-      &.active{
+      &.active-answer{
         &[data-answer] {
           border-color:  $color-green;
           background-color: $color-green;
@@ -253,6 +253,9 @@
   }
 
   &__play {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding: 0;
     background-color: $color-grey-light;
     border: none;
@@ -260,6 +263,7 @@
     height: 40px;
     border-radius: 4px;
     transition: $transition-1;
+    cursor: pointer;
     //transform: translateZ(0);
     &:hover {
       background-color: $color-cyan-dark;
