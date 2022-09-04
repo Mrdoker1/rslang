@@ -233,7 +233,7 @@ export default class AudioCall {
         main.innerHTML = '';
         main.append(
             this.render.gameResult(
-                gameType.Sprint,
+                gameType.AudioCall,
                 'test message',
                 charts,
                 knowingWords,
