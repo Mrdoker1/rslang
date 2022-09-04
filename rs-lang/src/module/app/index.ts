@@ -8,7 +8,7 @@ import Render from '../ui';
 import getHTMLElement from '../../utils/getHTMLElement';
 import getHTMLInputElement from '../../utils/getHTMLInputElement';
 import { gameChart, gameType, statisticType } from '../../utils/enums';
-import { getRandom } from '../../utils/helpers';
+import { getRandom, createStsEntry } from '../../utils/helpers';
 
 //Interface
 import IUserBody from '../interface/IUserBody';
@@ -184,21 +184,20 @@ export default class App {
         const sectionGames = this.render.sectionGames(`/games/sprint`, `/games/audio-call`);
         main.appendChild(sectionSplash);
         main.appendChild(sectionBenefits);
-        (function () {
-            document.addEventListener('mousemove', parallax);
-            const elem = getHTMLElement(document.querySelector('.parallax'));
-            function parallax(e: MouseEvent) {
-                let _w = window.innerWidth / 2;
-                let _h = window.innerHeight / 2;
-                let _mouseX = e.clientX;
-                let _mouseY = e.clientY;
-                let _depth1 = `${55 - (_mouseX - _w) * 0.002}% ${50 - (_mouseY - _h) * 0.02}%`;
-                let _depth2 = `${75 - (_mouseX - _w) * 0.002}% ${45 - (_mouseY - _h) * 0.01}%`;
-                let _depth3 = `${100 - (_mouseX - _w) * 0.007}% ${25 - (_mouseY - _h) * 0.03}%`;
-                let x = `${_depth3}, ${_depth2}, ${_depth1}`;
-                elem.style.backgroundPosition = x;
-            }
-        })();
+
+        document.addEventListener('mousemove', parallax);
+        const elem = getHTMLElement(document.querySelector('.parallax'));
+        function parallax(e: MouseEvent) {
+            let _w = window.innerWidth / 2;
+            let _h = window.innerHeight / 2;
+            let _mouseX = e.clientX;
+            let _mouseY = e.clientY;
+            let _depth1 = `${55 - (_mouseX - _w) * 0.002}% ${50 - (_mouseY - _h) * 0.02}%`;
+            let _depth2 = `${75 - (_mouseX - _w) * 0.002}% ${45 - (_mouseY - _h) * 0.01}%`;
+            let _depth3 = `${100 - (_mouseX - _w) * 0.007}% ${25 - (_mouseY - _h) * 0.03}%`;
+            let x = `${_depth3}, ${_depth2}, ${_depth1}`;
+            elem.style.backgroundPosition = x;
+        }
     }
 
     async showBook(group: number, page: number) {
@@ -453,8 +452,6 @@ export default class App {
                         const wordId = target.getAttribute('data-id');
                         const dataWordsArr = await this.data.getWords(group, page);
                         const userWords = await this.data.getUserWords(userId, token);
-                        const today = new Date();
-                        today.setHours(0, 0, 0, 0);
 
                         if (target.getAttribute('data-handle') === 'delete-from-hard') {
                             const dataWords = await this.data.updateUserWord(
@@ -486,31 +483,54 @@ export default class App {
                             if (typeof userWords === 'number') {
                                 console.log('error');
                             } else {
-                                const statistics = await this.data.getUserStatistics(state.userId, state.token);
+                                let stsAll = await this.data.getUserStatistics(state.userId, state.token);
+                                if (stsAll === 404)
+                                    stsAll = {
+                                        learnedWords: 0,
+                                        optional: {},
+                                    };
+                                else if (typeof stsAll === 'number') {
+                                    console.log(`Ошибка getUserStatistics ${stsAll}`);
+                                    return;
+                                }
 
-                                if (typeof statistics === 'number') {
-                                    console.log('error');
-                                } else {
-                                    console.log(statistics);
-                                    for (let day in statistics.optional) {
-                                        const statisticDay = statistics.optional[day];
-                                        const statisticDayTime = new Date(statisticDay.date).setHours(0, 0, 0, 0);
-                                        if (today.getTime() == statisticDayTime) {
-                                            if (statisticDay.book.learned > 0) {
-                                                statisticDay.book.learned -= 1;
-                                            } else {
-                                                statisticDay.book.learned = 0;
-                                            }
-                                            delete statistics.id;
-                                            const updateUserStatistics = await this.data.updateUserStatistics(
-                                                state.userId,
-                                                statistics,
-                                                state.token
-                                            );
-                                        } else {
-                                            //console.log('false');
-                                        }
+                                let sts;
+                                let isNewEntry = true;
+                                const keys = Object.keys(stsAll.optional);
+                                let lastKey = 0;
+
+                                if (keys.length) {
+                                    lastKey = Number(keys[keys.length - 1]);
+                                    const lastSts = stsAll.optional[lastKey];
+                                    console.log(lastSts, this.isNewDay(lastSts.date));
+                                    if (!this.isNewDay(lastSts.date)) {
+                                        sts = lastSts; //key?
+                                        isNewEntry = false;
                                     }
+                                }
+
+                                if (!sts || isNewEntry) {
+                                    sts = createStsEntry();
+                                }
+                                if (sts.book.learned > 0) {
+                                    sts.book.learned -= 1;
+                                } else {
+                                    sts.book.learned = 0;
+                                }
+
+                                if (isNewEntry) stsAll.optional[lastKey + 1] = sts;
+                                else stsAll.optional[lastKey] = sts;
+
+                                delete stsAll.id;
+                                console.log(stsAll);
+                                const updateUserStatistics = await this.data.updateUserStatistics(
+                                    state.userId,
+                                    stsAll,
+                                    state.token
+                                );
+                                if (typeof updateUserStatistics === 'number') {
+                                    console.log(`Ошибка updateUserStatistics ${updateUserStatistics}`);
+                                    return;
                                 }
 
                                 checkUserWord = userWords.findIndex((x) => x.wordId === wordId);
@@ -576,30 +596,53 @@ export default class App {
                                     { difficulty: 'easy' },
                                     state.token
                                 );
-                                const statistics = await this.data.getUserStatistics(state.userId, state.token);
 
-                                if (typeof statistics === 'number') {
-                                    console.log('error');
-                                } else {
-                                    for (let day in statistics.optional) {
-                                        const statisticDay = statistics.optional[day];
-                                        const statisticDayTime = new Date(statisticDay.date).setHours(0, 0, 0, 0);
-                                        if (today.getTime() == statisticDayTime) {
-                                            if (statisticDay.book.learned < 0) {
-                                                statisticDay.book.learned = 0;
-                                            }
-                                            statisticDay.book.new += 1;
-                                            statisticDay.book.learned += 1;
-                                            delete statistics.id;
-                                            const updateUserStatistics = await this.data.updateUserStatistics(
-                                                state.userId,
-                                                statistics,
-                                                state.token
-                                            );
-                                        } else {
-                                            //console.log('false');
-                                        }
+                                let stsAll = await this.data.getUserStatistics(state.userId, state.token);
+                                if (stsAll === 404)
+                                    stsAll = {
+                                        learnedWords: 0,
+                                        optional: {},
+                                    };
+                                else if (typeof stsAll === 'number') {
+                                    console.log(`Ошибка getUserStatistics ${stsAll}`);
+                                    return;
+                                }
+
+                                let sts;
+                                let isNewEntry = true;
+                                const keys = Object.keys(stsAll.optional);
+                                let lastKey = 0;
+
+                                if (keys.length) {
+                                    lastKey = Number(keys[keys.length - 1]);
+                                    const lastSts = stsAll.optional[lastKey];
+                                    console.log(lastSts, this.isNewDay(lastSts.date));
+                                    if (!this.isNewDay(lastSts.date)) {
+                                        sts = lastSts; //key?
+                                        isNewEntry = false;
                                     }
+                                }
+
+                                if (!sts || isNewEntry) {
+                                    sts = createStsEntry();
+                                }
+
+                                sts.book.learned += 1;
+                                sts.book.new += 1;
+
+                                if (isNewEntry) stsAll.optional[lastKey + 1] = sts;
+                                else stsAll.optional[lastKey] = sts;
+
+                                delete stsAll.id;
+                                console.log(stsAll);
+                                const updateUserStatistics = await this.data.updateUserStatistics(
+                                    state.userId,
+                                    stsAll,
+                                    state.token
+                                );
+                                if (typeof updateUserStatistics === 'number') {
+                                    console.log(`Ошибка updateUserStatistics ${updateUserStatistics}`);
+                                    return;
                                 }
 
                                 console.log('Word not in user words, add to User Words');
@@ -610,30 +653,54 @@ export default class App {
                                     { difficulty: 'easy' },
                                     state.token
                                 );
-                                const statistics = await this.data.getUserStatistics(state.userId, state.token);
 
-                                if (typeof statistics === 'number') {
-                                    console.log('error');
-                                } else {
-                                    for (let day in statistics.optional) {
-                                        const statisticDay = statistics.optional[day];
-                                        const statisticDayTime = new Date(statisticDay.date).setHours(0, 0, 0, 0);
-                                        if (today.getTime() == statisticDayTime) {
-                                            if (statisticDay.book.learned < 0) {
-                                                statisticDay.book.learned = 0;
-                                            }
-                                            statisticDay.book.learned += 1;
-                                            delete statistics.id;
-                                            const updateUserStatistics = await this.data.updateUserStatistics(
-                                                state.userId,
-                                                statistics,
-                                                state.token
-                                            );
-                                        } else {
-                                            //console.log('false');
-                                        }
+                                let stsAll = await this.data.getUserStatistics(state.userId, state.token);
+                                if (stsAll === 404)
+                                    stsAll = {
+                                        learnedWords: 0,
+                                        optional: {},
+                                    };
+                                else if (typeof stsAll === 'number') {
+                                    console.log(`Ошибка getUserStatistics ${stsAll}`);
+                                    return;
+                                }
+
+                                let sts;
+                                let isNewEntry = true;
+                                const keys = Object.keys(stsAll.optional);
+                                let lastKey = 0;
+
+                                if (keys.length) {
+                                    lastKey = Number(keys[keys.length - 1]);
+                                    const lastSts = stsAll.optional[lastKey];
+                                    console.log(lastSts, this.isNewDay(lastSts.date));
+                                    if (!this.isNewDay(lastSts.date)) {
+                                        sts = lastSts; //key?
+                                        isNewEntry = false;
                                     }
                                 }
+                                if (!sts || isNewEntry) {
+                                    sts = createStsEntry();
+                                }
+                                if (sts.book.learned < 0) {
+                                    sts.book.learned = 0;
+                                }
+                                sts.book.learned += 1;
+                                if (isNewEntry) stsAll.optional[lastKey + 1] = sts;
+                                else stsAll.optional[lastKey] = sts;
+
+                                delete stsAll.id;
+                                console.log(stsAll);
+                                const updateUserStatistics = await this.data.updateUserStatistics(
+                                    state.userId,
+                                    stsAll,
+                                    state.token
+                                );
+                                if (typeof updateUserStatistics === 'number') {
+                                    console.log(`Ошибка updateUserStatistics ${updateUserStatistics}`);
+                                    return;
+                                }
+
                                 console.log('Word IN user words, UPDATE word');
                             }
                             if (typeof dataWords === 'number') {
@@ -696,31 +763,52 @@ export default class App {
                             if (typeof dataWords === 'number') {
                                 console.log('error');
                             } else {
-                                const statistics = await this.data.getUserStatistics(state.userId, state.token);
+                                let stsAll = await this.data.getUserStatistics(state.userId, state.token);
+                                if (stsAll === 404)
+                                    stsAll = {
+                                        learnedWords: 0,
+                                        optional: {},
+                                    };
+                                else if (typeof stsAll === 'number') {
+                                    console.log(`Ошибка getUserStatistics ${stsAll}`);
+                                    return;
+                                }
 
-                                if (typeof statistics === 'number') {
-                                    console.log('error');
-                                } else {
-                                    for (let day in statistics.optional) {
-                                        const statisticDay = statistics.optional[day];
-                                        const statisticDayTime = new Date(statisticDay.date).setHours(0, 0, 0, 0);
-                                        if (today.getTime() == statisticDayTime) {
-                                            if (statisticDay.book.learned > 0) {
-                                                statisticDay.book.learned -= 1;
-                                            } else {
-                                                statisticDay.book.learned = 0;
-                                            }
+                                let sts;
+                                let isNewEntry = true;
+                                const keys = Object.keys(stsAll.optional);
+                                let lastKey = 0;
 
-                                            delete statistics.id;
-                                            const updateUserStatistics = await this.data.updateUserStatistics(
-                                                state.userId,
-                                                statistics,
-                                                state.token
-                                            );
-                                        } else {
-                                            //console.log('false');
-                                        }
+                                if (keys.length) {
+                                    lastKey = Number(keys[keys.length - 1]);
+                                    const lastSts = stsAll.optional[lastKey];
+                                    console.log(lastSts, this.isNewDay(lastSts.date));
+                                    if (!this.isNewDay(lastSts.date)) {
+                                        sts = lastSts; //key?
+                                        isNewEntry = false;
                                     }
+                                }
+                                if (!sts || isNewEntry) {
+                                    sts = createStsEntry();
+                                }
+                                if (sts.book.learned > 0) {
+                                    sts.book.learned -= 1;
+                                } else {
+                                    sts.book.learned = 0;
+                                }
+                                if (isNewEntry) stsAll.optional[lastKey + 1] = sts;
+                                else stsAll.optional[lastKey] = sts;
+
+                                delete stsAll.id;
+                                console.log(stsAll);
+                                const updateUserStatistics = await this.data.updateUserStatistics(
+                                    state.userId,
+                                    stsAll,
+                                    state.token
+                                );
+                                if (typeof updateUserStatistics === 'number') {
+                                    console.log(`Ошибка updateUserStatistics ${updateUserStatistics}`);
+                                    return;
                                 }
 
                                 const parent = target.parentElement!.parentElement!.closest('.card-word');
@@ -803,6 +891,19 @@ export default class App {
                 main.appendChild(pageBook);
             }
         }
+    }
+
+    isNewDay(date: string): boolean {
+        const prevDate = new Date(date);
+        let currDate = new Date();
+        currDate.setHours(0, 0, 0, 0);
+        console.log(currDate);
+        // return true; //Тест
+        return (
+            currDate.getDate() !== prevDate.getDate() ||
+            currDate.getMonth() !== prevDate.getMonth() ||
+            currDate.getFullYear() !== prevDate.getFullYear()
+        );
     }
 
     showGames() {
