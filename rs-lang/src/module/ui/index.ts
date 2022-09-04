@@ -838,7 +838,7 @@ export default class Render {
                 </div>
             </div>
             <div class="sprint-game__body-actions">
-                <button class="sprint-game__true-button">Верно</button> <button class="sprint-game__false-button">Неверно</button>
+                <button class="bttn sprint-game__true-button">Верно</button> <button class="bttn sprint-game__false-button">Неверно</button>
             </div>
         `;
         return container;
@@ -881,8 +881,8 @@ export default class Render {
                         <button class="audio__choice"></button>  
                     </div>
                     <div class="audio__next">
-                        <button class="audio__know-btn">Не знаю</button>  
-                        <button class="audio__next-btn hidden">Дальше</button>  
+                        <button class="bttn audio__know-btn">Не знаю</button>  
+                        <button class="bttn audio__next-btn hidden">Дальше</button>  
                     </div>
                 </div>
             </div>
@@ -1105,7 +1105,7 @@ export default class Render {
                 </div>
             </div>
             <div class="gameresult__actions">
-                <button class="gameresult__button-replay bttn--transparent">Сыграть еще раз</button>
+                <button class="bttn bttn--transparent gameresult__button-replay">Сыграть еще раз</button>
                 <button class="gameresult__button-tobook bttn bttn--light">Перейти в учебник</button>  
             </div>
         </div>`;
