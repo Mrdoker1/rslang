@@ -89,13 +89,13 @@ export default class Render {
               <a href="#benefits" class="bttn bttn--light" data-routerjs-ignore="true">О платформе</a>
           </div>
           <div class="app-statistic">
-              <div class="hours">
-                  <span class="numbers">700</span>
-                  <span class="text">Часов контента</span>
+              <div class="words">
+                  <span class="numbers">600</span>
+                  <span class="text">Популярных слов</span>
               </div>
-              <div class="users">
-                  <span class="numbers">575k</span>
-                  <span class="text">Пользователей</span>
+              <div class="games">
+                  <span class="numbers">2</span>
+                  <span class="text">Мини-игры</span>
               </div>
           </div>
         </div>
@@ -729,6 +729,7 @@ export default class Render {
                 container.appendChild(canvas);
                 break;
         }
+
         return container;
     }
 
@@ -796,7 +797,7 @@ export default class Render {
                         <p class="game__desc">${desc}</p>
                         <p class="game__text">Выберите уровень:</p>
                         <ul class="game__levels levels">${levels}</ul>
-                        <button class="game__start">Начать</button>
+                        <button class="bttn game__start">Начать</button>
                     </div>
                 </div>
             </div>
@@ -916,7 +917,7 @@ export default class Render {
                         </p>
                         <p class="cd-signin-modal__message js-signin-modal__message"></p>
                         <p class="cd-signin-modal__fieldset">
-                            <input class="cd-signin-modal__input cd-signin-modal__input--full-width" type="submit" value="Войти">
+                            <input class="bttn cd-signin-modal__input--full-width" type="submit" value="Войти">
                         </p>
                     </form>
                 </div>
@@ -943,7 +944,7 @@ export default class Render {
                         </p>
                         <p class="cd-signin-modal__message js-signin-modal__message"></p>
                         <p class="cd-signin-modal__fieldset">
-                            <input class="cd-signin-modal__input cd-signin-modal__input--full-width cd-signin-modal__input--has-padding" type="submit" value="Создать аккаунт">
+                            <input class="bttn cd-signin-modal__input--full-width cd-signin-modal__input--has-padding" type="submit" value="Создать аккаунт">
                         </p>
                     </form>
                 </div>
@@ -985,6 +986,7 @@ export default class Render {
         return chart;
     }
 
+    //GameResult
     gameResult(
         gameType: gameType,
         message: string,

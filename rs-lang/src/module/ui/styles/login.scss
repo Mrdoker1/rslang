@@ -163,9 +163,11 @@
 }
 
 .cd-signin-modal__input {
-  margin: 0;
-  padding: 0;
-  border-radius: 0.25em;
+  border-radius: 6px;
+}
+
+.cd-signin-modal__input--full-width {
+  width: 100%;
 }
 
 .cd-signin-modal__input.cd-signin-modal__input--full-width {

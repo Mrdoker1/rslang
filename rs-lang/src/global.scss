@@ -37,16 +37,6 @@ ul, ol {
 }
 
 button {
-    padding: 14px 22px;
-    border-radius: 14px;
-    border: none;
-    background-color: $color-cyan-dark;
-    font: $montserrat-button-16px;
-    letter-spacing: -0.04em;
-    color: #fff;
-    transition: $transition-2;
-    cursor: pointer;
-    text-decoration: none;
     &:hover {
         background-color: $color-cyan-light;
         color: $color-cyan-dark;
@@ -54,28 +44,42 @@ button {
 }
 
 .bttn {
-    display: inline-block;
     padding: 14px 22px;
-    border-radius: 14px;
+    border-radius: 50px;
     border: none;
     background-color: $color-cyan-dark;
     letter-spacing: -0.04em;
     color: #fff;
-    transition: $transition-2;
     text-decoration: none;
+    transition: $transition-1;
     font: $montserrat-button-16px;
     cursor: pointer;
+    &:hover{
+        background-color: transparent;
+        color: $color-cyan-dark;
+        outline: 3px solid $color-cyan-dark;
+    }
 }
 
 .bttn--light {
     background-color: $color-cyan-light;
     color: $color-cyan-dark;
+    &:hover{
+        color: white;
+        background-color: $color-cyan-dark;
+        outline: none;
+    }
 }
 
 .bttn--transparent {
     padding: 0;
     background: none;
     color: $color-primary;
+    &:hover{
+        text-decoration:underline;
+        color: $color-cyan-dark;
+        outline: transparent;
+    }
 }
 
 body {
@@ -264,7 +268,14 @@ body {
     display: flex;
     flex-direction: column;
     gap: 3px;
-    .numbers { 
+    .text {
+        text-align: center;
+    }
+  }
+  .words {
+      padding-right: 3rem;
+      border-right: 1.22px solid $color-grey-medium;
+      .numbers { 
         display: flex;
         flex-direction: row;
         justify-content: center;
@@ -272,7 +283,7 @@ body {
         color: $color-primary;
         letter-spacing: -0.02em;
         &:before {
-          content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='30' viewBox='0 0 24 30' fill='none'%3E%3Cpath d='M23.5875 0.329924C23.5518 0.250124 23.4937 0.182423 23.4203 0.135072C23.3468 0.0877205 23.2611 0.0627626 23.1737 0.0632391H10.3636C10.2867 0.0633673 10.211 0.0827975 10.1436 0.11975C10.0761 0.156702 10.0189 0.209995 9.97741 0.274748L0.128464 15.908C0.0810479 15.9761 0.0533448 16.0559 0.0484066 16.1387C0.0434684 16.2215 0.0614868 16.3041 0.100477 16.3773C0.139467 16.4505 0.197915 16.5116 0.26938 16.5537C0.340845 16.5958 0.422553 16.6174 0.505501 16.6161H7.55885L1.33314 28.8008C1.2974 28.8733 1.2806 28.9536 1.28431 29.0343C1.28802 29.115 1.31213 29.1935 1.35437 29.2624C1.39661 29.3313 1.45562 29.3883 1.52588 29.4282C1.59614 29.4681 1.67537 29.4895 1.75616 29.4905H4.51497C4.57879 29.491 4.642 29.4781 4.70058 29.4528C4.75916 29.4274 4.81182 29.3902 4.85522 29.3434L21.0126 11.8801C21.0768 11.8148 21.1199 11.7317 21.1366 11.6416C21.1532 11.5516 21.1426 11.4586 21.106 11.3746C21.0695 11.2906 21.0087 11.2195 20.9314 11.1703C20.8541 11.1211 20.7639 11.0961 20.6724 11.0985H14.4743L23.514 0.817313C23.5722 0.751998 23.6102 0.671123 23.6233 0.584569C23.6364 0.498015 23.6239 0.40953 23.5875 0.329924Z' fill='%232B788B'/%3E%3C/svg%3E");
+          content: url("./assets/img/icon-lightning.svg");
           display: flex;
           width: 24px;
           height: 30px;
@@ -284,16 +295,29 @@ body {
           color: $color-cyan-dark;
         }
     }
-    .text {
-        text-align: center;
-    }
   }
-  .hours {
-      padding-right: 3rem;
-      border-right: 1.22px solid $color-grey-medium;
-  }
-  .users {
+  .games {
       padding-left:  3rem;
+      .numbers { 
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        font: $dela-gothic-extra;
+        color: $color-primary;
+        letter-spacing: -0.02em;
+        &:before {
+          content: url("./assets/img/icon-mini-game.svg");
+          display: flex;
+          width: 24px;
+          height: 30px;
+          margin-right: 10px;
+        }
+        &:after {
+          content: '+';
+          display: inline-block;
+          color: $color-cyan-dark;
+        }
+    }
   } 
   span {
       font: $montserrat-16px;
