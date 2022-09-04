@@ -3,7 +3,6 @@ import getHTMLElement from '../../../utils/getHTMLElement';
 import getHTMLButtonElement from '../../../utils/getHTMLButtonElement';
 import getNotNil from '../../../utils/getNotNil';
 import { shuffle, getRandom, createStsEntry } from '../../../utils/helpers';
-import Particles from '../../../utils/particles';
 
 //Router
 import { Router } from 'routerjs';
@@ -25,6 +24,8 @@ import { gameChart, gameType } from '../../../utils/enums';
 //State
 import State from '../../app/state';
 
+let interval: ReturnType<typeof setInterval>;
+
 export default class Sprint {
     group: number;
     page: number;
@@ -35,11 +36,13 @@ export default class Sprint {
     result: Record<string, IWord[]>;
     render: Render;
     state = new State();
-    series: number = 0;
-    record: number = 0;
     isBook: boolean;
     data: Data;
     router: Router;
+    series = 0;
+    record = 0;
+    count = 0;
+    learned = 0;
     constructor(base: string, group: number, page: number, isBook: boolean = false, router: Router) {
         this.group = group;
         this.page = page;
@@ -67,23 +70,28 @@ export default class Sprint {
     async start() {
         //console.log('Sprint Game Started!');
         this.words = await this.getWords();
+        if (this.words.length < 1) {
+            this.showResult();
+            return;
+        }
 
         this.setNewWord();
         const playZone = this.setPlayZone();
         this.setHandlers(playZone);
-        const interval = window.setInterval(() => {
+        interval = setInterval(() => {
             try {
                 if (this.counter <= 0) {
-                    window.clearInterval(interval);
+                    clearInterval(interval);
                     if (this.state.token) this.saveStatistics();
                     this.showResult();
+                    this.playEndSound();
                     //console.log('Sprint Game Finished!');
                 }
                 const oldChart = getHTMLElement(document.querySelector('.chart'));
                 const newChart = this.render.chart(500, 8, (this.counter -= this.speed), '#2B788B', '#C3DCE3');
                 playZone.replaceChild(newChart, oldChart);
             } catch {
-                window.clearInterval(interval);
+                clearInterval(interval);
             }
         }, 10);
     }
@@ -123,12 +131,16 @@ export default class Sprint {
     }
 
     setNewWord() {
-        const rightWordIndex = getRandom(0, this.words.length - 1);
-        const word = this.words[rightWordIndex];
+        const word = this.words[this.count];
+        this.count += 1;
+        let possibleTranslation = word.wordTranslate;
 
-        let possibleTranslation;
-        if (getRandom(0, 1)) possibleTranslation = this.words[rightWordIndex].wordTranslate;
-        else possibleTranslation = this.words[getRandom(0, this.words.length - 1)].wordTranslate;
+        if (getRandom(0, 1)) {
+            const qWords = this.words.slice();
+            qWords.splice(this.count, 1);
+            shuffle(qWords);
+            possibleTranslation = qWords[0].wordTranslate;
+        }
 
         this.gameState.word = word;
         this.gameState.wordEnglish = word.word;
@@ -153,65 +165,69 @@ export default class Sprint {
     setHandlers(playZone: HTMLDivElement) {
         const buttonTrue = getHTMLButtonElement(document.querySelector('.sprint-game__true-button'));
         const buttonFalse = getHTMLButtonElement(document.querySelector('.sprint-game__false-button'));
-        const multiplierBody = getHTMLElement(document.querySelector('.sprint-game__multiplier'));
-        const pointsBody = getHTMLElement(document.querySelector('.sprint-game__points'));
-        const particles = new Particles();
+
         buttonTrue.addEventListener('click', () => {
             if (this.counter > 0) {
                 if (this.gameState.possibleTranslation == this.gameState.wordTranslation) {
-                    rightAnswerHandler();
+                    this.result.knowingWords.push(getNotNil(this.gameState.word));
+                    //console.log('Right Answer!');
+                    this.playGoodSound();
+                    this.series += 1;
+                    if (this.gameState.strike == 3) {
+                        this.gameState.multiplier += 1;
+                        this.gameState.strike = 0;
+                    }
+                    this.gameState.points += this.gameState.multiplier * 10;
+                    this.gameState.strike += 1;
                 } else {
-                    wrongAnswerHandler();
+                    // console.log('Wrong Answer!');
+                    this.playBadSound();
+                    if (this.series > this.record) this.record = this.series;
+                    this.series = 0;
+                    this.result.unknowingWords.push(getNotNil(this.gameState.word));
+                    this.gameState.strike = 0;
+                    this.gameState.multiplier = 1;
                 }
-                this.renderNewGameBody(playZone);
+                //console.log(this.count);
+                if (this.count > this.words.length - 1) {
+                    clearInterval(interval);
+                    if (this.state.token) this.saveStatistics();
+                    this.showResult();
+                    this.playEndSound();
+                } else this.renderNewGameBody(playZone);
             }
         });
 
         buttonFalse.addEventListener('click', () => {
             if (this.counter > 0) {
                 if (this.gameState.possibleTranslation != this.gameState.wordTranslation) {
-                    rightAnswerHandler();
+                    this.result.knowingWords.push(getNotNil(this.gameState.word));
+                    this.series += 1;
+                    //console.log('Right Answer!');
+                    this.playGoodSound();
+                    if (this.gameState.strike == 3) {
+                        this.gameState.multiplier += 1;
+                        this.gameState.strike = 0;
+                    }
+                    this.gameState.points += this.gameState.multiplier * 10;
+                    this.gameState.strike += 1;
                 } else {
-                    wrongAnswerHandler();
+                    //console.log('Wrong Answer!');
+                    this.playBadSound();
+                    if (this.series > this.record) this.record = this.series;
+                    this.series = 0;
+                    this.result.unknowingWords.push(getNotNil(this.gameState.word));
+                    this.gameState.strike = 0;
+                    this.gameState.multiplier = 1;
                 }
-                this.renderNewGameBody(playZone);
+                if (this.count > this.words.length - 1) {
+                    clearInterval(interval);
+                    if (this.state.token) this.saveStatistics();
+                    this.showResult();
+                    this.playEndSound();
+                } else this.renderNewGameBody(playZone);
             }
         });
-
-        const rightAnswerHandler = () => {
-            //console.log('Right Answer!');
-            this.result.knowingWords.push(getNotNil(this.gameState.word));
-            this.series += 1;
-            if (this.gameState.strike == 3) {
-                this.gameState.multiplier += 1;
-                this.gameState.strike = 0;
-                particles.create(
-                    particles.getOffset(multiplierBody).x,
-                    particles.getOffset(multiplierBody).y,
-                    `x${this.gameState.multiplier}`,
-                    '#000',
-                    'sprint-multiplier'
-                );
-            }
-            this.gameState.points += this.gameState.multiplier * 10;
-            this.gameState.strike += 1;
-            particles.create(
-                particles.getOffset(pointsBody).x,
-                particles.getOffset(pointsBody).y,
-                `${this.gameState.points}`,
-                '#2B788B',
-                'sprint-points'
-            );
-        };
-
-        const wrongAnswerHandler = () => {
-            //console.log('Wrong Answer!');
-            if (this.series > this.record) this.record = this.series;
-            this.series = 0;
-            this.result.unknowingWords.push(getNotNil(this.gameState.word));
-            this.gameState.strike = 0;
-            this.gameState.multiplier = 1;
-        };
     }
 
     setPlayZone() {
@@ -252,23 +268,39 @@ export default class Sprint {
 
         const chart2 = {
             type: gameChart.Words,
-            maxValue: knowingWords.length + unknowingWords.length,
+            maxValue: this.words.length,
             currentValue: knowingWords.length,
         };
 
         const main = getHTMLElement(document.querySelector('main'));
         main.innerHTML = '';
 
+        const message: string = this.getResultMessage(knowingWords, this.words);
+
         main.append(
             this.render.gameResult(
                 gameType.Sprint,
-                'Вы неплохо справились!',
+                message,
                 [chart1, chart2],
                 knowingWords,
                 unknowingWords,
                 this.data.base
             )
         );
+
+        const playBtns: NodeListOf<HTMLElement> = main.querySelectorAll('.gameresultword__icon');
+        playBtns.forEach((playBtn) => {
+            playBtn.addEventListener('click', (e) => {
+                let target = getHTMLElement(e.target);
+                if (target.classList.contains('play-icon')) {
+                    target = getHTMLElement(target.closest('.gameresultword__icon'));
+                }
+                const src = target.dataset.src;
+                const audio = new Audio();
+                audio.src = `${this.data.base}/${src}`;
+                audio.autoplay = true;
+            });
+        });
 
         const btnReplay = getHTMLElement(main.querySelector('.gameresult__button-replay'));
         btnReplay.addEventListener('click', () => {
@@ -279,6 +311,44 @@ export default class Sprint {
         btnToBook.addEventListener('click', () => {
             this.router.navigate(`/book/${this.group}/${this.page}`);
         });
+    }
+
+    playGoodSound() {
+        const audio = new Audio();
+        audio.loop = false;
+        audio.src = `../../../assets/music/good.mp3`;
+        audio.autoplay = true;
+    }
+
+    playBadSound() {
+        const audio = new Audio();
+        audio.loop = false;
+        audio.src = `../../../assets/music/bad2.mp3`;
+        audio.autoplay = true;
+    }
+
+    playEndSound() {
+        const audio = new Audio();
+        audio.loop = false;
+        audio.src = `../../../assets/music/lucky.mp3`;
+        audio.autoplay = true;
+    }
+
+    getResultMessage(rightWords: IWord[], words: IWord[]) {
+        const result: number = rightWords.length / words.length;
+        //console.log(result);
+        let message: string;
+
+        if (result >= 0.8) {
+            message = 'Отличный результат!';
+        } else if (result >= 0.5 && result < 0.8) {
+            message = 'Вы неплохо справились!';
+        } else if (result > 0.2 && result < 0.5) {
+            message = 'Вы можете лучше!';
+        } else {
+            message = 'Продолжайте учиться!'; //NaN
+        }
+        return message;
     }
 
     async saveStatistics() {
@@ -327,21 +397,21 @@ export default class Sprint {
         let record = sts.sprint.record;
         if (!record || this.record > record) record = this.record;
 
-        knowingWords.forEach(async (word, i) => {
-            let learnedInGame = 0;
-
+        knowingWords.forEach(async (word) => {
             const matchedUserWord = userWords.find(
                 (userWord) => userWord.wordId === word.id || userWord.wordId === word._id
             );
             if (matchedUserWord) {
-                learnedInGame = (await this.updateUserWord(word, matchedUserWord, true)) || 0;
+                this.updateUserWord(word, matchedUserWord, true);
             } else {
                 this.createUserWord(word, true);
                 newCount += 1;
             }
+
+            console.log(this.learned);
             total += 1;
             right += 1;
-            learned += learnedInGame;
+            learned += this.learned;
         });
 
         unknowingWords.forEach((word) => {
@@ -366,7 +436,7 @@ export default class Sprint {
         if (isNewEntry) stsAll.optional[lastKey + 1] = sts;
         else stsAll.optional[lastKey] = sts;
 
-        // console.log(stsAll);
+        console.log(stsAll);
         delete stsAll.id;
         const updateUserStatistics = await this.data.updateUserStatistics(this.state.userId, stsAll, this.state.token);
         if (typeof updateUserStatistics === 'number') {
@@ -420,7 +490,7 @@ export default class Sprint {
     }
 
     async updateUserWord(word: IWord, userWord: IUserWord, isRight: boolean) {
-        let isLearned;
+        //let isLearned;
         let updUserWord;
         let difficulty;
         let total;
@@ -435,8 +505,8 @@ export default class Sprint {
 
             if ((series === 3 && difficulty === 'normal') || (series === 5 && difficulty === 'hard')) {
                 difficulty = 'easy';
-                isLearned = 1;
-            } else isLearned = 0;
+                this.learned = 1;
+            } else this.learned = 0;
         } else {
             difficulty = userWord.difficulty === 'easy' ? 'normal' : difficulty;
             if (!difficulty) difficulty = 'normal';
@@ -460,7 +530,7 @@ export default class Sprint {
 
         const resp = await this.data.updateUserWord(this.state.userId, wordId, updUserWord, this.state.token);
         if (typeof resp !== 'number') {
-            return isLearned;
+            //return isLearned;
         } else {
             console.log(`Ошибка updateUserWord ${resp}`);
         }
