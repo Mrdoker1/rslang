@@ -30,16 +30,30 @@
 
     &__light {
        background: #ffffff;
+       box-shadow: $box-shadow-2;
     }
   }
 
   &__block {
     position: relative;
   }
-  
-  &__title {
-    font: $dela-gothic-48px;
-    color: $color-primary;
+
+  &__heading{
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    &-title{
+      font: $dela-gothic-48px;
+      color: $color-primary;
+    }
+    &-skill{
+      width: max-content;
+      font: $montserrat-12px;
+      background-color: $color-cyan-light;
+      color: $color-cyan-dark;
+      padding: 4px 8px; 
+      border-radius: 6px;
+    }
   }
 
   &__desc {
@@ -57,17 +71,7 @@
   &__start {
     margin-top: 30px;
   }
-  
-  &__skill {
-    position: absolute;
-    top: 11px;
-    right: 0;
-    font: $montserrat-12px;
-    background-color: $color-cyan-light;
-    color: $color-cyan-dark;
-    padding: 4px 8px; 
-    border-radius: 6px;
-  }
+
 }
 
 .levels {
@@ -232,15 +236,19 @@
   }
 
   &__word {
+    transition: $transition-1;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 12px;
     margin-top: 20px;
     background-color: #ffffff;
-    border-radius: 14px;
-    box-shadow: 0px 22px 45px -11px rgba(52, 41, 39, 0.08);
+    border-radius: 50px;
+    box-shadow: $box-shadow-2;
     padding: 10px 20px;
+    &:hover {
+      box-shadow: $box-shadow-1;
+    }
   }
 
   &__play {

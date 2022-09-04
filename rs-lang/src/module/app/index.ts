@@ -32,6 +32,7 @@ import '../ui/styles/chart.scss';
 import '../ui/styles/gameResult.scss';
 import '../ui/styles/gameResultWords.scss';
 import '../ui/styles/statistics.scss';
+import '../ui/styles/particles.scss';
 
 //Router
 import { createRouter, Router } from 'routerjs';
@@ -831,9 +832,9 @@ export default class App {
     showGameDifficulty(type: gameType) {
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
-        const game = this.render.gameDifficulty(type);
+        const gameDifficulty = this.render.gameDifficulty(type);
         let root = '';
-        main.append(game);
+        main.append(gameDifficulty);
         switch (type) {
             case gameType.AudioCall:
                 root = 'audio-call';
@@ -843,9 +844,9 @@ export default class App {
                 break;
         }
 
-        const start = getHTMLElement(game.querySelector('.game__start'));
+        const start = getHTMLElement(gameDifficulty.querySelector('.game__start'));
         start.addEventListener('click', (e) => {
-            const checked = getHTMLInputElement(game.querySelector('[type="radio"]:checked'));
+            const checked = getHTMLInputElement(gameDifficulty.querySelector('[type="radio"]:checked'));
             const href = `/games/${root}/${checked.value}/${getRandom(0, 29)}`;
             this.router.navigate(href);
         });

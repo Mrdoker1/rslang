@@ -159,11 +159,11 @@ export default class Render {
                       <div class="games">
                           <div class="games__list">
                               <div class="game game--sprint">
-                                  <img src="../assets/img/icon-sprint.png" class="game__img">
+                                  <img src="../assets/img/icon-sprint.svg" class="game__img">
                                   <a href="/games/sprint" class="bttn bttn--transparent game__bttn">Спринт →</a>
                               </div>
                               <div class="game game--audio-call">
-                                  <img src="../assets/img/icon-audio-call.png" class="game__img">
+                                  <img src="../assets/img/icon-audio-call.svg" class="game__img">
                                   <a href="/games/audio-call" class="bttn bttn--transparent game__bttn">Аудио-вызов →</a>
                               </div>
                           </div>
@@ -611,6 +611,7 @@ export default class Render {
     }
 
     statisticsCharts(type: statisticType, statistics: IStatistics) {
+        console.log(statistics);
         const container = document.createElement('div');
         container.classList.add('statistics__charts');
         const empty = document.createElement('div');
@@ -626,48 +627,50 @@ export default class Render {
         switch (type) {
             case statisticType.Daily:
                 header = 'Колличество изученных слов на сегодня';
-
+                let sprintLearned = 0;
+                let audioLearned = 0;
+                let bookLearned = 0;
                 for (let day in statistics.optional) {
                     const statisticDay = statistics.optional[day];
                     const statisticDate = new Date(statisticDay.date);
                     statisticDate.setHours(0, 0, 0, 0);
                     if (today.getTime() == statisticDate.getTime()) {
-                        const myChart = new Chart(canvas, {
-                            type: 'doughnut',
-                            data: {
-                                labels: ['Спринт', 'Аудиовызов', 'Добавлено в изученное'],
-                                datasets: [
-                                    {
-                                        label: 'Dataset 1',
-                                        data: [
-                                            statisticDay.sprint.learned,
-                                            statisticDay.audio.learned,
-                                            statisticDay.book.learned,
-                                        ],
-                                        backgroundColor: ['#5996A5', '#639B6D', '#A15993'],
-                                    },
-                                ],
-                            },
-                            options: {
-                                responsive: true,
-                                plugins: {
-                                    legend: {
-                                        position: 'top',
-                                    },
-                                    title: {
-                                        display: true,
-                                        text: header,
-                                    },
-                                },
-                            },
-                        });
-                        container.appendChild(canvas);
+                        sprintLearned += statisticDay.sprint.learned;
+                        audioLearned += statisticDay.audio.learned;
+                        bookLearned += statisticDay.book.learned;
                         isEmpty = false;
                     }
                 }
                 if (isEmpty) {
                     console.log('No related Data');
                     container.appendChild(empty);
+                } else {
+                    const myChart = new Chart(canvas, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Спринт', 'Аудиовызов', 'Добавлено в изученное'],
+                            datasets: [
+                                {
+                                    label: 'Dataset 1',
+                                    data: [sprintLearned, audioLearned, bookLearned],
+                                    backgroundColor: ['#5996A5', '#639B6D', '#A15993'],
+                                },
+                            ],
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                title: {
+                                    display: true,
+                                    text: header,
+                                },
+                            },
+                        },
+                    });
+                    container.appendChild(canvas);
                 }
                 break;
             case statisticType.Total:
@@ -784,12 +787,14 @@ export default class Render {
                 <div class="game__window game__window__light">
                 <div class="game__window ${gameImage}"></div>
                     <div class="game__block">
-                        <h2 class="game__title">${title}</h2>
+                        <div class="game__heading">
+                            <h2 class="game__heading-title">${title}</h2>
+                            <div class="game__heading-skill">${skill}</div>
+                        </div>
                         <p class="game__desc">${desc}</p>
                         <p class="game__text">Выберите уровень:</p>
                         <ul class="game__levels levels">${levels}</ul>
                         <button class="game__start">Начать</button>
-                        <div class="game__skill">${skill}</div>
                     </div>
                 </div>
             </div>
