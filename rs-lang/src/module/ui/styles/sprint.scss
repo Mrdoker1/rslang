@@ -20,40 +20,73 @@
         gap: 40px;
         &-info{
             display: flex;
-            justify-content: space-between;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
         }
         &-strike{
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             padding-bottom: 10px;
+            gap: 10px;
+            font: $dela-gothic-26px;
         }
         &-words{
             display: flex;
             flex-direction: column;
             align-items: center;
+            gap: 8px;
         }
         &-actions{
             display: flex;
             justify-content: center;
+            gap: 10px;
         }
     }
     &__multiplier{
         display: flex;
         flex-direction: column;
         align-items: center;
+        gap: 4px;
+        span {
+            &:nth-child(1){
+                font: $dela-gothic-extra;
+            }
+            &:nth-child(2){
+                font: $montserrat-14px;
+                color: $color-grey-dark;
+                letter-spacing: 1px;
+            }
+        }
     }
     &__points{
         display: flex;
         flex-direction: column;
         align-items: center;
+        gap: 4px;
+        span {
+            &:nth-child(1){
+                font: $dela-gothic-extra;
+            }
+            &:nth-child(2){
+                font: $montserrat-14px;
+                color: $color-grey-dark;
+                letter-spacing: 1px;
+            }
+        }
     }
-    &__word{}
-    &__translatedWord{}
+    &__word{
+        font: $dela-gothic-48px;
+    }
+    &__translatedWord{
+        font: $dela-gothic-26px;
+        color: $color-cyan-dark;
+    }
     &__normal-strike{
-        color: black;
+        color: $color-cyan-dark;
     }
     &__empty-strike{
-        color:darkgray;
+        color:$color-cyan-light;
     }
     &__true-button{}
     &__false-button{}

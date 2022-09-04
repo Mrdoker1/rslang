@@ -231,8 +231,17 @@ export default class AudioCall {
 
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
-        main.append(this.render.gameResult(gameType.AudioCall, 'test message', charts));
-        main.append(this.render.gameResultWords(knowingWords, unknowingWords, this.data.base));
+        main.append(
+            this.render.gameResult(
+                gameType.Sprint,
+                'test message',
+                charts,
+                knowingWords,
+                unknowingWords,
+                this.data.base
+            )
+        );
+
         // main.append(this.render.gameResultWords(knowingWordsSet, unknowingWordsSet, this.data.base));
 
         const playBtns = document.querySelectorAll('[data-src]').forEach((btn) => {

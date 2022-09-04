@@ -242,8 +242,17 @@ export default class Sprint {
 
         const main = getHTMLElement(document.querySelector('main'));
         main.innerHTML = '';
-        main.append(this.render.gameResult(gameType.Sprint, 'test message', [chart1, chart2]));
-        main.append(this.render.gameResultWords(knowingWords, unknowingWords, this.data.base));
+
+        main.append(
+            this.render.gameResult(
+                gameType.Sprint,
+                'Вы неплохо справились!',
+                [chart1, chart2],
+                knowingWords,
+                unknowingWords,
+                this.data.base
+            )
+        );
 
         const btnReplay = getHTMLElement(main.querySelector('.gameresult__button-replay'));
         btnReplay.addEventListener('click', () => {

@@ -159,11 +159,11 @@ export default class Render {
                       <div class="games">
                           <div class="games__list">
                               <div class="game game--sprint">
-                                  <img src="../assets/img/icon-sprint.png" class="game__img">
+                                  <img src="../assets/img/icon-sprint.svg" class="game__img">
                                   <a href="/games/sprint" class="bttn bttn--transparent game__bttn">Спринт →</a>
                               </div>
                               <div class="game game--audio-call">
-                                  <img src="../assets/img/icon-audio-call.png" class="game__img">
+                                  <img src="../assets/img/icon-audio-call.svg" class="game__img">
                                   <a href="/games/audio-call" class="bttn bttn--transparent game__bttn">Аудио-вызов →</a>
                               </div>
                           </div>
@@ -497,6 +497,9 @@ export default class Render {
         let recordAudioCall = 0;
         let wordLearnedAudiocall = 0;
         let rightAnswersAudiocall = 0;
+        let wordTotal = 0;
+        let wordTotalSprint = 0;
+        let wordTotalAudiocall = 0;
         let header = 'Default Header';
         let subtitle = 'Ваша статистика по всем активностям';
 
@@ -530,6 +533,9 @@ export default class Render {
             wordLearnedAudiocall += statisticDay.audio.learned;
             rightAnswersSprint += statisticDay.sprint.right;
             rightAnswersAudiocall += statisticDay.audio.right;
+            wordTotalSprint += statisticDay.sprint.total;
+            wordTotalAudiocall += statisticDay.audio.total;
+            wordTotal = wordTotalSprint + wordTotalAudiocall;
             if (recordSprint < statisticDay.sprint.record) {
                 recordSprint = statisticDay.sprint.record;
             }
@@ -541,9 +547,10 @@ export default class Render {
         const stats = document.createElement('div');
         stats.classList.add('statistics');
 
-        const rightAnswersTotal = ((rightAnswers / wordLearned) * 100).toFixed(2);
-        const rightAnswersSprintTotal = ((rightAnswersSprint / wordLearnedSprint) * 100).toFixed(2);
-        const rightAnswersAudiocallTotal = ((rightAnswersAudiocall / wordLearnedAudiocall) * 100).toFixed(2);
+        const rightAnswersPercent = (rightAnswers / (wordTotal <= 0 ? 1 : wordTotal)) * 100;
+        const rightAnswersSprintPercent = (rightAnswersSprint / (wordTotalSprint <= 0 ? 1 : wordTotalSprint)) * 100;
+        const rightAnswersAudiocallPercent =
+            (rightAnswersAudiocall / (wordTotalAudiocall <= 0 ? 1 : wordTotalAudiocall)) * 100;
 
         stats.innerHTML = `
         <div class="statistics__body">
@@ -559,7 +566,7 @@ export default class Render {
                 <div class="divider-vertical"></div>
                 <div class="statistics__rightAnswersTotal">
                     <div class="statistics__rightAnswersTotal-number">
-                        ${typeof rightAnswersTotal === 'number' ? rightAnswersTotal : 0}<span>%</span>
+                        ${typeof rightAnswersPercent === 'number' ? rightAnswersPercent.toFixed(1) : 0}<span>%</span>
                     </div>
                     <div class="statistics__rightAnswersTotal-subtitle">правильных ответов</div>
                 </div>
@@ -574,7 +581,7 @@ export default class Render {
                     <div class="statistics__sprint-info">
                         <span><b>${wordLearnedSprint}</b> слов изучено</span>
                         <span><b>${
-                            typeof rightAnswersSprintTotal === 'number' ? rightAnswersTotal : 0
+                            typeof rightAnswersSprintPercent === 'number' ? rightAnswersSprintPercent.toFixed(1) : 0
                         }%</b> правильных ответов</span>
                         <span><b>${recordSprint}</b> лучшая серия правильных ответов</span>
                     </div>
@@ -591,7 +598,9 @@ export default class Render {
                     <div class="statistics__audiocall-info">
                         <span><b>${wordLearnedAudiocall}</b> слов изучено</span>
                         <span><b>${
-                            typeof rightAnswersAudiocallTotal === 'number' ? rightAnswersTotal : 0
+                            typeof rightAnswersAudiocallPercent === 'number'
+                                ? rightAnswersAudiocallPercent.toFixed(1)
+                                : 0
                         }%</b> правильных ответов</span>
                         <span><b>${recordAudioCall}</b> лучшая серия правильных ответов</span>
                     </div>
@@ -604,6 +613,7 @@ export default class Render {
     }
 
     statisticsCharts(type: statisticType, statistics: IStatistics) {
+        console.log(statistics);
         const container = document.createElement('div');
         container.classList.add('statistics__charts');
         const empty = document.createElement('div');
@@ -619,50 +629,50 @@ export default class Render {
         switch (type) {
             case statisticType.Daily:
                 header = 'Колличество изученных слов на сегодня';
-
-                console.log(statistics);
-
+                let sprintLearned = 0;
+                let audioLearned = 0;
+                let bookLearned = 0;
                 for (let day in statistics.optional) {
                     const statisticDay = statistics.optional[day];
                     const statisticDate = new Date(statisticDay.date);
                     statisticDate.setHours(0, 0, 0, 0);
                     if (today.getTime() == statisticDate.getTime()) {
-                        const myChart = new Chart(canvas, {
-                            type: 'doughnut',
-                            data: {
-                                labels: ['Спринт', 'Аудиовызов', 'Добавлено в изученное'],
-                                datasets: [
-                                    {
-                                        label: 'Dataset 1',
-                                        data: [
-                                            statisticDay.sprint.learned,
-                                            statisticDay.audio.learned,
-                                            statisticDay.book.learned,
-                                        ],
-                                        backgroundColor: ['#5996A5', '#639B6D', '#A15993'],
-                                    },
-                                ],
-                            },
-                            options: {
-                                responsive: true,
-                                plugins: {
-                                    legend: {
-                                        position: 'top',
-                                    },
-                                    title: {
-                                        display: true,
-                                        text: header,
-                                    },
-                                },
-                            },
-                        });
-                        container.appendChild(canvas);
+                        sprintLearned += statisticDay.sprint.learned;
+                        audioLearned += statisticDay.audio.learned;
+                        bookLearned += statisticDay.book.learned;
                         isEmpty = false;
                     }
                 }
                 if (isEmpty) {
                     console.log('No related Data');
                     container.appendChild(empty);
+                } else {
+                    const myChart = new Chart(canvas, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Спринт', 'Аудиовызов', 'Добавлено в изученное'],
+                            datasets: [
+                                {
+                                    label: 'Dataset 1',
+                                    data: [sprintLearned, audioLearned, bookLearned],
+                                    backgroundColor: ['#5996A5', '#639B6D', '#A15993'],
+                                },
+                            ],
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                title: {
+                                    display: true,
+                                    text: header,
+                                },
+                            },
+                        },
+                    });
+                    container.appendChild(canvas);
                 }
                 break;
             case statisticType.Total:
@@ -779,12 +789,14 @@ export default class Render {
                 <div class="game__window game__window__light">
                 <div class="game__window ${gameImage}"></div>
                     <div class="game__block">
-                        <h2 class="game__title">${title}</h2>
+                        <div class="game__heading">
+                            <h2 class="game__heading-title">${title}</h2>
+                            <div class="game__heading-skill">${skill}</div>
+                        </div>
                         <p class="game__desc">${desc}</p>
                         <p class="game__text">Выберите уровень:</p>
                         <ul class="game__levels levels">${levels}</ul>
                         <button class="game__start">Начать</button>
-                        <div class="game__skill">${skill}</div>
                     </div>
                 </div>
             </div>
@@ -809,12 +821,12 @@ export default class Render {
             <div class="sprint-game__body-info">
                 <div class="sprint-game__multiplier">
                     <span>x${multiplier}</span>
-                    <span>Множитель</span>
+                    <span>множитель</span>
                 </div>
-                <div class="divider-horizontal"></div>
+                <div class="divider-vertical"></div>
                 <div class="sprint-game__points">
                     <span>${points}</span>
-                    <span>Очки</span>
+                    <span>очки</span>
                 </div>
             </div>
             <div>
@@ -973,6 +985,26 @@ export default class Render {
         return chart;
     }
 
+    gameResult(
+        gameType: gameType,
+        message: string,
+        chartList: IResultChart[],
+        knowingWords: IWord[],
+        unknowingWords: IWord[],
+        base: string
+    ) {
+        const container = document.createElement('div');
+        container.classList.add('container', 'align-center');
+        const wrapper = document.createElement('div');
+        wrapper.classList.add('gameresult__wrapper');
+
+        wrapper.append(this.gameResultInfo(gameType, message, chartList));
+        wrapper.append(this.gameResultWords(knowingWords, unknowingWords, base));
+
+        container.appendChild(wrapper);
+        return container;
+    }
+
     gameResultChart(type: gameChart, maxValue: number, currentValue: number) {
         let color = '';
         let backgroundColor = '';
@@ -1040,7 +1072,7 @@ export default class Render {
         return gameResultChart;
     }
 
-    gameResult(type: gameType, message: string, chartList: Array<IResultChart>) {
+    gameResultInfo(type: gameType, message: string, chartList: Array<IResultChart>) {
         const container = document.createElement('div');
         const charts = document.createElement('div');
         let header = '';
