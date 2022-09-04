@@ -361,35 +361,37 @@ export default class Render {
 
         const card = `
           <div class="card card-word ${stateClass}">
-              <img src="https://rslang-learnwords-app.herokuapp.com/${data.image}" class="card__image">
-              <div class="card__title">
-                  <div class="card-word__translate">
-                      ${data.word} - ${data.wordTranslate} - ${data.transcription}
-                  </div>
-                  <div class="card-word__audio">
-                      <audio controls src="https://rslang-learnwords-app.herokuapp.com/${data.audioExample}">
-                        Your browser does not support the
-                        <code>audio</code> element.
-                      </audio>
-                  </div
+              <div class="card-left">
+                  <img src="https://rslang-learnwords-app.herokuapp.com/${data.image}" class="card__image">
               </div>
-              <div class="card-word__text-example">
-                  <span>Пример</span>
-                  <p>${data.textExample}</p>
-              </div>
-              <div class="card-word__text-translate">
-                  <p>${data.textExampleTranslate}</p>
-              </div>
-              <div class="card-word__text-meaning">
-                  <span>Значение</span>
-                  <p>${data.textMeaning}</p>
-              </div>
-              <div class="card-word__text-meaning-translate">
-                  <p>${data.textMeaningTranslate}</p>
-              </div>
-              ${statisctic}
-              ${bttnAddToHard}
-              ${bttnAddToEasy}
+              <div class="card-right">
+                <div class="card__title">
+                    <div class="card-word__translate">
+                        ${data.word}&nbsp;/&nbsp;${data.wordTranslate}
+                        <span class="card-word__trnscription">${data.transcription}</span>
+                    </div>
+                    <div class="card-word__audio">
+                        <button class="play-icon"></button>
+                    </div
+                </div>
+                <div class="card-word__text-example">
+                    <span>Пример</span>
+                    <p>${data.textExample}</p>
+                </div>
+                <div class="card-word__text-translate">
+                    <p>${data.textExampleTranslate}</p>
+                </div>
+                <div class="card-word__text-meaning">
+                    <span>Значение</span>
+                    <p>${data.textMeaning}</p>
+                </div>
+                <div class="card-word__text-meaning-translate">
+                    <p>${data.textMeaningTranslate}</p>
+                </div>
+                ${statisctic}
+                ${bttnAddToHard}
+                ${bttnAddToEasy}
+              </div>  
           </div>
         `;
         return card;

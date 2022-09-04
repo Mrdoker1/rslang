@@ -280,44 +280,7 @@ body {
   }
 }
 
-.card {
-    display: flex;
-    flex-direction: column;
-    flex-basis: calc(100% / 3 - 1rem);
-    padding: 1rem;
-    border-radius: 5px;
 
-    &__image {
-        width: 100%;
-    }
-
-    &.hard {
-        border: 2px solid red;
-    }
-
-    &.easy {
-        border: 2px solid blue;
-    }
-}
-
-.pagination {
-    display: flex;
-    gap: 1rem;
-    order: 3;
-
-    &__item {
-        color: black;
-        border: 1px solid;
-        text-decoration: none;
-
-        &.active {
-            color: red;
-        }
-        &.learned {
-          color: blue
-      }
-    }   
-}
 
 .divider-vertical {
     border-left: 1px solid $color-grey-medium;
