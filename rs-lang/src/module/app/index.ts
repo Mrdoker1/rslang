@@ -385,7 +385,6 @@ export default class App {
                                 if (keys.length) {
                                     lastKey = Number(keys[keys.length - 1]);
                                     const lastSts = stsAll.optional[lastKey];
-                                    console.log(lastSts, this.isNewDay(lastSts.date));
                                     if (!this.isNewDay(lastSts.date)) {
                                         sts = lastSts; //key?
                                         isNewEntry = false;
@@ -402,7 +401,6 @@ export default class App {
                                 else stsAll.optional[lastKey] = sts;
 
                                 delete stsAll.id;
-                                console.log(stsAll);
                                 const updateUserStatistics = await this.data.updateUserStatistics(
                                     state.userId,
                                     stsAll,
@@ -412,7 +410,6 @@ export default class App {
                                     console.log(`Ошибка updateUserStatistics ${updateUserStatistics}`);
                                     return;
                                 }
-                                console.log('stat +1');
                                 const parent = target.parentElement!.parentElement!.closest('.card-word');
                                 parent!.remove();
                                 this.showBookPageHard(group, page);
@@ -509,7 +506,6 @@ export default class App {
                 const bttnPlay = pageBook.querySelectorAll('.play-icon');
                 bttnPlay.forEach((button, i) => {
                     button.addEventListener('click', () => {
-                        console.log('click', i);
                         audioArr[i].play();
                     });
                 });
@@ -536,7 +532,6 @@ export default class App {
                                 target.innerHTML = 'Добавить в словарь';
                                 parent!.className = 'card card-word';
                                 target.setAttribute('data-handle', 'add-to-hard');
-                                console.log('delete from hard');
                                 const userWords = await this.data.getUserWords(userId, token);
                                 if (typeof userWords === 'number') {
                                     console.log('error');
@@ -562,7 +557,6 @@ export default class App {
                                         `/book/audio-call/${group}/${page}`,
                                         'disabled'
                                     );
-                                    console.log('1');
                                     //pageHeader.querySelector('.games')?.remove();
                                     //pageHeader.appendChild(sectionGames);
                                 } else {
@@ -573,7 +567,6 @@ export default class App {
                                         `/book/sprint/${group}/${page}`,
                                         `/book/audio-call/${group}/${page}`
                                     );
-                                    console.log('2');
                                     pageHeader.querySelector('.games')?.remove();
                                     pageHeader.appendChild(sectionGames);
                                 }
@@ -615,7 +608,6 @@ export default class App {
                                 if (keys.length) {
                                     lastKey = Number(keys[keys.length - 1]);
                                     const lastSts = stsAll.optional[lastKey];
-                                    console.log(lastSts, this.isNewDay(lastSts.date));
                                     if (!this.isNewDay(lastSts.date)) {
                                         sts = lastSts; //key?
                                         isNewEntry = false;
@@ -632,7 +624,6 @@ export default class App {
                                 else stsAll.optional[lastKey] = sts;
 
                                 delete stsAll.id;
-                                console.log(stsAll);
                                 const updateUserStatistics = await this.data.updateUserStatistics(
                                     state.userId,
                                     stsAll,
@@ -672,7 +663,6 @@ export default class App {
                                         .setAttribute('data-handle', 'add-to-easy');
                                 }
 
-                                console.log('add to hard');
                                 const userWords = await this.data.getUserWords(userId, token);
                                 if (typeof userWords === 'number') {
                                     console.log('error');
@@ -717,7 +707,6 @@ export default class App {
                                 if (keys.length) {
                                     lastKey = Number(keys[keys.length - 1]);
                                     const lastSts = stsAll.optional[lastKey];
-                                    console.log(lastSts, this.isNewDay(lastSts.date));
                                     if (!this.isNewDay(lastSts.date)) {
                                         sts = lastSts; //key?
                                         isNewEntry = false;
@@ -735,7 +724,6 @@ export default class App {
                                 else stsAll.optional[lastKey] = sts;
 
                                 delete stsAll.id;
-                                console.log(stsAll);
                                 const updateUserStatistics = await this.data.updateUserStatistics(
                                     state.userId,
                                     stsAll,
@@ -773,7 +761,6 @@ export default class App {
                                 if (keys.length) {
                                     lastKey = Number(keys[keys.length - 1]);
                                     const lastSts = stsAll.optional[lastKey];
-                                    console.log(lastSts, this.isNewDay(lastSts.date));
                                     if (!this.isNewDay(lastSts.date)) {
                                         sts = lastSts; //key?
                                         isNewEntry = false;
@@ -790,7 +777,6 @@ export default class App {
                                 else stsAll.optional[lastKey] = sts;
 
                                 delete stsAll.id;
-                                console.log(stsAll);
                                 const updateUserStatistics = await this.data.updateUserStatistics(
                                     state.userId,
                                     stsAll,
@@ -953,7 +939,6 @@ export default class App {
         const prevDate = new Date(date);
         let currDate = new Date();
         currDate.setHours(0, 0, 0, 0);
-        console.log(currDate);
         // return true; //Тест
         return (
             currDate.getDate() !== prevDate.getDate() ||
