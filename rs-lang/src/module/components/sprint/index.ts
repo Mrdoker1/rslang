@@ -84,6 +84,7 @@ export default class Sprint {
                     clearInterval(interval);
                     if (this.state.token) this.saveStatistics();
                     this.showResult();
+                    this.playEndSound();
                     //console.log('Sprint Game Finished!');
                 }
                 const oldChart = getHTMLElement(document.querySelector('.chart'));
@@ -170,6 +171,7 @@ export default class Sprint {
                 if (this.gameState.possibleTranslation == this.gameState.wordTranslation) {
                     this.result.knowingWords.push(getNotNil(this.gameState.word));
                     //console.log('Right Answer!');
+                    this.playGoodSound();
                     this.series += 1;
                     if (this.gameState.strike == 3) {
                         this.gameState.multiplier += 1;
@@ -179,6 +181,7 @@ export default class Sprint {
                     this.gameState.strike += 1;
                 } else {
                     // console.log('Wrong Answer!');
+                    this.playBadSound();
                     if (this.series > this.record) this.record = this.series;
                     this.series = 0;
                     this.result.unknowingWords.push(getNotNil(this.gameState.word));
@@ -190,6 +193,7 @@ export default class Sprint {
                     clearInterval(interval);
                     if (this.state.token) this.saveStatistics();
                     this.showResult();
+                    this.playEndSound();
                 } else this.renderNewGameBody(playZone);
             }
         });
@@ -200,6 +204,7 @@ export default class Sprint {
                     this.result.knowingWords.push(getNotNil(this.gameState.word));
                     this.series += 1;
                     //console.log('Right Answer!');
+                    this.playGoodSound();
                     if (this.gameState.strike == 3) {
                         this.gameState.multiplier += 1;
                         this.gameState.strike = 0;
@@ -208,6 +213,7 @@ export default class Sprint {
                     this.gameState.strike += 1;
                 } else {
                     //console.log('Wrong Answer!');
+                    this.playBadSound();
                     if (this.series > this.record) this.record = this.series;
                     this.series = 0;
                     this.result.unknowingWords.push(getNotNil(this.gameState.word));
@@ -218,6 +224,7 @@ export default class Sprint {
                     clearInterval(interval);
                     if (this.state.token) this.saveStatistics();
                     this.showResult();
+                    this.playEndSound();
                 } else this.renderNewGameBody(playZone);
             }
         });
@@ -304,6 +311,27 @@ export default class Sprint {
         btnToBook.addEventListener('click', () => {
             this.router.navigate(`/book/${this.group}/${this.page}`);
         });
+    }
+
+    playGoodSound() {
+        const audio = new Audio();
+        audio.loop = false;
+        audio.src = `../../../assets/music/good.mp3`;
+        audio.autoplay = true;
+    }
+
+    playBadSound() {
+        const audio = new Audio();
+        audio.loop = false;
+        audio.src = `../../../assets/music/bad2.mp3`;
+        audio.autoplay = true;
+    }
+
+    playEndSound() {
+        const audio = new Audio();
+        audio.loop = false;
+        audio.src = `../../../assets/music/lucky.mp3`;
+        audio.autoplay = true;
     }
 
     getResultMessage(rightWords: IWord[], words: IWord[]) {

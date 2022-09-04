@@ -73,6 +73,7 @@ export default class AudioCall {
                 const answer = target.dataset.answer;
 
                 if (answer === undefined) {
+                    this.playBadSound();
                     attempt -= 1;
                     const hearts = document.querySelectorAll('.audio__icon-heart');
                     hearts[attempt].classList.add('audio__icon-heart_miss');
@@ -80,6 +81,7 @@ export default class AudioCall {
                     if (this.series > this.record) this.record = this.series;
                     this.series = 0;
                 } else {
+                    this.playGoodSound();
                     this.result.knowingWords.push(words[count]);
                     this.series += 1;
                 }
@@ -94,6 +96,7 @@ export default class AudioCall {
                 if (this.series > this.record) this.record = this.series;
                 if (this.state.token) this.saveStatistics();
                 this.showResult(attempt, words);
+                this.playEndSound();
                 return;
             }
             count += 1;
@@ -369,6 +372,27 @@ export default class AudioCall {
             console.log(`Ошибка updateUserStatistics ${updateUserStatistics}`);
             return;
         }
+    }
+
+    playGoodSound() {
+        const audio = new Audio();
+        audio.loop = false;
+        audio.src = `../../../assets/music/good.mp3`;
+        audio.autoplay = true;
+    }
+
+    playBadSound() {
+        const audio = new Audio();
+        audio.loop = false;
+        audio.src = `../../../assets/music/bad1.mp3`;
+        audio.autoplay = true;
+    }
+
+    playEndSound() {
+        const audio = new Audio();
+        audio.loop = false;
+        audio.src = `../../../assets/music/lucky.mp3`;
+        audio.autoplay = true;
     }
 
     isNewDay(date: string): boolean {
