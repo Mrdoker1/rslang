@@ -1,3 +1,6 @@
+// Variables
+@import '../../../variables.scss';
+
 .cd-signin-modal {
   //font-size: 1.8vw;
   position: fixed;
@@ -65,6 +68,7 @@
   width: 50%;
   float: left;
   text-align: center;
+  font: $montserrat-16px;
 }
 
 .cd-signin-modal__switcher li:first-child a {
@@ -122,12 +126,12 @@
 }
 
 .cd-signin-modal__input[type="submit"]:disabled {
-  background-color: #777;
+  background-color: $color-grey-dark;
   pointer-events: none;
 }
 
 .cd-signin-modal__input[type="submit"]:disabled:hover {
-  background-color: #777;
+  background-color: $color-grey-dark;
 }
 
 .cd-signin-modal__label.cd-signin-modal__label--image-replace {

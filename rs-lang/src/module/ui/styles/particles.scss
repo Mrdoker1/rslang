@@ -2,6 +2,7 @@
 @import '../../../variables.scss';
 
 .particle {
+    user-select: none;
     &.sprint-multiplier {
         display: flex;
         justify-content: center;
@@ -28,5 +29,16 @@
         border-radius: 50px;
         align-items: center;
         font: $montserrat-button-16px;
+    }
+
+    &.audiocall-heart{
+        background-color: transparent !important;
+        font: $dela-gothic-32px;
+        color: $color-red !important;
+    }
+    &.audiocall-rightAnswer{
+        background-color: transparent !important;
+        font: $dela-gothic-32px;
+        color: $color-green !important;
     }
 }

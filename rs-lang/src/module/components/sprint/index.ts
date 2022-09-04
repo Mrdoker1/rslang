@@ -48,7 +48,7 @@ export default class Sprint {
         this.group = group;
         this.page = page;
         this.counter = 100;
-        this.speed = 0.1;
+        this.speed = 0.02;
         this.result = {
             knowingWords: [],
             unknowingWords: [],
@@ -226,7 +226,7 @@ export default class Sprint {
             particles.create(
                 particles.getOffset(pointsBody).x,
                 particles.getOffset(pointsBody).y,
-                `${this.gameState.points}`,
+                `+${this.gameState.multiplier * 10}`,
                 '#2B788B',
                 'sprint-points'
             );
