@@ -7,14 +7,13 @@ import Render from '../ui';
 //Utils
 import getHTMLElement from '../../utils/getHTMLElement';
 import getHTMLInputElement from '../../utils/getHTMLInputElement';
-import { gameChart, gameType, statisticType } from '../../utils/enums';
+import { gameType } from '../../utils/enums';
 import { getRandom, createStsEntry } from '../../utils/helpers';
 
 //Interface
-import IUserBody from '../interface/IUserBody';
 import IWord from '../interface/IWord';
-import IAggregatedWord from '../interface/IAggregatedWord';
 import IUserWord from '../interface/IUserWord';
+import ISettings from '../interface/ISettings';
 
 //Style
 import '../../global.scss';
@@ -68,6 +67,7 @@ export default class App {
         this.createPage();
         this.initRouter();
         this.createLogin();
+        this.userSettings();
     }
 
     initState() {
@@ -1118,5 +1118,45 @@ export default class App {
         //new ModalLogin(modal, this.data.base, this.router);
         //console.log(this.router);
         this.login.init();
+    }
+
+    async userSettings(userSettings?: ISettings) {
+        const state = new State();
+
+        const defaultSettings = {
+            wordsPerDay: 1,
+            optional: {
+                listView: false,
+                showButtons: true,
+                avatar: 'empty',
+            },
+        };
+
+        if (state.token) {
+            const settings = await this.data.getUserSettings(state.userId, state.token);
+            if (typeof settings === 'number') {
+                //Если настроек нет
+                if (userSettings) {
+                    // Хотим отправить
+                    await this.data.updateUserSettings(state.userId, userSettings, state.token);
+                    return true;
+                } else {
+                    // Хотим получить
+                    await this.data.updateUserSettings(state.userId, defaultSettings, state.token);
+                    return defaultSettings;
+                }
+            } else {
+                //Если настройки есть
+                if (userSettings) {
+                    // Хотим отправить
+                    await this.data.updateUserSettings(state.userId, userSettings, state.token);
+                    return true;
+                } else {
+                    // Хотим получить
+                    console.log(settings);
+                    return settings;
+                }
+            }
+        } else return false;
     }
 }

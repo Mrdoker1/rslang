@@ -1,4 +1,8 @@
 export default interface ISettings {
     wordsPerDay: number;
-    optional: {};
+    optional: {
+        listView: boolean;
+        showButtons: boolean;
+        avatar: string;
+    };
 }
