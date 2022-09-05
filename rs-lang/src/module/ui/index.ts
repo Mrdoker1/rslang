@@ -379,7 +379,7 @@ export default class Render {
         const bookPagination = document.createElement('div');
         bookPagination.classList.add('pagination');
         let pagination = `
-            <a href="/book/${level}/0" class="pagination__item"><<</a>`;
+            <a href="/book/${level}/0" class="pagination__item">←</a>`;
         pagesSequence.forEach((page) => {
             pagination += `
                 <a href="/book/${level}/${page - 1}" class="pagination__item">
@@ -387,7 +387,7 @@ export default class Render {
                 </a>`;
         });
         pagination += `
-            <a href="/book/${level}/29" class="pagination__item">>></a>`;
+            <a href="/book/${level}/29" class="pagination__item">→</a>`;
         bookPagination.innerHTML = pagination;
         return bookPagination;
     }
