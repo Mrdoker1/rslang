@@ -3,6 +3,9 @@ import getHTMLElement from '../../../utils/getHTMLElement';
 import getHTMLInputElement from '../../../utils/getHTMLInputElement';
 import { createStsEntry } from '../../../utils/helpers';
 
+//Interface
+import ISettings from '../../interface/ISettings';
+
 //Router
 import { Router } from 'routerjs';
 
@@ -120,11 +123,12 @@ class ModalLogin {
                     user.classList.remove('hidden');
 
                     modal.classList.remove('cd-signin-modal--is-visible');
-                    this.router.run();
-                    tokenTimer = setTimeout(this.updateToken.bind(this), this.period);
-                }
 
-                this.addFirstStatistics();
+                    tokenTimer = setTimeout(this.updateToken.bind(this), this.period);
+                    await this.addFirstStatistics();
+                    await this.userSettings();
+                    this.router.run();
+                }
             } else {
                 if (createUser === 422) signupMessage.textContent = 'Неверный пароль, имя или почта';
                 else if (createUser === 417) signupMessage.textContent = 'Аккаунт уже существует';
@@ -302,6 +306,46 @@ class ModalLogin {
             input.focus();
             input.setSelectionRange(len, len);
         }
+    }
+
+    async userSettings(userSettings?: ISettings) {
+        const state = new State();
+
+        const defaultSettings = {
+            wordsPerDay: 1,
+            optional: {
+                listView: false,
+                showButtons: true,
+                avatar: 'empty',
+            },
+        };
+
+        if (state.token) {
+            const settings = await this.data.getUserSettings(state.userId, state.token);
+            if (typeof settings === 'number') {
+                //Если настроек нет
+                if (userSettings) {
+                    // Хотим отправить
+                    await this.data.updateUserSettings(state.userId, userSettings, state.token);
+                    return true;
+                } else {
+                    // Хотим получить
+                    await this.data.updateUserSettings(state.userId, defaultSettings, state.token);
+                    return defaultSettings;
+                }
+            } else {
+                //Если настройки есть
+                if (userSettings) {
+                    // Хотим отправить
+                    await this.data.updateUserSettings(state.userId, userSettings, state.token);
+                    return true;
+                } else {
+                    // Хотим получить
+                    //console.log(settings);
+                    return settings;
+                }
+            }
+        } else return false;
     }
 }
 
