@@ -133,6 +133,50 @@
     align-content: flex-start;
 }
 
+// GRID WIEV
+.words__list.grid {
+     gap: 20px; 
+
+    .card {
+        flex-basis: calc(100% / 3 - 20px);
+        flex: 1;
+        flex-direction: column;
+        border-radius: 14px;
+
+      &-left {
+          border-radius: 14px 14px 0 0;
+      }
+
+      &-right {
+          padding: 30px;
+      }
+
+      &__image {
+          border-radius: 14px 14px 0 0;
+      }
+
+      &__title {
+          .word-title {
+              margin-bottom: 8px;
+          }
+          font: $dela-gothic-26px;
+      }
+
+      &-word__text-meaning {
+          font: $montserrat-14px;
+      }
+
+      &-word__text-example {
+          font: $montserrat-14px;
+      }
+
+      &__bottom {
+          flex-direction: column;
+          gap: 10px;
+      }
+    }
+}
+
 .card {
     display: flex;
     flex-direction: row;
