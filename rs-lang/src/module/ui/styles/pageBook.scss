@@ -57,7 +57,7 @@
           filter: grayscale(1);
           &:hover {
             .game__bttn {
-                color: $color-grey-dark;      
+                color: $color-grey-dark;
             }
           }  
       }
@@ -74,7 +74,100 @@
     padding: 20px;
     background-color: #fff;
     border-radius: 14px;
+
+    &__right {
+        display: flex;
+        gap: 10px;
+    }
   }
+
+  &__settings {
+      order: 1;
+      padding: 8px;
+      border-radius: 4px;
+      background-color: #F6F5F4;
+
+      span:after {
+          content: initial;
+      }
+      
+      .dropdown {
+          &__menu {
+              width: 100%;
+              max-width: 470px;
+              min-width: 470px;
+              left: auto;
+              top: 50px;
+              right: 0;
+              border: 1px solid $color-grey-light;
+              z-index: 1;
+
+              &-item {
+                  font: $montserrat-16px;
+                  color: $color-grey-dark;
+              }
+          } 
+      }
+
+      .settings-value-checkbox {
+          width: 20px;
+          height: 20px;
+          position: absolute;
+          z-index: -1;
+          opacity: 0;
+      }
+
+      .settings-value-checkbox:checked + .settings-value-label:after {
+          opacity: 1;
+      }
+
+      .settings-value-label {
+          padding-left: 30px;
+          position: relative;
+
+          &:hover {
+              cursor: pointer;
+          }
+
+          &:before {
+              content: "";
+              position: absolute;
+              width: 20px;
+              height: 20px;
+              left: 0px;
+              top: -2px;
+              transition: opacity 0.2s linear;
+              border: 1px solid $color-grey-dark;
+              border-radius: 4px;
+              background-color: $color-grey-light;
+          }
+
+          &:after {
+              content: url("./assets/img/icon-check.svg");
+              position: absolute;
+              width: 20px;
+              height: 20px;
+              left: 0px;
+              top: -2px;
+              text-align: center;
+              line-height: 1.5;
+              opacity: 0;
+              transition: opacity 0.2s linear;
+              border: 1px solid $color-cyan-dark;
+              border-radius: 4px;
+              background-color: $color-cyan-dark;
+          }
+      }
+
+      &:hover {
+          background-color: $color-cyan-dark;
+
+          .icon {
+              filter:  brightness(0) invert(1);
+          }
+      }
+  }
+
   .menu__item {
       padding-left: 42px;
       font: $dela-gothic-26px;
@@ -129,8 +222,6 @@
     margin-bottom: 40px;
     padding: 0px 5rem;
     position: relative;
-    align-items: flex-start;
-    align-content: flex-start;
 }
 
 // GRID WIEV
@@ -139,7 +230,6 @@
 
     .card {
         flex-basis: calc(100% / 3 - 20px);
-        flex: 1;
         flex-direction: column;
         border-radius: 14px;
 
@@ -152,14 +242,22 @@
       }
 
       &__image {
+          max-height: 250px;
+          min-height: 250px;
           border-radius: 14px 14px 0 0;
       }
 
       &__title {
+          word-break: break-word;
+
           .word-title {
               margin-bottom: 8px;
+              font: $dela-gothic-26px;
           }
-          font: $dela-gothic-26px;
+
+          .word-translate {
+              font: $dela-gothic-26px;
+          }
       }
 
       &-word__text-meaning {
@@ -171,8 +269,15 @@
       }
 
       &__bottom {
-          flex-direction: column;
-          gap: 10px;
+          display: inline;
+          .bttn {
+              width: auto;
+              padding: 8px 20px;
+              font: $montserrat-14px;
+              &:first-child {
+                  margin-bottom: 10px;
+              }
+          }
       }
     }
 }
@@ -311,6 +416,10 @@
     &__bottom {
         display: flex;
         gap: 20px;
+
+        .bttn {
+            outline: none;
+        }
     }
 
     &.hard {

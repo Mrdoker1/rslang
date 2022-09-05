@@ -214,10 +214,7 @@ export default class App {
         const pageBook = this.render.pageBook();
         const pageHeader = getHTMLElement(pageBook.querySelector('.page-header'));
         getHTMLElement(pageHeader.querySelectorAll('.menu__item')[0]).classList.add('active');
-        const sectionGames = this.render.sectionGames(
-            `/book/sprint/${group}/${page}`,
-            `/book/audio-call/${group}/${page}`
-        );
+        const sectionGames = this.render.sectionGames(`/games/sprint`, `/games/audio-call`);
         pageHeader.appendChild(sectionGames);
         const dataWords = await this.data.getWords(group, page);
 
@@ -225,7 +222,11 @@ export default class App {
             console.log('error');
         } else {
             const arr = [...dataWords];
+            const audioArr: HTMLAudioElement[] = [];
+
             const cards = arr.map((item) => {
+                audioArr.push(new Audio(`https://rslang-learnwords-app.herokuapp.com/${item.audioExample}`));
+
                 if (item.difficulty === 'hard') {
                     return this.render.cardWord(item, loginStatus, item.id, true);
                 } else {
@@ -254,8 +255,18 @@ export default class App {
             const pagination = this.render.pagination(group, sequence, pagesCount);
             getHTMLElement(pageBook.querySelector('.page__book')).append(pagination);
 
+            const paginationLinkActive = pagination.querySelectorAll(`a[href='/book/${group}/${page}']`);
+            paginationLinkActive[0].classList.add('active');
+
             cards.forEach((card) => {
                 getHTMLElement(pageBook.querySelector('.words__list')).innerHTML += card;
+            });
+
+            const bttnPlay = pageBook.querySelectorAll('.play-icon');
+            bttnPlay.forEach((button, i) => {
+                button.addEventListener('click', () => {
+                    audioArr[i].play();
+                });
             });
 
             const linkActive = pageBook.querySelectorAll(`a[href='/book/${group}/${page}']`);
@@ -274,16 +285,20 @@ export default class App {
     }
 
     async showBookPageHard(group: number, page: number) {
+        const state = new State();
+        const loginStatus = state.token ? true : false;
+        const userId = state.userId;
+        const token = state.token;
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
         main.classList.remove('main-page');
         const pageBook = this.render.pageBook();
         const pageHeader = getHTMLElement(pageBook.querySelector('.page-header'));
 
-        let state = new State();
-        const userId = state.userId;
-        const token = state.token;
-
+        if (!loginStatus) {
+            const emptyMessage = this.render.pageHardWordsDenied();
+            main.append(emptyMessage);
+        }
         const dataWords = await this.data.getUserAggregatedWords(
             userId,
             '',
@@ -297,8 +312,6 @@ export default class App {
             console.log('error');
         } else {
             const userWords = await this.data.getUserWords(userId, token);
-            const state = new State();
-            const loginStatus = state.token ? true : false;
 
             const wordLevels = this.render.wordLevels();
             getHTMLElement(pageBook.querySelector('.page__book')).append(wordLevels);
@@ -313,6 +326,7 @@ export default class App {
             let totalLength = 0;
 
             let itemOptional: IUserWord[] = [];
+            const audioArr: HTMLAudioElement[] = [];
 
             Object.values(dataWords).forEach((item) => {
                 const wordsArray = Object.values(item);
@@ -331,7 +345,9 @@ export default class App {
                             if (userWords[user].optional !== undefined) {
                                 optional = userWords[user];
                             }
-
+                            audioArr.push(
+                                new Audio(`https://rslang-learnwords-app.herokuapp.com/${item.audioExample}`)
+                            );
                             getHTMLElement(pageBook.querySelector('.words__list')).innerHTML += this.render.cardWord(
                                 item,
                                 loginStatus,
@@ -444,6 +460,14 @@ export default class App {
                 if (paginatedResults === 0 && page != 0) {
                     this.router.navigate(`/book/${group}/${page - 1}`);
                 }
+
+                const bttnPlay = pageBook.querySelectorAll('.play-icon');
+                bttnPlay.forEach((button, i) => {
+                    button.addEventListener('click', () => {
+                        audioArr[i].play();
+                    });
+                });
+
                 const linkActive = pagination.querySelectorAll(`a[href='/book/${group}/${page}']`);
                 if (linkActive[1] !== undefined) linkActive[1].className = 'pagination__item active';
                 if (linkActive[0] !== undefined) linkActive[0].className = 'pagination__item active';
@@ -469,6 +493,37 @@ export default class App {
         const dataWords = await this.data.getWords(group, page);
         const userWords = await this.data.getUserWords(userId, token);
         getHTMLElement(pageHeader.querySelectorAll('.menu__item')[0]).classList.add('active');
+        const pageSettings = this.render.bookSettings();
+        getHTMLElement(pageHeader.querySelector('.page-header__right')).innerHTML += pageSettings;
+
+        const settingsView = getHTMLElement(pageHeader.querySelector('#grid'));
+        const settingsButtonsView = getHTMLElement(pageHeader.querySelector('#hide-buttons'));
+
+        settingsView.addEventListener('click', (e) => {
+            const checkbox = getHTMLInputElement(e.target);
+
+            if (checkbox.checked) {
+                console.log('check');
+                getHTMLElement(pageBook.querySelector('.words__list')).classList.add('grid');
+            } else {
+                getHTMLElement(pageBook.querySelector('.words__list')).classList.remove('grid');
+            }
+        });
+
+        settingsButtonsView.addEventListener('click', (e) => {
+            const checkbox = getHTMLInputElement(e.target);
+
+            if (checkbox.checked) {
+                console.log('check');
+                pageBook.querySelectorAll('.card__bottom').forEach((item) => {
+                    item.classList.add('hidden');
+                });
+            } else {
+                pageBook.querySelectorAll('.card__bottom').forEach((item) => {
+                    item.classList.remove('hidden');
+                });
+            }
+        });
 
         const easyWords = await this.data.getUserAggregatedWordsTest(
             userId,
@@ -506,6 +561,7 @@ export default class App {
                 const arr = [...dataWords];
                 const uWrods = [...userWords];
                 const audioArr: HTMLAudioElement[] = [];
+
                 let cards: string[] = [];
 
                 cards = arr.map((item, i) => {
@@ -597,7 +653,9 @@ export default class App {
                                     );
 
                                     pageHeader.querySelector('.games')?.remove();
-                                    pageHeader.appendChild(sectionGames);
+                                    getHTMLElement(pageHeader.querySelector('.page-header__right')).appendChild(
+                                        sectionGames
+                                    );
                                 }
                             }
 
@@ -857,7 +915,9 @@ export default class App {
                                             'disabled'
                                         );
                                         pageHeader.querySelector('.games')?.remove();
-                                        pageHeader.appendChild(sectionGames);
+                                        getHTMLElement(pageHeader.querySelector('.page-header__right')).appendChild(
+                                            sectionGames
+                                        );
                                     } else {
                                         pageBook.children[0].classList.remove('learned');
                                         const sectionGames = this.render.sectionGames(
@@ -865,7 +925,9 @@ export default class App {
                                             `/book/audio-call/${group}/${page}`
                                         );
                                         pageHeader.querySelector('.games')?.remove();
-                                        pageHeader.appendChild(sectionGames);
+                                        getHTMLElement(pageHeader.querySelector('.page-header__right')).appendChild(
+                                            sectionGames
+                                        );
                                     }
                                 }
                             }
@@ -917,7 +979,9 @@ export default class App {
                                         `/book/audio-call/${group}/${page}`
                                     );
                                     pageHeader.querySelector('.games')?.remove();
-                                    pageHeader.appendChild(sectionGames);
+                                    getHTMLElement(pageHeader.querySelector('.page-header__right')).appendChild(
+                                        sectionGames
+                                    );
                                 }
                             }
                         }
@@ -961,7 +1025,7 @@ export default class App {
                         `/book/audio-call/${group}/${page}`,
                         'disabled'
                     );
-                    pageHeader.appendChild(sectionGames);
+                    getHTMLElement(pageHeader.querySelector('.page-header__right')).appendChild(sectionGames);
                 } else {
                     if (linkActive[0] !== undefined) linkActive[0].className = 'pagination__item active';
                     if (linkActive[1] !== undefined) linkActive[1].className = 'pagination__item active';
@@ -969,7 +1033,7 @@ export default class App {
                         `/book/sprint/${group}/${page}`,
                         `/book/audio-call/${group}/${page}`
                     );
-                    pageHeader.appendChild(sectionGames);
+                    getHTMLElement(pageHeader.querySelector('.page-header__right')).appendChild(sectionGames);
                 }
 
                 main.appendChild(pageBook);

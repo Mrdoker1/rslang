@@ -263,6 +263,8 @@ export default class Render {
                 <div class="page__menu">
                     <a href="/book/0/0" class="menu__item hat-icon">Учебник</a>
                 </div>
+                <div class="page-header__right">
+                </div>
             </div>
         `;
         const wordsList = document.createElement('div');
@@ -320,6 +322,25 @@ export default class Render {
         return wordLevelsList;
     }
 
+    bookSettings(state?: string) {
+        const settings = `
+            <div class="page__settings dropdown">
+                <span class="icon icon--gear"></span>
+                <ul class="dropdown__menu">
+                    <li class="dropdown__menu-item">
+                        <input class="settings-value-checkbox" type="checkbox" id="grid">
+                        <label class="settings-value-label" for="grid">Показывать слова списком</label>
+                    </li>
+                    <li class="dropdown__menu-item">
+                        <input class="settings-value-checkbox" type="checkbox" id="hide-buttons">
+                        <label class="settings-value-label" for="hide-buttons">Показывать кнопки 'в изученные' и 'в словарь'</label>
+                    </li>
+                </ul>
+            </div>
+        `;
+        return settings;
+    }
+
     hardWords() {
         const hardWords = `
             <a href="/book/6/0" class="menu__item book-icon">Словарь</a>
@@ -347,6 +368,29 @@ export default class Render {
             </div>  
         `;
         return emptyMessage;
+    }
+
+    pageHardWordsDenied() {
+        const pageStatisticsContainer = document.createElement('div');
+        pageStatisticsContainer.classList.add('container', 'align-center');
+
+        pageStatisticsContainer.innerHTML = `
+          <div class="statistics-denied">
+              <div class="empty-book-image"></div>
+              <div class="statistics-denied__body">
+                  <div class="statistics-denied__heading">
+                      <div class="statistics-denied__heading-header">Извините, словарь недоступен 🥺</div>
+                      <div class="statistics-denied__heading-subtitle">Чтобы получтить доступ к словарю зарегистрируйтесь или войдите в аккаунт</div>
+                  </div>
+                  <div class="statistics-denied__buttons">
+                      <div class="bttn bttn--transparent statistics-denied__login js-signin-modal-trigger" data-signin="login">Войти →</div>
+                      <div class="bttn statistics-denied__register js-signin-modal-trigger" data-signin="signup">Регистрация</div>
+                  </div>
+              </div>
+          </div>
+      `;
+
+        return pageStatisticsContainer;
     }
 
     bookPagination(levelNumber: number, pagesNumber: number) {
