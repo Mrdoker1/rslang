@@ -83,7 +83,7 @@ export default class Render {
         <div class="splash__wrapper">
           <h3 class="splash__subtitle">Онлайн Учeбник</h3>
           <h2 class="splash__title">Изучай английский вместе с нами.</h2>
-          <p class="splash__description">Практикуйте английский язык и изучайте &nbsp; новое с помощью платформы</p>
+          <p class="splash__description">Практикуйте английский язык и изучайте новое с помощью платформы</p>
           <div class="splash__buttons">
               <a href="#" class="bttn bttn--transparent js-signin-modal-trigger" data-routerjs-ignore="" data-signin="login">Войти →</a>
               <a href="#benefits" class="bttn bttn--light" data-routerjs-ignore="true">О платформе</a>
@@ -815,16 +815,18 @@ export default class Render {
         let desc;
         let skill;
         let gameImage = '';
+        let control;
 
         if (type === gameType.AudioCall) {
             title = 'Аудиовызов';
-            desc = 'Тренировка Аудиовызов развивает словарный запас и улучшает восприятие речи на слух.';
+            desc = 'Прослушайте звук и выберите правильный ответ.';
+            control = '<span>◉ Совет:</span> &nbsp Для управления используйте кнопки 1 - 5 на клавиатуре';
             skill = 'на слух';
             gameImage = 'audiocall-image';
         } else if (type === gameType.Sprint) {
             title = 'Спринт';
-            desc =
-                'Тренирует навык быстрого перевода с английского языка на русский. Вам нужно выбрать соответствует ли перевод предложенному слову.';
+            desc = 'Вам нужно выбрать соответствует ли перевод предложенному слову.';
+            control = '<span>◉ Совет:</span> &nbsp Для управления используйте кнопки ← → на клавиатуре';
             skill = 'на скорость';
             gameImage = 'sprint-image';
         }
@@ -868,7 +870,8 @@ export default class Render {
                             <div class="game__heading-skill">${skill}</div>
                         </div>
                         <p class="game__desc">${desc}</p>
-                        <p class="game__text">Выберите уровень:</p>
+                        <p class="game__control">${control}</p>
+                        <p class="game__text">Уровень:</p>
                         <ul class="game__levels levels">${levels}</ul>
                         <button class="bttn game__start">Начать</button>
                     </div>
