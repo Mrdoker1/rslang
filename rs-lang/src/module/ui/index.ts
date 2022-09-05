@@ -820,13 +820,13 @@ export default class Render {
         if (type === gameType.AudioCall) {
             title = 'Аудиовызов';
             desc = 'Прослушайте звук и выберите правильный ответ.';
-            control = '<span>◉ Совет:</span> &nbsp Для управления используйте кнопки 1 - 5 на клавиатуре';
+            control = '<span>◉ Совет:</span> &nbsp Для управления используйте кнопки <span>1 - 5</span> на клавиатуре';
             skill = 'на слух';
             gameImage = 'audiocall-image';
         } else if (type === gameType.Sprint) {
             title = 'Спринт';
             desc = 'Вам нужно выбрать соответствует ли перевод предложенному слову.';
-            control = '<span>◉ Совет:</span> &nbsp Для управления используйте кнопки ← → на клавиатуре';
+            control = '<span>◉ Совет:</span> &nbsp Для управления используйте кнопки <span>← →</span> на клавиатуре';
             skill = 'на скорость';
             gameImage = 'sprint-image';
         }
