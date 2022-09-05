@@ -298,6 +298,35 @@
               }
           }
       }
+
+      .stat__list {
+        animation: slide-out-grid 0.5s ease-in-out;
+      }
+
+      &:hover {
+        .stat__list {
+            right: 0%;
+            animation: slide-in-grid 0.5s ease-in;
+        }
+      }
+    }
+
+    @keyframes slide-in-grid {
+      from {
+        right: -30%;
+      }
+      to {
+        right: 0%;
+      }
+    }
+    
+    @keyframes slide-out-grid {
+      from {
+        right: 0%;
+      }
+      to {
+        right: -30%;
+      }
     }
 }
 
