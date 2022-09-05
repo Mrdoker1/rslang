@@ -120,7 +120,6 @@ export default class App {
                 } else {
                     this.showBookPage(group, page);
                 }
-
                 Render.currentLink(req.path);
             })
             .get('/book/sprint/:group/:page', (req) => {
@@ -181,6 +180,7 @@ export default class App {
 
     showMain() {
         const main = getHTMLElement(document.querySelector('.main'));
+        main.classList.add('main-page');
         main.innerHTML = '';
         const sectionSplash = this.render.sectionSplash();
         const sectionBenefits = this.render.sectionBenefits();
@@ -210,6 +210,7 @@ export default class App {
         const loginStatus = state.token ? true : false;
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
+        main.classList.remove('main-page');
         const pageBook = this.render.pageBook();
         const pageHeader = getHTMLElement(pageBook.querySelector('.page-header'));
         getHTMLElement(pageHeader.querySelectorAll('.menu__item')[0]).classList.add('active');
@@ -274,6 +275,7 @@ export default class App {
     async showBookPageHard(group: number, page: number) {
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
+        main.classList.remove('main-page');
         const pageBook = this.render.pageBook();
         const pageHeader = getHTMLElement(pageBook.querySelector('.page-header'));
 
@@ -344,7 +346,15 @@ export default class App {
 
             if (totalLength > 0) {
                 const pagesCount = Math.ceil(wordsCount / 20);
-                const pagination = this.render.bookPagination(6, pagesCount);
+                const index: number = page + 1;
+                const items_per_page: number = 20;
+                const items_total: number = wordsCount;
+                const offset: number = 3;
+                const sequence: number[] = paginate(index, items_per_page, items_total, offset);
+
+                console.log(sequence);
+
+                const pagination = this.render.pagination(group, sequence);
                 getHTMLElement(pageBook.querySelector('.page__book')).append(pagination);
                 getHTMLElement(pageBook.querySelectorAll('.menu__item')[1]).classList.add('active');
                 const bttn = pageBook.querySelectorAll('[data-handle]');
@@ -433,11 +443,14 @@ export default class App {
                 if (paginatedResults === 0 && page != 0) {
                     this.router.navigate(`/book/${group}/${page - 1}`);
                 }
+                const linkActive = pagination.querySelectorAll(`a[href='/book/${group}/${page}']`);
+                if (linkActive[1] !== undefined) linkActive[1].className = 'pagination__item active';
+                if (linkActive[0] !== undefined) linkActive[0].className = 'pagination__item active';
+
                 main.appendChild(pageBook);
             } else {
                 const emptyMessage = this.render.hardWordsEmpty();
                 main.innerHTML = emptyMessage;
-                //main.innerHTML = '<div class="container">Пусто</div>';
             }
         }
     }
@@ -449,6 +462,7 @@ export default class App {
         const loginStatus = state.token ? true : false;
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
+        main.classList.remove('main-page');
         const pageBook = this.render.pageBook();
         const pageHeader = getHTMLElement(pageBook.querySelector('.page-header'));
         const dataWords = await this.data.getWords(group, page);
@@ -562,8 +576,8 @@ export default class App {
                                 checkUserWord = userWords.findIndex((x) => x.wordId === wordId);
 
                                 if (Object.values(easyWords[0])[0].length === 20) {
-                                    if (linkActive[0] !== undefined)
-                                        linkActive[0].className = 'pagination__item active learned';
+                                    if (linkActive[1] !== undefined)
+                                        linkActive[1].className = 'pagination__item active learned';
                                     pageBook.children[0].classList.add('learned');
                                     const sectionGames = this.render.sectionGames(
                                         `/book/sprint/${group}/${page}`,
@@ -573,13 +587,14 @@ export default class App {
                                     //pageHeader.querySelector('.games')?.remove();
                                     //pageHeader.appendChild(sectionGames);
                                 } else {
-                                    if (linkActive[0] !== undefined)
-                                        linkActive[0].className = 'pagination__item active';
+                                    if (linkActive[1] !== undefined)
+                                        linkActive[1].className = 'pagination__item active';
                                     pageBook.children[0].classList.remove('learned');
                                     const sectionGames = this.render.sectionGames(
                                         `/book/sprint/${group}/${page}`,
                                         `/book/audio-call/${group}/${page}`
                                     );
+
                                     pageHeader.querySelector('.games')?.remove();
                                     pageHeader.appendChild(sectionGames);
                                 }
@@ -830,10 +845,10 @@ export default class App {
                                     console.log('error');
                                 } else {
                                     const linkActive = pagination.querySelectorAll(`a[href='/book/${group}/${page}']`);
-                                    linkActive[0].classList.add('active');
+                                    linkActive[1].classList.add('active');
                                     if (Object.values(easyWords[0])[0].length === 20) {
-                                        if (linkActive[0] !== undefined)
-                                            linkActive[0].className = 'pagination__item active learned';
+                                        if (linkActive[1] !== undefined)
+                                            linkActive[1].className = 'pagination__item active learned';
                                         pageBook.children[0].classList.add('learned');
                                         const sectionGames = this.render.sectionGames(
                                             `/book/sprint/${group}/${page}`,
@@ -880,10 +895,10 @@ export default class App {
                                 console.log('error');
                             } else {
                                 const linkActive = pagination.querySelectorAll(`a[href='/book/${group}/${page}']`);
-                                linkActive[0].classList.add('active');
+                                linkActive[1].classList.add('active');
                                 if (Object.values(easyWords[0])[0].length === 20) {
-                                    if (linkActive[0] !== undefined)
-                                        linkActive[0].className = 'pagination__item active learned';
+                                    if (linkActive[1] !== undefined)
+                                        linkActive[1].className = 'pagination__item active learned';
                                     pageBook.children[0].classList.add('learned');
                                     const sectionGames = this.render.sectionGames(
                                         `/book/sprint/${group}/${page}`,
@@ -893,8 +908,8 @@ export default class App {
                                     //pageHeader.querySelector('.games')?.remove();
                                     //pageHeader.appendChild(sectionGames);
                                 } else {
-                                    if (linkActive[0] !== undefined)
-                                        linkActive[0].className = 'pagination__item active';
+                                    if (linkActive[1] !== undefined)
+                                        linkActive[1].className = 'pagination__item active';
                                     pageBook.children[0].classList.remove('learned');
                                     const sectionGames = this.render.sectionGames(
                                         `/book/sprint/${group}/${page}`,
@@ -921,13 +936,21 @@ export default class App {
                     getHTMLElement(pageHeader.querySelector('.page__menu')).innerHTML += hardWords;
                 }
 
-                const pagination = this.render.bookPagination(group, 29);
+                const index: number = page + 1;
+                const items_per_page: number = 20;
+                const items_total: number = 600;
+                const offset: number = 3;
+                const sequence: number[] = paginate(index, items_per_page, items_total, offset);
+
+                console.log(sequence);
+
+                const pagination = this.render.pagination(group, sequence);
                 getHTMLElement(pageBook.querySelector('.page__book')).append(pagination);
 
                 const linkActive = pagination.querySelectorAll(`a[href='/book/${group}/${page}']`);
-
+                console.log(linkActive);
                 if (easyWordsArr.length === 20) {
-                    if (linkActive[0] !== undefined) linkActive[0].className = 'pagination__item active learned';
+                    if (linkActive[1] !== undefined) linkActive[1].className = 'pagination__item active learned';
                     pageBook.children[0].classList.add('learned');
                     const sectionGames = this.render.sectionGames(
                         `/book/sprint/${group}/${page}`,
@@ -936,13 +959,14 @@ export default class App {
                     );
                     pageHeader.appendChild(sectionGames);
                 } else {
-                    linkActive[0].classList.add('active');
+                    if (linkActive[1] !== undefined) linkActive[1].className = 'pagination__item active';
                     const sectionGames = this.render.sectionGames(
                         `/book/sprint/${group}/${page}`,
                         `/book/audio-call/${group}/${page}`
                     );
                     pageHeader.appendChild(sectionGames);
                 }
+                if (linkActive[0] !== undefined) linkActive[0].className = 'pagination__item active';
                 main.appendChild(pageBook);
             }
         }
@@ -970,6 +994,7 @@ export default class App {
     async showStatistics() {
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
+        main.classList.remove('main-page');
         const state = new State();
 
         if (state.token) {
@@ -987,6 +1012,7 @@ export default class App {
     showGameDifficulty(type: gameType) {
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
+        main.classList.remove('main-page');
         const gameDifficulty = this.render.gameDifficulty(type);
         let root = '';
         main.append(gameDifficulty);
