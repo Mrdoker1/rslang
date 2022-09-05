@@ -31,13 +31,13 @@ export default class Render {
             <nav class="nav header__menu">
                 <ul class="nav__list">
                     <li class="nav__item">
-                        <a href="/">Главная</a>
+                        <a href="/" class="nav__link">Главная</a>
                     </li>
                     <li class="nav__item">
-                        <a href="/book/0/0">Учебник</a>
+                        <a href="/book/0/0" class="nav__link">Учебник</a>
                     </li>
                     <li class="nav__item">
-                        <a href="/stats">Статистика</a>
+                        <a href="/stats" class="nav__link">Статистика</a>
                     </li>
                     <li class="nav__item dropdown">
                         <span>Игры</span>
@@ -49,6 +49,9 @@ export default class Render {
                               <a href="/games/audio-call">Аудио-вызов →</a>
                           </li>
                         </ul>
+                    </li>
+                    <li class="nav__item">
+                        <a href="/about" class="nav__link">О команде</a>
                     </li>
                 </ul>
             </nav>
@@ -198,19 +201,19 @@ export default class Render {
                 <nav class="nav footer__menu">
                     <ul class="nav__list">
                         <li class="nav__item">
-                            <a href="/">Главная</a>
+                            <a href="/" class="nav__link">Главная</a>
                         </li>
                         <li class="nav__item">
-                            <a href="/book/0/0">Учебник</a>
+                            <a href="/book/0/0" class="nav__link">Учебник</a>
                         </li>
                         <li class="nav__item">
-                            <a href="/stats">Статистика</a>
+                            <a href="/stats" class="nav__link">Статистика</a>
                         </li>
                         <li class="nav__item">
-                            <a href="/games/sprint">Спринт</a>
+                            <a href="/games/sprint" class="nav__link">Спринт</a>
                         </li>
                         <li class="nav__item">
-                            <a href="/games/audio-call">Аудио-вызов</a>
+                            <a href="/games/audio-call" class="nav__link">Аудио-вызов</a>
                         </li>
                     </ul>
                 </nav>
@@ -219,13 +222,13 @@ export default class Render {
                 <nav class="nav footer__menu">
                     <ul class="nav__list">
                         <li class="nav__item">
-                            <a href="https://github.com/Mrdoker1/" target="_blank">Mrdoker1</a>
+                            <a href="https://github.com/Mrdoker1/" class="nav__link" target="_blank">Mrdoker1</a>
                         </li>
                         <li class="nav__item">
-                            <a href="https://github.com/GeoBo/" target="_blank">GeoBo</a>
+                            <a href="https://github.com/GeoBo/" class="nav__link" target="_blank">GeoBo</a>
                         </li>
                         <li class="nav__item">
-                        <a href="https://github.com/makrakvladislav/" target="_blank">makrakvladislav</a>
+                        <a href="https://github.com/makrakvladislav/" class="nav__link" target="_blank">makrakvladislav</a>
                         </li>
                     </ul>
                 </nav>  
@@ -251,6 +254,49 @@ export default class Render {
     }
 
     //Pages
+    pageAbout() {
+        const pageAbout = document.createElement('div');
+        pageAbout.classList.add('page__about');
+        pageAbout.classList.add('page');
+        const pageAboutContainer = document.createElement('div');
+        pageAboutContainer.classList.add('container');
+        pageAboutContainer.appendChild(pageAbout);
+        pageAbout.innerHTML = `
+      <div class="about__list">
+          <div class="statistics-denied">
+            <div class="about-avatar-1"></div>
+            <div class="statistics-denied__body">
+              <div class="statistics-denied__heading">
+                  <div class="statistics-denied__heading-header">Mrdoker1</div>
+                  <div class="statistics-denied__heading-subtitle">Сделал дизайн, запросы к api, статистику, игру Спринт, немного верстал и курировал разработку.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="statistics-denied">
+            <div class="about-avatar-2"></div>
+            <div class="statistics-denied__body">
+              <div class="statistics-denied__heading">
+                  <div class="statistics-denied__heading-header">GeoBo</div>
+                  <div class="statistics-denied__heading-subtitle">Сделал авторизацию, игру Аудио-вызов.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="statistics-denied">
+            <div class="about-avatar-3"></div>
+            <div class="statistics-denied__body">
+              <div class="statistics-denied__heading">
+                  <div class="statistics-denied__heading-header">makrakvladislav</div>
+                  <div class="statistics-denied__heading-subtitle">Сделал главную страницу приложения, электронный учебник.</div>
+              </div>
+            </div>
+          </div>
+      </div>    
+      `;
+        return pageAboutContainer;
+    }
+
     pageBook() {
         const pageBook = document.createElement('div');
         pageBook.classList.add('page__book');
@@ -480,7 +526,7 @@ export default class Render {
               <ul class="stat__list">
                   <li><span class="icon icon--bookmark"></span>${stats?.optional?.total} <span class="text">встретилось</span></li>
                   <li><span class="icon icon--star"></span>${stats?.optional?.right} <span class="text">изучено</span></li>
-                  <li><span class="icon icon--lightning"></span>${stats?.optional?.series} <span class="text">лучшая серия</span></li>
+                  <li><span class="icon icon--lightning-w"></span>${stats?.optional?.series} <span class="text">лучшая серия</span></li>
               </ul>
           `;
         }

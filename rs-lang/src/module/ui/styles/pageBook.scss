@@ -211,9 +211,16 @@
       letter-spacing: -0.04em;
       color: $color-primary;
       text-decoration: none;
+      transition: $transition-1;
+      filter: opacity(0.6);
 
       &.active {
           border-bottom: 2px solid $color-primary;
+          filter: opacity(1);
+      }
+
+      &:hover {
+          filter: opacity(1);
       }
   }
 }
@@ -231,15 +238,21 @@
 
 // GRID WIEV
 .words__list.grid {
-     gap: 20px; 
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
 
     .card {
-        flex-basis: calc(100% / 3 - 20px);
+        flex-basis: calc((100% / 3) - 20px);
         flex-direction: column;
         border-radius: 14px;
 
       &-left {
           border-radius: 14px 14px 0 0;
+          .stat__list {
+              right: -30%;
+          }
       }
 
       &-right {
@@ -247,6 +260,7 @@
       }
 
       &__image {
+          max-width: 100%;
           max-height: 250px;
           min-height: 250px;
           border-radius: 14px 14px 0 0;
@@ -283,6 +297,35 @@
                   margin-bottom: 10px;
               }
           }
+      }
+
+      .stat__list {
+        animation: slide-out-grid 0.5s ease-in-out;
+      }
+
+      &:hover {
+        .stat__list {
+            right: 0%;
+            animation: slide-in-grid 0.5s ease-in;
+        }
+      }
+    }
+
+    @keyframes slide-in-grid {
+      from {
+        right: -30%;
+      }
+      to {
+        right: 0%;
+      }
+    }
+    
+    @keyframes slide-out-grid {
+      from {
+        right: 0%;
+      }
+      to {
+        right: -30%;
       }
     }
 }
