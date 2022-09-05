@@ -242,6 +242,7 @@ export default class App {
             }
 
             //const pagination = this.render.bookPagination(group, 29);
+            const pagesCount = 30;
             const index: number = page + 1;
             const items_per_page: number = 20;
             const items_total: number = 600;
@@ -250,7 +251,7 @@ export default class App {
 
             console.log(sequence);
 
-            const pagination = this.render.pagination(group, sequence);
+            const pagination = this.render.pagination(group, sequence, pagesCount);
             getHTMLElement(pageBook.querySelector('.page__book')).append(pagination);
 
             cards.forEach((card) => {
@@ -354,7 +355,7 @@ export default class App {
 
                 console.log(sequence);
 
-                const pagination = this.render.pagination(group, sequence);
+                const pagination = this.render.pagination(group, sequence, pagesCount);
                 getHTMLElement(pageBook.querySelector('.page__book')).append(pagination);
                 getHTMLElement(pageBook.querySelectorAll('.menu__item')[1]).classList.add('active');
                 const bttn = pageBook.querySelectorAll('[data-handle]');
@@ -576,8 +577,8 @@ export default class App {
                                 checkUserWord = userWords.findIndex((x) => x.wordId === wordId);
 
                                 if (Object.values(easyWords[0])[0].length === 20) {
-                                    if (linkActive[1] !== undefined)
-                                        linkActive[1].className = 'pagination__item active learned';
+                                    if (linkActive[0] !== undefined)
+                                        linkActive[0].className = 'pagination__item active learned';
                                     pageBook.children[0].classList.add('learned');
                                     const sectionGames = this.render.sectionGames(
                                         `/book/sprint/${group}/${page}`,
@@ -587,8 +588,8 @@ export default class App {
                                     //pageHeader.querySelector('.games')?.remove();
                                     //pageHeader.appendChild(sectionGames);
                                 } else {
-                                    if (linkActive[1] !== undefined)
-                                        linkActive[1].className = 'pagination__item active';
+                                    if (linkActive[0] !== undefined)
+                                        linkActive[0].className = 'pagination__item active';
                                     pageBook.children[0].classList.remove('learned');
                                     const sectionGames = this.render.sectionGames(
                                         `/book/sprint/${group}/${page}`,
@@ -845,10 +846,10 @@ export default class App {
                                     console.log('error');
                                 } else {
                                     const linkActive = pagination.querySelectorAll(`a[href='/book/${group}/${page}']`);
-                                    linkActive[1].classList.add('active');
+                                    linkActive[0].classList.add('active');
                                     if (Object.values(easyWords[0])[0].length === 20) {
-                                        if (linkActive[1] !== undefined)
-                                            linkActive[1].className = 'pagination__item active learned';
+                                        if (linkActive[0] !== undefined)
+                                            linkActive[0].className = 'pagination__item active learned';
                                         pageBook.children[0].classList.add('learned');
                                         const sectionGames = this.render.sectionGames(
                                             `/book/sprint/${group}/${page}`,
@@ -895,10 +896,10 @@ export default class App {
                                 console.log('error');
                             } else {
                                 const linkActive = pagination.querySelectorAll(`a[href='/book/${group}/${page}']`);
-                                linkActive[1].classList.add('active');
+                                linkActive[0].classList.add('active');
                                 if (Object.values(easyWords[0])[0].length === 20) {
-                                    if (linkActive[1] !== undefined)
-                                        linkActive[1].className = 'pagination__item active learned';
+                                    if (linkActive[0] !== undefined)
+                                        linkActive[0].className = 'pagination__item active learned';
                                     pageBook.children[0].classList.add('learned');
                                     const sectionGames = this.render.sectionGames(
                                         `/book/sprint/${group}/${page}`,
@@ -908,8 +909,8 @@ export default class App {
                                     //pageHeader.querySelector('.games')?.remove();
                                     //pageHeader.appendChild(sectionGames);
                                 } else {
-                                    if (linkActive[1] !== undefined)
-                                        linkActive[1].className = 'pagination__item active';
+                                    if (linkActive[0] !== undefined)
+                                        linkActive[0].className = 'pagination__item active';
                                     pageBook.children[0].classList.remove('learned');
                                     const sectionGames = this.render.sectionGames(
                                         `/book/sprint/${group}/${page}`,
@@ -936,6 +937,7 @@ export default class App {
                     getHTMLElement(pageHeader.querySelector('.page__menu')).innerHTML += hardWords;
                 }
 
+                const pagesCount = 30;
                 const index: number = page + 1;
                 const items_per_page: number = 20;
                 const items_total: number = 600;
@@ -944,14 +946,16 @@ export default class App {
 
                 console.log(sequence);
 
-                const pagination = this.render.pagination(group, sequence);
+                const pagination = this.render.pagination(group, sequence, pagesCount);
                 getHTMLElement(pageBook.querySelector('.page__book')).append(pagination);
 
                 const linkActive = pagination.querySelectorAll(`a[href='/book/${group}/${page}']`);
                 console.log(linkActive);
                 if (easyWordsArr.length === 20) {
-                    if (linkActive[1] !== undefined) linkActive[1].className = 'pagination__item active learned';
+                    if (linkActive[0] !== undefined) linkActive[0].className = 'pagination__item active learned';
                     pageBook.children[0].classList.add('learned');
+                    linkActive[0].classList.add('learned');
+                    console.log('easy = 20', linkActive[0]);
                     const sectionGames = this.render.sectionGames(
                         `/book/sprint/${group}/${page}`,
                         `/book/audio-call/${group}/${page}`,
@@ -959,6 +963,7 @@ export default class App {
                     );
                     pageHeader.appendChild(sectionGames);
                 } else {
+                    if (linkActive[0] !== undefined) linkActive[0].className = 'pagination__item active';
                     if (linkActive[1] !== undefined) linkActive[1].className = 'pagination__item active';
                     const sectionGames = this.render.sectionGames(
                         `/book/sprint/${group}/${page}`,
@@ -966,7 +971,7 @@ export default class App {
                     );
                     pageHeader.appendChild(sectionGames);
                 }
-                if (linkActive[0] !== undefined) linkActive[0].className = 'pagination__item active';
+
                 main.appendChild(pageBook);
             }
         }

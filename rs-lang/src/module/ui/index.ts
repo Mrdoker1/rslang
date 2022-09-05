@@ -375,10 +375,13 @@ export default class Render {
         return bookPagination;
     }
 
-    pagination(level: number, pagesSequence: number[]) {
+    pagination(level: number, pagesSequence: number[], pagesCount?: number) {
         const bookPagination = document.createElement('div');
         bookPagination.classList.add('pagination');
-        let pagination = `
+        let firstPageSequence = [...pagesSequence].shift();
+        let pagination = '';
+        if (1 !== firstPageSequence!)
+            pagination = `
             <a href="/book/${level}/0" class="pagination__item">←</a>`;
         pagesSequence.forEach((page) => {
             pagination += `
@@ -386,8 +389,12 @@ export default class Render {
                     ${page}
                 </a>`;
         });
-        pagination += `
-            <a href="/book/${level}/29" class="pagination__item">→</a>`;
+        let lastPage = pagesCount! - 1;
+        let lastPageSequence = [...pagesSequence].pop();
+        if (lastPage !== lastPageSequence! - 1)
+            pagination += `
+        <a href="/book/${level}/${lastPage}" class="pagination__item">→</a>`;
+
         bookPagination.innerHTML = pagination;
         return bookPagination;
     }
