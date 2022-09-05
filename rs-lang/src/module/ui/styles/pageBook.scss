@@ -82,12 +82,17 @@
   }
 
   &__settings {
+      transition: $transition-1;
       order: 1;
       padding: 8px;
       border-radius: 4px;
       background-color: #F6F5F4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
 
       span:after {
+        transition: $transition-1;
           content: initial;
       }
       
