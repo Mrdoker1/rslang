@@ -24,6 +24,7 @@ import '../ui/styles/sectionBenefits.scss';
 import '../ui/styles/sectionGames.scss';
 import '../ui/styles/footer.scss';
 import '../ui/styles/login.scss';
+import '../ui/styles/pageAbout.scss';
 import '../ui/styles/pageBook.scss';
 import '../ui/styles/games.scss';
 import '../ui/styles/sprint.scss';
@@ -171,11 +172,23 @@ export default class App {
                 Render.currentLink(req.path);
                 this.login.initSecondTrigger();
             })
+            .get('/about', (req) => {
+                this.showPageAbout();
+                Render.currentLink(req.path);
+            })
             .error(404, () => {
                 //this.show404();
                 this.router.navigate('/');
             })
             .run();
+    }
+
+    showPageAbout() {
+        const main = getHTMLElement(document.querySelector('.main'));
+        main.innerHTML = '';
+        main.classList.remove('main-page');
+        const pageAbout = this.render.pageAbout();
+        main.append(pageAbout);
     }
 
     showMain() {

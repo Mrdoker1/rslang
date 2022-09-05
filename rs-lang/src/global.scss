@@ -117,6 +117,7 @@ body {
 }
 
 .container {
+    width: 100%;
     max-width: 1200px;
     height: 100%;
     margin: 0 auto;
@@ -130,6 +131,7 @@ body {
 }
 
 .main {
+    width: 100%;
     display: flex;
     flex-direction: row;
     flex: 1 1 auto;
@@ -165,10 +167,10 @@ body {
       &:first-child {
           padding-left: 0;
       }
-      &:hover a {
-          color: $color-primary;
-      }
-  }
+    }
+    &__link:hover {
+      color: $color-primary;
+    }
 }
 
 .dropdown {
@@ -497,6 +499,11 @@ body {
         height: 16px;
         background: url("./assets/img/icon-lightning.svg") no-repeat center;
     }
+    &--lightning-w {
+        width: 16px;
+        height: 16px;
+        background: url("./assets/img/icon-lightning-w.svg") no-repeat center;
+    }
     &--gear {
       width: 24px;
       height: 24px;
@@ -561,6 +568,27 @@ body {
     width: 200px;
     height: 200px;
     background: url("./assets/img/empty-img.png") no-repeat center;
+    background-size: contain;
+}
+
+.about-avatar-1 {
+    width: 200px;
+    height: 200px;
+    background: url("./assets/img/avatar1.svg") no-repeat center;
+    background-size: contain;
+}
+
+.about-avatar-2 {
+    width: 200px;
+    height: 200px;
+    background: url("./assets/img/avatar2.svg") no-repeat center;
+    background-size: contain;
+}
+
+.about-avatar-3 {
+    width: 200px;
+    height: 200px;
+    background: url("./assets/img/avatar3.svg") no-repeat center;
     background-size: contain;
 }
 
