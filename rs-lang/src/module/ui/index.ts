@@ -315,10 +315,9 @@ export default class Render {
             </div>
         `;
         const wordsList = document.createElement('div');
+        wordsList.classList.add('words__list');
+        settings.optional.listView ? '' : wordsList.classList.add('grid');
 
-        const bookView = settings.optional.listView ? '' : 'grid';
-
-        wordsList.classList.add('words__list', bookView);
         pageBook.append(wordsList);
         return pageBookContainer;
     }
