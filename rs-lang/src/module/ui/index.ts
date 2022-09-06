@@ -309,9 +309,9 @@ export default class Render {
             <div class="page-header">
                 <div class="page__menu">
                     <a href="/book/0/0" class="menu__item hat-icon">Учебник</a>
+                    <div class="divider-vertical"></div>
                 </div>
-                <div class="page-header__right">
-                </div>
+                <div class="page-header__right"></div>
             </div>
         `;
         const wordsList = document.createElement('div');

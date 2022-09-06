@@ -23,19 +23,23 @@
               &:before {
                   content: initial;
               }
+              &:hover {
+                background-color: $color-pink-dark;
+              }
           }
   
           &--audio-call {
               min-width: 178px;
               background-color: $color-cyan-light;
-  
               .game__bttn {
                   padding-right: 0px
               }
-  
               &:before {
                 content: initial;
               } 
+              &:hover {
+                background-color: $color-cyan;
+              }
           }
           
           &__img {
@@ -65,6 +69,14 @@
 }
 
 .page {
+  &__menu{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    .divider-vertical{
+        height: 30px;
+    }
+  }
   &-header {
     display: flex;
     flex-direction: row;
@@ -174,6 +186,7 @@
   }
 
   .menu__item {
+      width: fit-content;
       padding-left: 42px;
       font: $dela-gothic-26px;
       color: $color-grey-dark;
@@ -183,14 +196,14 @@
 
       &.active {
           color: $color-primary;
+          filter: brightness(0);
+
       }
       &:hover {
           color: $color-primary;
+          filter: brightness(0);
       }
       &:nth-child(1) {
-          margin-right: 20px;
-          padding-right: 20px;
-          border-right: 1.22px solid $color-grey-medium;
       }
   }
 }
