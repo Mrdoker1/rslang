@@ -68,7 +68,6 @@ export default class App {
         this.createPage();
         this.initRouter();
         this.createLogin();
-        this.userSettings();
     }
 
     initState() {
@@ -108,8 +107,6 @@ export default class App {
             })
             .get('/book/:group/:page', (req) => {
                 const state = new State();
-                //const userId = state.userId;
-                //const token = state.token;
                 const loginStatus = state.token ? true : false;
 
                 const group = Number(req.params.group);
@@ -218,13 +215,12 @@ export default class App {
 
     async showBook(group: number, page: number) {
         const state = new State();
-        //const userId = state.userId;
-        //const token = state.token;
+        const settings = await this.getUserSettings();
         const loginStatus = state.token ? true : false;
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
         main.classList.remove('main-page');
-        const pageBook = this.render.pageBook();
+        const pageBook = this.render.pageBook(this.defaultSettings());
         const pageHeader = getHTMLElement(pageBook.querySelector('.page-header'));
         getHTMLElement(pageHeader.querySelectorAll('.menu__item')[0]).classList.add('active');
         const sectionGames = this.render.sectionGames(`/games/sprint`, `/games/audio-call`);
@@ -313,18 +309,21 @@ export default class App {
 
     async showBookPageHard(group: number, page: number) {
         const state = new State();
+        const settings = await this.getUserSettings();
         const loginStatus = state.token ? true : false;
         const userId = state.userId;
         const token = state.token;
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
         main.classList.remove('main-page');
-        const pageBook = this.render.pageBook();
+        const pageBook = this.render.pageBook(this.defaultSettings());
         const pageHeader = getHTMLElement(pageBook.querySelector('.page-header'));
 
         if (!loginStatus) {
             const emptyMessage = this.render.pageHardWordsDenied();
             main.append(emptyMessage);
+            this.login.initSecondTrigger();
+            return;
         }
         const dataWords = await this.data.getUserAggregatedWords(
             userId,
@@ -397,7 +396,6 @@ export default class App {
                 const items_total: number = wordsCount;
                 const offset: number = 3;
                 const sequence: number[] = paginate(index, items_per_page, items_total, offset);
-
                 const pagination = this.render.pagination(group, sequence, pagesCount);
                 getHTMLElement(pageBook.querySelector('.page__book')).append(pagination);
                 getHTMLElement(pageBook.querySelectorAll('.menu__item')[1]).classList.add('active');
@@ -521,46 +519,59 @@ export default class App {
 
     async showBookPage(group: number, page: number) {
         const state = new State();
+        const settings = await this.getUserSettings();
         const userId = state.userId;
         const token = state.token;
         const loginStatus = state.token ? true : false;
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
         main.classList.remove('main-page');
-        const pageBook = this.render.pageBook();
+        const pageBook = this.render.pageBook(settings || this.defaultSettings());
         const pageHeader = getHTMLElement(pageBook.querySelector('.page-header'));
-        const dataWords = await this.data.getWords(group, page);
         const userWords = await this.data.getUserWords(userId, token);
         getHTMLElement(pageHeader.querySelectorAll('.menu__item')[0]).classList.add('active');
-        const pageSettings = this.render.bookSettings();
-        getHTMLElement(pageHeader.querySelector('.page-header__right')).innerHTML += pageSettings;
 
-        const settingsView = getHTMLElement(pageHeader.querySelector('#grid'));
-        const settingsButtonsView = getHTMLElement(pageHeader.querySelector('#hide-buttons'));
+        let pageSettings;
+        if (settings) {
+            pageSettings = this.render.bookSettings(settings);
+            getHTMLElement(pageHeader.querySelector('.page-header__right')).innerHTML += pageSettings;
 
-        settingsView.addEventListener('click', (e) => {
-            const checkbox = getHTMLInputElement(e.target);
+            const settingsView = getHTMLElement(pageHeader.querySelector('#grid'));
+            const settingsButtonsView = getHTMLElement(pageHeader.querySelector('#hide-buttons'));
 
-            if (checkbox.checked) {
-                getHTMLElement(pageBook.querySelector('.words__list')).classList.add('grid');
-            } else {
-                getHTMLElement(pageBook.querySelector('.words__list')).classList.remove('grid');
-            }
-        });
+            settingsView.addEventListener('click', (e) => {
+                const checkbox = getHTMLInputElement(e.target);
+                if (checkbox.checked) {
+                    settings.optional.listView = true;
+                    this.setUserSettings(settings);
+                    getHTMLElement(pageBook.querySelector('.words__list')).classList.remove('grid');
+                } else {
+                    settings.optional.listView = false;
+                    this.setUserSettings(settings);
+                    getHTMLElement(pageBook.querySelector('.words__list')).classList.add('grid');
+                }
+                console.log(settings);
+            });
 
-        settingsButtonsView.addEventListener('click', (e) => {
-            const checkbox = getHTMLInputElement(e.target);
+            settingsButtonsView.addEventListener('click', (e) => {
+                const checkbox = getHTMLInputElement(e.target);
 
-            if (checkbox.checked) {
-                pageBook.querySelectorAll('.card__bottom').forEach((item) => {
-                    item.classList.add('hidden');
-                });
-            } else {
-                pageBook.querySelectorAll('.card__bottom').forEach((item) => {
-                    item.classList.remove('hidden');
-                });
-            }
-        });
+                if (checkbox.checked) {
+                    settings.optional.showButtons = true;
+                    this.setUserSettings(settings);
+                    pageBook.querySelectorAll('.card__bottom').forEach((item) => {
+                        item.classList.remove('hidden');
+                    });
+                } else {
+                    settings.optional.showButtons = false;
+                    this.setUserSettings(settings);
+                    pageBook.querySelectorAll('.card__bottom').forEach((item) => {
+                        item.classList.add('hidden');
+                    });
+                }
+                console.log(settings);
+            });
+        }
 
         const easyWords = await this.data.getUserAggregatedWordsTest(
             userId,
@@ -1164,10 +1175,37 @@ export default class App {
         this.login.init();
     }
 
-    async userSettings(userSettings?: ISettings) {
+    async getUserSettings() {
         const state = new State();
 
-        const defaultSettings = {
+        if (state.token) {
+            const settings = await this.data.getUserSettings(state.userId, state.token);
+            if (typeof settings === 'number') {
+                await this.data.updateUserSettings(state.userId, this.defaultSettings(), state.token);
+                return this.defaultSettings();
+            } else {
+                delete settings['id'];
+                return settings;
+            }
+        } else return false;
+    }
+
+    async setUserSettings(userSettings?: ISettings) {
+        const state = new State();
+
+        if (state.token) {
+            if (userSettings) {
+                await this.data.updateUserSettings(state.userId, userSettings, state.token);
+                return true;
+            } else {
+                await this.data.updateUserSettings(state.userId, this.defaultSettings(), state.token);
+                return true;
+            }
+        } else return false;
+    }
+
+    defaultSettings() {
+        return {
             wordsPerDay: 1,
             optional: {
                 listView: false,
@@ -1175,32 +1213,5 @@ export default class App {
                 avatar: 'empty',
             },
         };
-
-        if (state.token) {
-            const settings = await this.data.getUserSettings(state.userId, state.token);
-            if (typeof settings === 'number') {
-                //Если настроек нет
-                if (userSettings) {
-                    // Хотим отправить
-                    await this.data.updateUserSettings(state.userId, userSettings, state.token);
-                    return true;
-                } else {
-                    // Хотим получить
-                    await this.data.updateUserSettings(state.userId, defaultSettings, state.token);
-                    return defaultSettings;
-                }
-            } else {
-                //Если настройки есть
-                if (userSettings) {
-                    // Хотим отправить
-                    await this.data.updateUserSettings(state.userId, userSettings, state.token);
-                    return true;
-                } else {
-                    // Хотим получить
-                    console.log(settings);
-                    return settings;
-                }
-            }
-        } else return false;
     }
 }
