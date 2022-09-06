@@ -6,6 +6,7 @@ import IWord from '../interface/IWord';
 import IResultChart from '../interface/IResultChart';
 import IStatistics from '../interface/IStatistics';
 import IStatisticsDay from '../interface/IStatisticsDay';
+import ISettings from '../interface/ISettings';
 
 //Enums
 import { gameChart, gameType, statisticType } from '../../utils/enums';
@@ -297,7 +298,7 @@ export default class Render {
         return pageAboutContainer;
     }
 
-    pageBook() {
+    pageBook(settings: ISettings) {
         const pageBook = document.createElement('div');
         pageBook.classList.add('page__book');
         pageBook.classList.add('page');
@@ -314,7 +315,10 @@ export default class Render {
             </div>
         `;
         const wordsList = document.createElement('div');
-        wordsList.classList.add('words__list');
+
+        const bookView = settings.optional.listView ? '' : 'grid';
+
+        wordsList.classList.add('words__list', bookView);
         pageBook.append(wordsList);
         return pageBookContainer;
     }
@@ -368,23 +372,27 @@ export default class Render {
         return wordLevelsList;
     }
 
-    bookSettings(state?: string) {
-        const settings = `
+    bookSettings(settings: ISettings) {
+        const component = `
             <div class="page__settings dropdown">
                 <span class="icon icon--gear"></span>
                 <ul class="dropdown__menu">
                     <li class="dropdown__menu-item">
-                        <input class="settings-value-checkbox" type="checkbox" id="grid">
+                        <input class="settings-value-checkbox" type="checkbox" id="grid" ${
+                            settings.optional.listView ? 'checked' : ''
+                        }>
                         <label class="settings-value-label" for="grid">Показывать слова списком</label>
                     </li>
                     <li class="dropdown__menu-item">
-                        <input class="settings-value-checkbox" type="checkbox" id="hide-buttons">
+                        <input class="settings-value-checkbox" type="checkbox" id="hide-buttons" ${
+                            settings.optional.showButtons ? 'checked' : ''
+                        }>
                         <label class="settings-value-label" for="hide-buttons">Показывать кнопки 'в изученные' и 'в словарь'</label>
                     </li>
                 </ul>
             </div>
         `;
-        return settings;
+        return component;
     }
 
     hardWords() {
@@ -917,13 +925,13 @@ export default class Render {
         if (type === gameType.AudioCall) {
             title = 'Аудиовызов';
             desc = 'Прослушайте звук и выберите правильный ответ.';
-            control = '<span>◉ Совет:</span> &nbsp Для управления используйте кнопки <span>1 - 5</span> на клавиатуре';
+            control = '<span>✦ Совет:</span> &nbsp Для управления используйте кнопки <span>1 - 5</span> на клавиатуре';
             skill = 'на слух';
             gameImage = 'audiocall-image';
         } else if (type === gameType.Sprint) {
             title = 'Спринт';
             desc = 'Вам нужно выбрать соответствует ли перевод предложенному слову.';
-            control = '<span>◉ Совет:</span> &nbsp Для управления используйте кнопки <span>← →</span> на клавиатуре';
+            control = '<span>✦ Совет:</span> &nbsp Для управления используйте кнопки <span>← →</span> на клавиатуре';
             skill = 'на скорость';
             gameImage = 'sprint-image';
         }
