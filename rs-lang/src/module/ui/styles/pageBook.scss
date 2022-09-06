@@ -421,16 +421,21 @@
         justify-content: space-between;
     }
 
-    .play-icon {
+    &-word__audio{
+        display: flex;
+        border-radius: 4px;
+        align-items: center;
+        justify-content: center;
+        background-color: $color-grey-light;
+        transition: $transition-1;
         width: 40px;
         height: 40px;
-        padding: 8px;
-        background-color: $color-grey-light;
-        border-radius: 4px;
-        border: none;
         cursor: pointer;
         &:hover {
             background-color: $color-cyan-dark;
+            .play-icon {
+                filter: brightness(100);
+            }
         }
     }
 

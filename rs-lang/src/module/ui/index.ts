@@ -564,7 +564,7 @@ export default class Render {
                           </div>
                       </div> 
                       <div class="card-word__audio">
-                          <button class="play-icon"></button>
+                          <div class="play-icon"></div>
                       </div>
                   </div>
                   <div class="card-word__text-meaning">

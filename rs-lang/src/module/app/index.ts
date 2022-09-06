@@ -273,7 +273,7 @@ export default class App {
                 getHTMLElement(pageBook.querySelector('.words__list')).innerHTML += card;
             });
 
-            const bttnPlay = pageBook.querySelectorAll('.play-icon');
+            const bttnPlay = pageBook.querySelectorAll('.card-word__audio');
             bttnPlay.forEach((button, i) => {
                 button.addEventListener('click', () => {
                     const audio1 = Object.values(audioArr[i])[0];
@@ -487,7 +487,7 @@ export default class App {
                     this.router.navigate(`/book/${group}/${page - 1}`);
                 }
 
-                const bttnPlay = pageBook.querySelectorAll('.play-icon');
+                const bttnPlay = pageBook.querySelectorAll('.card-word__audio');
                 bttnPlay.forEach((button, i) => {
                     button.addEventListener('click', () => {
                         const audio1 = Object.values(audioArr[i])[0];
@@ -667,7 +667,7 @@ export default class App {
                 });
 
                 const bttn = pageBook.querySelectorAll('[data-handle]');
-                const bttnPlay = pageBook.querySelectorAll('.play-icon');
+                const bttnPlay = pageBook.querySelectorAll('.card-word__audio');
                 bttnPlay.forEach((button, i) => {
                     button.addEventListener('click', () => {
                         const audio1 = Object.values(audioArr[i])[0];
