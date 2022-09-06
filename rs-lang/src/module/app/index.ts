@@ -220,7 +220,7 @@ export default class App {
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
         main.classList.remove('main-page');
-        const pageBook = this.render.pageBook(this.defaultSettings());
+        const pageBook = this.render.pageBook(settings || this.defaultSettings());
         const pageHeader = getHTMLElement(pageBook.querySelector('.page-header'));
         getHTMLElement(pageHeader.querySelectorAll('.menu__item')[0]).classList.add('active');
         const sectionGames = this.render.sectionGames(`/games/sprint`, `/games/audio-call`);
@@ -241,9 +241,9 @@ export default class App {
                 ]);
 
                 if (item.difficulty === 'hard') {
-                    return this.render.cardWord(item, loginStatus, item.id, true);
+                    return this.render.cardWord(item, loginStatus, item.id, settings || this.defaultSettings(), true);
                 } else {
-                    return this.render.cardWord(item, loginStatus, item.id, false);
+                    return this.render.cardWord(item, loginStatus, item.id, settings || this.defaultSettings(), false);
                 }
             });
 
@@ -316,7 +316,7 @@ export default class App {
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
         main.classList.remove('main-page');
-        const pageBook = this.render.pageBook(this.defaultSettings());
+        const pageBook = this.render.pageBook(settings || this.defaultSettings());
         const pageHeader = getHTMLElement(pageBook.querySelector('.page-header'));
 
         if (!loginStatus) {
@@ -380,6 +380,7 @@ export default class App {
                                 item,
                                 loginStatus,
                                 item._id,
+                                settings || this.defaultSettings(),
                                 true,
                                 false,
                                 optional
@@ -520,13 +521,16 @@ export default class App {
     async showBookPage(group: number, page: number) {
         const state = new State();
         const settings = await this.getUserSettings();
+
+        console.log(settings);
+
         const userId = state.userId;
         const token = state.token;
         const loginStatus = state.token ? true : false;
         const main = getHTMLElement(document.querySelector('.main'));
         main.innerHTML = '';
         main.classList.remove('main-page');
-        const pageBook = this.render.pageBook(settings || this.defaultSettings());
+        const pageBook = await this.render.pageBook(settings || this.defaultSettings());
         const pageHeader = getHTMLElement(pageBook.querySelector('.page-header'));
         const userWords = await this.data.getUserWords(userId, token);
         getHTMLElement(pageHeader.querySelectorAll('.menu__item')[0]).classList.add('active');
@@ -626,11 +630,35 @@ export default class App {
                     ]);
 
                     if (userWord !== undefined && hardWord !== undefined) {
-                        return this.render.cardWord(item, loginStatus, item.id, true, false, userWord);
+                        return this.render.cardWord(
+                            item,
+                            loginStatus,
+                            item.id,
+                            settings || this.defaultSettings(),
+                            true,
+                            false,
+                            userWord
+                        );
                     } else if (userWord !== undefined && easyWord !== undefined) {
-                        return this.render.cardWord(item, loginStatus, item.id, false, true, userWord);
+                        return this.render.cardWord(
+                            item,
+                            loginStatus,
+                            item.id,
+                            settings || this.defaultSettings(),
+                            false,
+                            true,
+                            userWord
+                        );
                     } else {
-                        return this.render.cardWord(item, loginStatus, item.id, false, false, userWord);
+                        return this.render.cardWord(
+                            item,
+                            loginStatus,
+                            item.id,
+                            settings || this.defaultSettings(),
+                            false,
+                            false,
+                            userWord
+                        );
                     }
                 });
 

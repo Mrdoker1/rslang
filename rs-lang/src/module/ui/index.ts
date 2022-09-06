@@ -315,10 +315,9 @@ export default class Render {
             </div>
         `;
         const wordsList = document.createElement('div');
+        wordsList.classList.add('words__list');
+        settings.optional.listView ? '' : wordsList.classList.add('grid');
 
-        const bookView = settings.optional.listView ? '' : 'grid';
-
-        wordsList.classList.add('words__list', bookView);
         pageBook.append(wordsList);
         return pageBookContainer;
     }
@@ -497,7 +496,15 @@ export default class Render {
         return bookPagination;
     }
 
-    cardWord(data: IWord, loginStatus: Boolean, id: string, hardWord?: Boolean, easyWord?: Boolean, stats?: IUserWord) {
+    cardWord(
+        data: IWord,
+        loginStatus: Boolean,
+        id: string,
+        settings: ISettings,
+        hardWord?: Boolean,
+        easyWord?: Boolean,
+        stats?: IUserWord
+    ) {
         let bttnAddToHard;
         let bttnAddToEasy;
         if (loginStatus) {
@@ -539,6 +546,8 @@ export default class Render {
           `;
         }
 
+        const showButtonsClass = settings.optional.showButtons ? '' : 'hidden';
+
         const card = `
           <div class="card card-word ${stateClass}">
               <div class="card-left">
@@ -565,7 +574,7 @@ export default class Render {
                       <p>${data.textExample}&nbsp;&ndash;&nbsp;${data.textExampleTranslate}</p>
                   </div>
 
-                  <div class="card__bottom">
+                  <div class="card__bottom ${showButtonsClass}">
                       ${bttnAddToEasy}
                       ${bttnAddToHard}
                   </div>
