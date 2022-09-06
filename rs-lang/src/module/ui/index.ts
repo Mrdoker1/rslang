@@ -1207,8 +1207,8 @@ export default class Render {
 
         switch (type) {
             case gameChart.Healths:
-                color = '#945069';
-                backgroundColor = '#F2D4DC';
+                color = '#A95151';
+                backgroundColor = '#f2d4d4';
                 upperLabel = 'осталось';
                 value = `<span class="gameresult-chart__heart">♥</span>${currentValue}`;
                 if (currentValue == 1) {

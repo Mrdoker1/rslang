@@ -325,7 +325,7 @@ export default class Sprint {
 
         const chart1 = {
             type: gameChart.Points,
-            maxValue: 1500,
+            maxValue: 770,
             currentValue: this.gameState.points,
         };
 
