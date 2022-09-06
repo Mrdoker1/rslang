@@ -94,12 +94,13 @@ export default class Render {
           </div>
           <div class="app-statistic">
               <div class="words">
-                  <span class="numbers">600</span>
-                  <span class="text">Популярных слов</span>
+                <span class="numbers">600</span>
+                <span class="text">Популярных слов</span>
               </div>
+              <div class="divider-vertical"></div>
               <div class="games">
-                  <span class="numbers">2</span>
-                  <span class="text">Мини-игры</span>
+                <span class="numbers">2</span>
+                <span class="text">Мини-игры</span>
               </div>
           </div>
         </div>

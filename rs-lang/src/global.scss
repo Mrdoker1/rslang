@@ -361,6 +361,8 @@ body {
 
 .app-statistic {
   display: flex;
+  gap: 30px;
+  align-items: center;
   div {
     display: flex;
     flex-direction: column;
@@ -370,8 +372,14 @@ body {
     }
   }
   .words {
-      padding-right: 3rem;
-      border-right: 1.22px solid $color-grey-medium;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      display: flex;
+      transition: $transition-1;
+      &:hover{
+        transform: scale(1.02);
+      }
       .numbers { 
         display: flex;
         flex-direction: row;
@@ -394,7 +402,10 @@ body {
     }
   }
   .games {
-      padding-left:  3rem;
+    transition: $transition-1;
+    &:hover{
+      transform: scale(1.02);
+    }
       .numbers { 
         display: flex;
         flex-direction: row;

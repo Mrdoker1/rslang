@@ -9,8 +9,12 @@
           align-items: center;
 
           .statistics-denied {
+              transition: $transition-1;
               max-width: 800px;
               width: 100%;
+              &:hover{
+                transform: scale(1.02);
+              }
           }
 
           .statistics-denied__body {

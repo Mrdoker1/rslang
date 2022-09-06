@@ -2,6 +2,10 @@
 @import '../../../variables.scss';
 
 .gameresult{
+    transition: $transition-1;
+    &:hover{
+      transform: scale(1.02);
+    }
     display: flex;
     //padding: 20px;
     padding: 60px 25px;
@@ -16,7 +20,7 @@
     align-items: center;
     &__wrapper{
         display: flex;
-        gap: 10px;
+        gap: 20px;
     }
     &__info{
         display: flex;
