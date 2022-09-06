@@ -179,8 +179,12 @@
       color: $color-grey-dark;
       text-decoration: none;
       background-position: left;
+      transition: $transition-1;
 
       &.active {
+          color: $color-primary;
+      }
+      &:hover {
           color: $color-primary;
       }
       &:nth-child(1) {

@@ -231,10 +231,14 @@ export default class App {
             console.log('error');
         } else {
             const arr = [...dataWords];
-            const audioArr: HTMLAudioElement[] = [];
+            const audioArr: HTMLAudioElement[][] = [];
 
             const cards = arr.map((item) => {
-                audioArr.push(new Audio(`https://rslang-learnwords-app.herokuapp.com/${item.audioExample}`));
+                audioArr.push([
+                    new Audio(`https://rslang-learnwords-app.herokuapp.com/${item.audio}`),
+                    new Audio(`https://rslang-learnwords-app.herokuapp.com/${item.audioExample}`),
+                    new Audio(`https://rslang-learnwords-app.herokuapp.com/${item.audioMeaning}`),
+                ]);
 
                 if (item.difficulty === 'hard') {
                     return this.render.cardWord(item, loginStatus, item.id, true);
@@ -259,8 +263,6 @@ export default class App {
             const offset: number = 3;
             const sequence: number[] = paginate(index, items_per_page, items_total, offset);
 
-            console.log(sequence);
-
             const pagination = this.render.pagination(group, sequence, pagesCount);
             getHTMLElement(pageBook.querySelector('.page__book')).append(pagination);
 
@@ -274,7 +276,19 @@ export default class App {
             const bttnPlay = pageBook.querySelectorAll('.play-icon');
             bttnPlay.forEach((button, i) => {
                 button.addEventListener('click', () => {
-                    audioArr[i].play();
+                    const audio1 = Object.values(audioArr[i])[0];
+                    const audio2 = Object.values(audioArr[i])[1];
+                    const audio3 = Object.values(audioArr[i])[2];
+
+                    audio1.play();
+                    audio1.addEventListener('ended', function () {
+                        audio1.currentTime = 0;
+                        audio2.play();
+                    });
+                    audio2.addEventListener('ended', function () {
+                        audio2.currentTime = 0;
+                        audio3.play();
+                    });
                 });
             });
 
@@ -338,7 +352,7 @@ export default class App {
             let totalLength = 0;
 
             let itemOptional: IUserWord[] = [];
-            const audioArr: HTMLAudioElement[] = [];
+            const audioArr: HTMLAudioElement[][] = [];
 
             Object.values(dataWords).forEach((item) => {
                 const wordsArray = Object.values(item);
@@ -357,9 +371,11 @@ export default class App {
                             if (userWords[user].optional !== undefined) {
                                 optional = userWords[user];
                             }
-                            audioArr.push(
-                                new Audio(`https://rslang-learnwords-app.herokuapp.com/${item.audioExample}`)
-                            );
+                            audioArr.push([
+                                new Audio(`https://rslang-learnwords-app.herokuapp.com/${item.audio}`),
+                                new Audio(`https://rslang-learnwords-app.herokuapp.com/${item.audioExample}`),
+                                new Audio(`https://rslang-learnwords-app.herokuapp.com/${item.audioMeaning}`),
+                            ]);
                             getHTMLElement(pageBook.querySelector('.words__list')).innerHTML += this.render.cardWord(
                                 item,
                                 loginStatus,
@@ -380,9 +396,6 @@ export default class App {
                 const items_total: number = wordsCount;
                 const offset: number = 3;
                 const sequence: number[] = paginate(index, items_per_page, items_total, offset);
-
-                //console.log(sequence);
-
                 const pagination = this.render.pagination(group, sequence, pagesCount);
                 getHTMLElement(pageBook.querySelector('.page__book')).append(pagination);
                 getHTMLElement(pageBook.querySelectorAll('.menu__item')[1]).classList.add('active');
@@ -476,7 +489,19 @@ export default class App {
                 const bttnPlay = pageBook.querySelectorAll('.play-icon');
                 bttnPlay.forEach((button, i) => {
                     button.addEventListener('click', () => {
-                        audioArr[i].play();
+                        const audio1 = Object.values(audioArr[i])[0];
+                        const audio2 = Object.values(audioArr[i])[1];
+                        const audio3 = Object.values(audioArr[i])[2];
+
+                        audio1.play();
+                        audio1.addEventListener('ended', function () {
+                            audio1.currentTime = 0;
+                            audio2.play();
+                        });
+                        audio2.addEventListener('ended', function () {
+                            audio2.currentTime = 0;
+                            audio3.play();
+                        });
                     });
                 });
 
@@ -583,7 +608,7 @@ export default class App {
             } else {
                 const arr = [...dataWords];
                 const uWrods = [...userWords];
-                const audioArr: HTMLAudioElement[] = [];
+                const audioArr: HTMLAudioElement[][] = [];
 
                 let cards: string[] = [];
 
@@ -594,7 +619,11 @@ export default class App {
                     const hardWord: IWord = hardWordsArr[hard];
                     const easyWord: IWord = easyWordsArr[easy];
                     const userWord: IUserWord = uWrods[user];
-                    audioArr.push(new Audio(`https://rslang-learnwords-app.herokuapp.com/${item.audioExample}`));
+                    audioArr.push([
+                        new Audio(`https://rslang-learnwords-app.herokuapp.com/${item.audio}`),
+                        new Audio(`https://rslang-learnwords-app.herokuapp.com/${item.audioExample}`),
+                        new Audio(`https://rslang-learnwords-app.herokuapp.com/${item.audioMeaning}`),
+                    ]);
 
                     if (userWord !== undefined && hardWord !== undefined) {
                         return this.render.cardWord(item, loginStatus, item.id, true, false, userWord);
@@ -613,7 +642,19 @@ export default class App {
                 const bttnPlay = pageBook.querySelectorAll('.play-icon');
                 bttnPlay.forEach((button, i) => {
                     button.addEventListener('click', () => {
-                        audioArr[i].play();
+                        const audio1 = Object.values(audioArr[i])[0];
+                        const audio2 = Object.values(audioArr[i])[1];
+                        const audio3 = Object.values(audioArr[i])[2];
+
+                        audio1.play();
+                        audio1.addEventListener('ended', function () {
+                            audio1.currentTime = 0;
+                            audio2.play();
+                        });
+                        audio2.addEventListener('ended', function () {
+                            audio2.currentTime = 0;
+                            audio3.play();
+                        });
                     });
                 });
 
@@ -643,7 +684,6 @@ export default class App {
                                 if (typeof userWords === 'number') {
                                     console.log('error');
                                 } else {
-                                    console.log(userWords);
                                 }
                             }
                         } else if (target.getAttribute('data-handle') === 'add-to-hard') {
@@ -777,7 +817,6 @@ export default class App {
                                 if (typeof userWords === 'number') {
                                     console.log('error');
                                 } else {
-                                    console.log(userWords);
                                 }
                             }
                         } else if (target.getAttribute('data-handle') === 'add-to-easy') {
@@ -896,8 +935,6 @@ export default class App {
                                     console.log(`Ошибка updateUserStatistics ${updateUserStatistics}`);
                                     return;
                                 }
-
-                                console.log('Word IN user words, UPDATE word');
                             }
                             if (typeof dataWords === 'number') {
                                 console.log('error');
@@ -969,7 +1006,6 @@ export default class App {
                                 target.innerHTML = 'Добавить в изученные';
                                 parent!.className = 'card card-word';
                                 target.setAttribute('data-handle', 'add-to-easy');
-                                console.log('delete from easy');
                             }
                             const easyWords = await this.data.getUserAggregatedWordsTest(
                                 userId,
@@ -1031,18 +1067,14 @@ export default class App {
                 const offset: number = 3;
                 const sequence: number[] = paginate(index, items_per_page, items_total, offset);
 
-                console.log(sequence);
-
                 const pagination = this.render.pagination(group, sequence, pagesCount);
                 getHTMLElement(pageBook.querySelector('.page__book')).append(pagination);
 
                 const linkActive = pagination.querySelectorAll(`a[href='/book/${group}/${page}']`);
-                console.log(linkActive);
                 if (easyWordsArr.length === 20) {
                     if (linkActive[0] !== undefined) linkActive[0].className = 'pagination__item active learned';
                     pageBook.children[0].classList.add('learned');
                     linkActive[0].classList.add('learned');
-                    console.log('easy = 20', linkActive[0]);
                     const sectionGames = this.render.sectionGames(
                         `/book/sprint/${group}/${page}`,
                         `/book/audio-call/${group}/${page}`,

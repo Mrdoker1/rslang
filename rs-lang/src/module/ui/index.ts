@@ -268,8 +268,8 @@ export default class Render {
             <div class="about-avatar-1"></div>
             <div class="statistics-denied__body">
               <div class="statistics-denied__heading">
-                  <div class="statistics-denied__heading-header">Mrdoker1</div>
-                  <div class="statistics-denied__heading-subtitle">Дизайн, модуль API, игра Спринт, визуализация статистики, управление командой.</div>
+                  <div class="statistics-denied__heading-header">Mrdoker1 <a href="https://github.com/Mrdoker1/" class="label" target="_blank">github</a></div>
+                  <div class="statistics-denied__heading-subtitle">Сделал дизайн, запросы к api, статистику, игру Спринт, немного верстал и курировал разработку.</div>
               </div>
             </div>
           </div>
@@ -278,7 +278,7 @@ export default class Render {
             <div class="about-avatar-2"></div>
             <div class="statistics-denied__body">
               <div class="statistics-denied__heading">
-                  <div class="statistics-denied__heading-header">GeoBo</div>
+                  <div class="statistics-denied__heading-header">GeoBo <a href="https://github.com/GeoBo/" class="label" target="_blank">github</a></div>
                   <div class="statistics-denied__heading-subtitle">Модуль авторизации / регистрации, игра "Аудиовызов", сбор статистики, роутинг, типизация изучаемых слов.</div>
               </div>
             </div>
@@ -288,8 +288,8 @@ export default class Render {
             <div class="about-avatar-3"></div>
             <div class="statistics-denied__body">
               <div class="statistics-denied__heading">
-                  <div class="statistics-denied__heading-header">makrakvladislav</div>
-                  <div class="statistics-denied__heading-subtitle">Верстка и стилизация приложения, электронный учебник.</div>
+                  <div class="statistics-denied__heading-header">makrakvladislav <a href="https://github.com/makrakvladislav/" class="label" target="_blank">github</a></div>
+                  <div class="statistics-denied__heading-subtitle">Сделал главную страницу приложения, электронный учебник.</div>
               </div>
             </div>
           </div>
