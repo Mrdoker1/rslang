@@ -107,8 +107,6 @@ export default class App {
             })
             .get('/book/:group/:page', (req) => {
                 const state = new State();
-                //const userId = state.userId;
-                //const token = state.token;
                 const loginStatus = state.token ? true : false;
 
                 const group = Number(req.params.group);
@@ -310,6 +308,8 @@ export default class App {
         if (!loginStatus) {
             const emptyMessage = this.render.pageHardWordsDenied();
             main.append(emptyMessage);
+            this.login.initSecondTrigger();
+            return;
         }
         const dataWords = await this.data.getUserAggregatedWords(
             userId,
@@ -381,7 +381,7 @@ export default class App {
                 const offset: number = 3;
                 const sequence: number[] = paginate(index, items_per_page, items_total, offset);
 
-                console.log(sequence);
+                //console.log(sequence);
 
                 const pagination = this.render.pagination(group, sequence, pagesCount);
                 getHTMLElement(pageBook.querySelector('.page__book')).append(pagination);

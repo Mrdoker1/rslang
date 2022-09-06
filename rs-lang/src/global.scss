@@ -44,29 +44,33 @@ button {
 }
 
 .bttn {
-    padding: 14px 22px;
+    padding: 11px 19px;
     border-radius: 50px;
-    border: none;
+    border: 3px solid $color-cyan-dark;
     background-color: $color-cyan-dark;
     letter-spacing: -0.04em;
     color: white;
     text-decoration: none;
     transition: $transition-1;
+    
     font: $montserrat-button-16px;
     cursor: pointer;
     &:hover{
         background-color: transparent;
         color: $color-cyan-dark;
-        outline: 3px solid $color-cyan-dark;
+        //outline: 3px solid $color-cyan-dark;
     }
 }
 
 .bttn--light {
     background-color: $color-cyan-light;
+    border-color: $color-cyan-light;
+    //border: none;
     color: $color-cyan-dark;
     &:hover{
         color: white;
         background-color: $color-cyan-dark;
+        border-color: $color-cyan-dark;
         outline: none;
     }
 }
@@ -98,6 +102,7 @@ button {
 .bttn--transparent {
     padding: 0;
     background: none;
+    border-color: transparent;
     color: $color-primary;
     &:hover{
         text-decoration:underline;
