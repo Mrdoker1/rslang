@@ -477,6 +477,7 @@
 
         .bttn {
             outline: none;
+            border: 0;
         }
     }
 
@@ -523,18 +524,21 @@
       display: flex;
       justify-content: center;
       font: $montserrat-16px;
-      color: $color-cyan-dark;
+      color: $color-cyan;
       border-radius: 50%;
       text-decoration: none;
-      background-color: white;
+      border: 3px solid $color-cyan;
       box-shadow: $box-shadow-2;
       &:hover{
         border: 3px solid $color-cyan-dark;
+        background-color: $color-cyan-dark;
+        color: #fff;
       }
 
       &.active {
           color: $color-grey-light;
           background-color: $color-cyan-dark;
+          border-color: $color-cyan-dark;
       }
       &.learned {
           color: $color-grey-light;

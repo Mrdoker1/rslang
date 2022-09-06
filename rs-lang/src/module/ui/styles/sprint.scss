@@ -91,6 +91,7 @@
     &__true-button{
         background-color: $color-green;
         color: white;
+        border: 0;
         &:hover{
             color: $color-green;
             background-color: transparent;
@@ -100,6 +101,7 @@
     &__false-button{
         background-color: $color-red;
         color: white;
+        border: 0;
         &:hover{
             color: $color-red;
             background-color: transparent;
