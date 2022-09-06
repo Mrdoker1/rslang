@@ -80,6 +80,7 @@ button {
     padding: 14px 10px;
     border-radius: 100px;
     background-color: $color-green;
+    border: none;
 
     &:hover {
       color: $color-green;
@@ -92,6 +93,7 @@ button {
     padding: 14px 10px;
     border-radius: 100px;
     background-color: $color-orange;
+    border: none;
 
     &:hover {
       color: $color-orange;
