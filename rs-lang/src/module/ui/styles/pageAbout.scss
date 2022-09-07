@@ -22,14 +22,8 @@
               gap: 14px;
 
               .label {
-                  width: 56px;
-                  height: 25px;
+                  max-height: 25px;
                   text-decoration: none;
-                  color: #fff;
-                  background-color: $color-cyan-dark;
-                  &:hover {
-                      background-color: $color-primary;
-                  }
               }
           }
       }

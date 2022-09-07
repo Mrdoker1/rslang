@@ -480,6 +480,14 @@ body {
             color: #fff; 
         }
     }
+
+    &--dark-green {
+        color: #fff;
+        background-color: $color-cyan-dark;
+        &:hover {
+            background-color: $color-primary;
+        }
+    }
 }
 
 .social {
