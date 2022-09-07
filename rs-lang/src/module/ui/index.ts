@@ -240,8 +240,8 @@ export default class Render {
             <div class="footer__social">
                 <nav class="nav">
                     <ul class="nav__list">
-                        <li class="nav__item"><a href="#" class="icon icon--git"></a></li>
-                        <li class="nav__item"><a href="#" class="icon icon--rs"></a></li>
+                        <li class="nav__item"><a href="https://github.com/Mrdoker1/rslang/pull/33" class="icon icon--git"></a></li>
+                        <li class="nav__item"><a href="https://rs.school/" class="icon icon--rs"></a></li>
                         <li class="nav__item"><a href="#" class="icon icon--yt"></a></li>
                     </ul>
                 </nav>
