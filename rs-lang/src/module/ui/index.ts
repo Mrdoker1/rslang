@@ -60,8 +60,19 @@ export default class Render {
         <div class="header__user-links">
             <a href="#" class="bttn bttn--transparent js-signin-modal-trigger" data-routerjs-ignore data-signin="login">Войти →</a>
             <div class="user">
-               <div class="user__avatar"></div>
-               <div class="user__name"></div>
+               <li class="nav__item dropdown">
+                    <span>
+                        <div class="user__avatar"></div>
+                        <div class="user__name"></div>
+                    </span>
+                    <ul class="dropdown__menu">
+                        <li class="dropdown__menu-item">
+                            <a class="image-input-button" data-routerjs-ignore><div>(35kb max)</div>Изменить аватар
+                                <input type="file" id="img-input" name="img-input" accept="image/png, image/gif, image/jpeg">
+                            </a>
+                        </li>
+                    </ul>
+                </li>
             </div>
             <a href="#" class="bttn bttn--transparent" data-routerjs-ignore data-signin="logout">Выход →</a>
             <a href="#" class="bttn js-signin-modal-trigger" data-routerjs-ignore data-signin="signup">Регистрация</a>

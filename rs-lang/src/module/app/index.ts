@@ -92,6 +92,8 @@ export default class App {
         body.appendChild(header);
         body.appendChild(main);
         body.appendChild(footer);
+
+        this.avatarHandler();
     }
 
     initRouter() {
@@ -181,6 +183,86 @@ export default class App {
                 document.onkeydown = null; //очистка клавиатуры игр
             })
             .run();
+    }
+
+    async avatarHandler() {
+        const inputButton = getHTMLElement(document.querySelector('.image-input-button'));
+        const input = getHTMLInputElement(document.querySelector('#img-input'));
+
+        inputButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            input.click();
+        });
+
+        const settings = await this.getUserSettings();
+        updateAvatarImage(settings);
+
+        function updateAvatarImage(settings: ISettings | false) {
+            if (settings) {
+                const image = new Image();
+                if (settings.optional.avatar !== 'empty') {
+                    image.src = settings.optional.avatar;
+                    const userAvatar = getHTMLElement(document.querySelector('.user__avatar'));
+                    userAvatar.innerHTML = '';
+                    userAvatar.appendChild(image);
+                }
+            }
+        }
+
+        input.addEventListener('change', async () => {
+            const [file] = input.files!;
+            if (file) {
+                const imageCode = await imageToSting(URL.createObjectURL(file));
+                const image = new Image();
+                if (typeof imageCode === 'string') {
+                    image.src = imageCode;
+                    if (settings) {
+                        if (imageCode.length > 40000) {
+                            console.log('Too big');
+                        } else {
+                            settings.optional.avatar = imageCode;
+                            this.setUserSettings(settings);
+                            updateAvatarImage(settings);
+                        }
+                    }
+                }
+            }
+        });
+
+        function splitString(str: string) {
+            let string = str;
+            let size = 5000;
+            let obj: { [key: string]: string } = {};
+            let arr = [];
+            while (string.length) {
+                if (string.length > size) {
+                    arr.push(string.slice(0, size));
+                    string = string.slice(size, string.length);
+                } else {
+                    arr.push(string.slice(0, string.length));
+                    string = '';
+                }
+            }
+
+            return obj;
+        }
+
+        const getBase64StringFromDataURL = (dataURL: string) => dataURL.replace('data:', '').replace(/^.+,/, '');
+
+        async function imageToSting(image: string): Promise<string | ArrayBuffer | null> {
+            return await fetch(image)
+                .then((res) => res.blob())
+                .then((blob) => {
+                    return new Promise((resolve, reject) => {
+                        var reader = new FileReader();
+                        reader.onloadend = () => {
+                            resolve(reader.result);
+                        };
+                        reader.onerror = reject;
+                        reader.readAsDataURL(blob);
+                    });
+                });
+        }
     }
 
     showPageAbout() {
