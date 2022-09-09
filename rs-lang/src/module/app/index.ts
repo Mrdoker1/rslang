@@ -177,6 +177,9 @@ export default class App {
                 //this.show404();
                 this.router.navigate('/');
             })
+            .always(() => {
+                document.onkeydown = null; //очистка клавиатуры игр
+            })
             .run();
     }
 

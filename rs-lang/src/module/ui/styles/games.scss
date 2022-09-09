@@ -4,6 +4,10 @@
 .game {
   display: flex;
   height: 100%;	
+  
+  :focus-visible {
+    outline: none;
+  }
 
   &__wrapper {
     transition: $transition-1;
@@ -139,6 +143,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      width: 100%;
     }
 
     &__question {
@@ -147,7 +152,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      margin-top: 52px;
+      margin-top: 60px;
       width: 140px;
       height: 140px;
       background-color: transparent;
@@ -243,6 +248,8 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 100%;
+  position: relative;
   
   &__photo {
     height: 200px;
@@ -250,6 +257,8 @@
   }
 
   &__word {
+    position: absolute;
+    bottom: 20px;
     transition: $transition-1;
     display: flex;
     justify-content: center;
@@ -257,7 +266,7 @@
     gap: 12px;
     margin-top: 20px;
     background-color: #ffffff;
-    border-radius: 50px;
+    border-radius: 14px;
     box-shadow: $box-shadow-2;
     padding: 10px 20px;
   }
@@ -290,9 +299,6 @@
     width: 24px;
     height: 24px;
     transition: $transition-1;
-    // transform: translateZ(0);
-    // perspective: 1000;
-    // backface-visibility: hidden;
   }
 
   &__text {

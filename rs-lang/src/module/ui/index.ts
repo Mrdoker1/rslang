@@ -1072,8 +1072,7 @@ export default class Render {
                         <button class="audio__choice"></button>  
                     </div>
                     <div class="audio__next">
-                        <button class="bttn audio__know-btn">Не знаю</button>  
-                        <button class="bttn audio__next-btn hidden">Дальше</button>  
+                        <button class="bttn audio__next-btn">Не знаю</button>  
                     </div>
                 </div>
             </div>
