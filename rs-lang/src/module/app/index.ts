@@ -173,11 +173,95 @@ export default class App {
                 this.showPageAbout();
                 Render.currentLink(req.path);
             })
+            .get('/img', (req) => {
+                this.showPageImg();
+                Render.currentLink(req.path);
+            })
             .error(404, () => {
                 //this.show404();
                 this.router.navigate('/');
             })
             .run();
+    }
+
+    async showPageImg() {
+        const img = document.createElement('div');
+        img.innerHTML = `
+        <div>
+            <label for="img-input">Choose file to upload</label>
+            <input type="file" id="img-input" name="img-input" accept="image/png, image/gif, image/jpeg">
+        </div>
+        `;
+        document.body.appendChild(img);
+
+        const input = getHTMLInputElement(document.querySelector('#img-input'));
+
+        const settings = await this.getUserSettings();
+        console.log(settings);
+
+        if (settings) {
+            const image = new Image();
+            //image.src = settings.optional.avatar;
+            //document.body.appendChild(image);
+        }
+
+        input.addEventListener('change', async () => {
+            const [file] = input.files!;
+            if (file) {
+                const imageCode = await imageToSting(URL.createObjectURL(file));
+                const image = new Image();
+                if (typeof imageCode === 'string') {
+                    image.src = imageCode;
+                    console.log(imageCode);
+                    document.body.appendChild(image);
+
+                    if (settings) {
+                        settings.optional.avatar = splitString(imageCode);
+                        console.log(splitString(imageCode));
+                        this.setUserSettings(settings);
+                    }
+                }
+            }
+        });
+
+        function splitString(str: string) {
+            let string = str;
+            let size = 5000;
+            let obj: { [key: string]: string } = {};
+            let arr = [];
+            while (string.length) {
+                if (string.length > size) {
+                    arr.push(string.slice(0, size));
+                    string = string.slice(size, string.length);
+                } else {
+                    arr.push(string.slice(0, string.length));
+                    string = '';
+                }
+            }
+
+            // arr.forEach((e, index) => {
+            //     obj[index] = e;
+            // });
+
+            return obj;
+        }
+
+        const getBase64StringFromDataURL = (dataURL: string) => dataURL.replace('data:', '').replace(/^.+,/, '');
+
+        async function imageToSting(image: string): Promise<string | ArrayBuffer | null> {
+            return await fetch(image)
+                .then((res) => res.blob())
+                .then((blob) => {
+                    return new Promise((resolve, reject) => {
+                        var reader = new FileReader();
+                        reader.onloadend = () => {
+                            resolve(reader.result);
+                        };
+                        reader.onerror = reject;
+                        reader.readAsDataURL(blob);
+                    });
+                });
+        }
     }
 
     showPageAbout() {
@@ -1238,7 +1322,7 @@ export default class App {
             optional: {
                 listView: false,
                 showButtons: true,
-                avatar: 'empty',
+                avatar: {},
             },
         };
     }

@@ -316,7 +316,7 @@ class ModalLogin {
             optional: {
                 listView: false,
                 showButtons: true,
-                avatar: 'empty',
+                avatar: {},
             },
         };
 
