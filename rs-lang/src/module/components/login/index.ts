@@ -89,7 +89,8 @@ class ModalLogin {
                 user.classList.remove('hidden');
 
                 modal.classList.remove('cd-signin-modal--is-visible');
-
+                const settings = await this.getUserSettings();
+                this.updateAvatarImage(settings);
                 this.router.run();
                 tokenTimer = setTimeout(this.updateToken.bind(this), this.period);
             } else {
@@ -126,7 +127,8 @@ class ModalLogin {
 
                     tokenTimer = setTimeout(this.updateToken.bind(this), this.period);
                     await this.addFirstStatistics();
-                    await this.userSettings();
+                    const settings = await this.getUserSettings();
+                    this.updateAvatarImage(settings);
                     this.router.run();
                 }
             } else {
@@ -316,7 +318,7 @@ class ModalLogin {
             optional: {
                 listView: false,
                 showButtons: true,
-                avatar: {},
+                avatar: 'empty',
             },
         };
 
@@ -346,6 +348,44 @@ class ModalLogin {
                 }
             }
         } else return false;
+    }
+
+    updateAvatarImage(settings: ISettings | false) {
+        if (settings) {
+            const image = new Image();
+            if (settings.optional.avatar !== 'empty') {
+                image.src = settings.optional.avatar;
+                const userAvatar = getHTMLElement(document.querySelector('.user__avatar'));
+                userAvatar.innerHTML = '';
+                userAvatar.appendChild(image);
+            }
+        }
+    }
+
+    async getUserSettings() {
+        const state = new State();
+
+        if (state.token) {
+            const settings = await this.data.getUserSettings(state.userId, state.token);
+            if (typeof settings === 'number') {
+                await this.data.updateUserSettings(state.userId, this.defaultSettings(), state.token);
+                return this.defaultSettings();
+            } else {
+                delete settings['id'];
+                return settings;
+            }
+        } else return false;
+    }
+
+    defaultSettings() {
+        return {
+            wordsPerDay: 1,
+            optional: {
+                listView: false,
+                showButtons: true,
+                avatar: 'empty',
+            },
+        };
     }
 }
 

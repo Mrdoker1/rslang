@@ -92,6 +92,8 @@ export default class App {
         body.appendChild(header);
         body.appendChild(main);
         body.appendChild(footer);
+
+        this.avatarHandler();
     }
 
     initRouter() {
@@ -173,10 +175,6 @@ export default class App {
                 this.showPageAbout();
                 Render.currentLink(req.path);
             })
-            .get('/img', (req) => {
-                this.showPageImg();
-                Render.currentLink(req.path);
-            })
             .error(404, () => {
                 //this.show404();
                 this.router.navigate('/');
@@ -184,25 +182,28 @@ export default class App {
             .run();
     }
 
-    async showPageImg() {
-        const img = document.createElement('div');
-        img.innerHTML = `
-        <div>
-            <label for="img-input">Choose file to upload</label>
-            <input type="file" id="img-input" name="img-input" accept="image/png, image/gif, image/jpeg">
-        </div>
-        `;
-        document.body.appendChild(img);
-
+    async avatarHandler() {
+        const inputButton = getHTMLElement(document.querySelector('.image-input-button'));
         const input = getHTMLInputElement(document.querySelector('#img-input'));
 
-        const settings = await this.getUserSettings();
-        console.log(settings);
+        inputButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            input.click();
+        });
 
-        if (settings) {
-            const image = new Image();
-            //image.src = settings.optional.avatar;
-            //document.body.appendChild(image);
+        const settings = await this.getUserSettings();
+        updateAvatarImage(settings);
+
+        function updateAvatarImage(settings: ISettings | false) {
+            if (settings) {
+                const image = new Image();
+                if (settings.optional.avatar !== 'empty') {
+                    image.src = settings.optional.avatar;
+                    const userAvatar = getHTMLElement(document.querySelector('.user__avatar'));
+                    userAvatar.innerHTML = '';
+                    userAvatar.appendChild(image);
+                }
+            }
         }
 
         input.addEventListener('change', async () => {
@@ -212,13 +213,14 @@ export default class App {
                 const image = new Image();
                 if (typeof imageCode === 'string') {
                     image.src = imageCode;
-                    console.log(imageCode);
-                    document.body.appendChild(image);
-
                     if (settings) {
-                        settings.optional.avatar = splitString(imageCode);
-                        console.log(splitString(imageCode));
-                        this.setUserSettings(settings);
+                        if (imageCode.length > 40000) {
+                            console.log('Too big');
+                        } else {
+                            settings.optional.avatar = imageCode;
+                            this.setUserSettings(settings);
+                            updateAvatarImage(settings);
+                        }
                     }
                 }
             }
@@ -238,10 +240,6 @@ export default class App {
                     string = '';
                 }
             }
-
-            // arr.forEach((e, index) => {
-            //     obj[index] = e;
-            // });
 
             return obj;
         }
@@ -1322,7 +1320,7 @@ export default class App {
             optional: {
                 listView: false,
                 showButtons: true,
-                avatar: {},
+                avatar: 'empty',
             },
         };
     }

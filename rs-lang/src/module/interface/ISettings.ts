@@ -4,6 +4,6 @@ export default interface ISettings {
     optional: {
         listView: boolean;
         showButtons: boolean;
-        avatar: { [key: string]: string };
+        avatar: string;
     };
 }

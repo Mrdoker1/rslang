@@ -181,10 +181,14 @@ body {
 }
 
 .dropdown {
+  padding-right: 6px;
+  list-style: none;
   position: relative;
   cursor: pointer;
 
   span {
+    display: flex;
+    align-items: center;
     color: $color-grey-dark;
     font: $montserrat-16px;
     letter-spacing: -0.04em;
@@ -193,7 +197,7 @@ body {
       content: url("./assets/img/icon-arrow.svg");
       display: inline-block;
       width: 14px;
-      height: 14px;
+      height: auto;
       padding: 0 5px;
     }
   }
