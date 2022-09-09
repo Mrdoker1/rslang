@@ -67,8 +67,12 @@ export default class Render {
                     </span>
                     <ul class="dropdown__menu">
                         <li class="dropdown__menu-item">
-                            <a class="image-input-button" data-routerjs-ignore><div>(35kb max)</div>Изменить аватар
+                            <a class="image-input-button tooltip" data-routerjs-ignore><div class="tooltiptext">Максимальный размер: 150x150px, 35кб</div>Изменить аватар
                                 <input type="file" id="img-input" name="img-input" accept="image/png, image/gif, image/jpeg">
+                            </a>
+                        </li>
+                        <li class="dropdown__menu-item">
+                            <a class="clear-statistics-button" data-routerjs-ignore>Очистить статистику
                             </a>
                         </li>
                     </ul>
@@ -812,7 +816,6 @@ export default class Render {
     }
 
     statisticsCharts(type: statisticType, statistics: IStatistics) {
-        console.log(statistics);
         const container = document.createElement('div');
         container.classList.add('statistics__charts');
         const empty = document.createElement('div');
