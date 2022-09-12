@@ -109,6 +109,30 @@ export default class AudioCall {
             this.gameStatus = gameStatus.Started;
         };
 
+        const playBtn = document.querySelectorAll('.js-play-word');
+        playBtn.forEach((btn) => {
+            btn.addEventListener('click', (e) => {
+                const newspaperSpinning = [
+                    { transform: 'rotate(0) scale(1)' },
+                    { transform: 'rotate(0) scale(1.2)' },
+                    { transform: 'rotate(0) scale(1)' },
+                ];
+                const newspaperTiming = {
+                    duration: 100,
+                    iterations: 1,
+                };
+                btn.animate(newspaperSpinning, newspaperTiming);
+
+                let target = getHTMLElement(e.target);
+                if (!target.classList.contains('js-play-word')) {
+                    target = getHTMLElement(target.closest('.js-play-word'));
+                }
+                const path = target.dataset.src;
+                if (!path) return false;
+                this.sayWord(path);
+            });
+        });
+
         const buttonPressHandler = (target: HTMLElement) => {
             nextBtn.classList.add('show-next');
             nextBtn.textContent = 'Дальше';
@@ -307,7 +331,7 @@ export default class AudioCall {
         };
 
         const chart2 = {
-            type: gameChart.Words,
+            type: gameChart.Words,  
             maxValue: unknowingWords.length + knowingWords.length,
             currentValue: knowingWords.length,
         };
@@ -331,6 +355,22 @@ export default class AudioCall {
 
                 const src = getNotNil(target.dataset.src);
                 this.sayWord(src);
+
+                //const src = target.dataset.src;
+                const audio = new Audio();
+                audio.src = `${this.data.base}/${src}`;
+                audio.autoplay = true;
+
+                const newspaperSpinning = [
+                    { transform: 'rotate(0) scale(1)' },
+                    { transform: 'rotate(0) scale(1.2)' },
+                    { transform: 'rotate(0) scale(1)' },
+                ];
+                const newspaperTiming = {
+                    duration: 100,
+                    iterations: 1,
+                };
+                playBtn.animate(newspaperSpinning, newspaperTiming);
             });
         });
 

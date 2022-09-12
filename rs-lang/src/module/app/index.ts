@@ -47,6 +47,9 @@ import ModalLogin from '../components/login';
 import Sprint from '../components/sprint';
 import AudioCall from '../components/audio-call';
 
+//Animation
+import Animation1 from '../../utils/animation-1';
+
 //State
 import State from './state';
 
@@ -184,6 +187,31 @@ export default class App {
     }
 
     async avatarHandler() {
+        const clearStatsButton = getHTMLElement(document.querySelector('.clear-statistics-button'));
+
+        clearStatsButton.addEventListener('click', async () => {
+            await clearStatistics(this.data);
+        });
+
+        async function clearStatistics(data: Data) {
+            const stsAll = {
+                learnedWords: 0,
+                optional: {
+                    1: createStsEntry(),
+                },
+            };
+
+            const state = new State();
+
+            const updateUserStatistics = await data.updateUserStatistics(state.userId, stsAll, state.token);
+            if (typeof updateUserStatistics === 'number') {
+                console.log(`Ошибка updateUserStatistics ${updateUserStatistics}`);
+                return;
+            } else {
+                console.log(`Cтатистика успешно очищена!`);
+            }
+        }
+
         const inputButton = getHTMLElement(document.querySelector('.image-input-button'));
         const input = getHTMLInputElement(document.querySelector('#img-input'));
 
@@ -241,7 +269,6 @@ export default class App {
                     string = '';
                 }
             }
-
             return obj;
         }
 
@@ -372,6 +399,7 @@ export default class App {
                         audio2.currentTime = 0;
                         audio3.play();
                     });
+                    Animation1(button);
                 });
             });
 
@@ -586,6 +614,7 @@ export default class App {
                             audio2.currentTime = 0;
                             audio3.play();
                         });
+                        Animation1(button);
                     });
                 });
 
@@ -604,9 +633,6 @@ export default class App {
     async showBookPage(group: number, page: number) {
         const state = new State();
         const settings = await this.getUserSettings();
-
-        console.log(settings);
-
         const userId = state.userId;
         const token = state.token;
         const loginStatus = state.token ? true : false;
@@ -637,7 +663,6 @@ export default class App {
                     this.setUserSettings(settings);
                     getHTMLElement(pageBook.querySelector('.words__list')).classList.add('grid');
                 }
-                console.log(settings);
             });
 
             settingsButtonsView.addEventListener('click', (e) => {
@@ -656,7 +681,6 @@ export default class App {
                         item.classList.add('hidden');
                     });
                 }
-                console.log(settings);
             });
         }
 
@@ -766,6 +790,7 @@ export default class App {
                             audio2.currentTime = 0;
                             audio3.play();
                         });
+                        Animation1(button);
                     });
                 });
 

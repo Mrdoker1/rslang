@@ -26,7 +26,8 @@
         overflow: hidden auto;
         gap: 14px;
         flex-direction: column;
-        margin-top: 32px;
+        margin-top: 24px;
+        padding: 4px;
         height: 100%;
     }
 }
@@ -115,7 +116,7 @@
     }
     &__body{
         display: flex;
-        flex-direction: row;
+        flex-direction: row-reverse;
         gap: 8px;
         font: $montserrat-16px;
         color: $color-grey-dark;
