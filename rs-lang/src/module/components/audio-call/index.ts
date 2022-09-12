@@ -21,6 +21,9 @@ import Data from '../../api';
 //UI
 import Render from '../../ui';
 
+//Animation
+import Animation1 from '../../../utils/animation-1';
+
 //State
 import State from '../../app/state';
 import IUserWord from '../../interface/IUserWord';
@@ -112,17 +115,7 @@ export default class AudioCall {
         const playBtn = document.querySelectorAll('.js-play-word');
         playBtn.forEach((btn) => {
             btn.addEventListener('click', (e) => {
-                const newspaperSpinning = [
-                    { transform: 'rotate(0) scale(1)' },
-                    { transform: 'rotate(0) scale(1.2)' },
-                    { transform: 'rotate(0) scale(1)' },
-                ];
-                const newspaperTiming = {
-                    duration: 100,
-                    iterations: 1,
-                };
-                btn.animate(newspaperSpinning, newspaperTiming);
-
+                Animation1(btn);
                 let target = getHTMLElement(e.target);
                 if (!target.classList.contains('js-play-word')) {
                     target = getHTMLElement(target.closest('.js-play-word'));
@@ -186,40 +179,31 @@ export default class AudioCall {
         const keyPressHandler = () => {
             document.onkeydown = (e) => {
                 e = e || window.event;
-                const newspaperSpinning = [
-                    { transform: 'rotate(0) scale(1)' },
-                    { transform: 'rotate(0) scale(1.2)' },
-                    { transform: 'rotate(0) scale(1)' },
-                ];
-                const newspaperTiming = {
-                    duration: 100,
-                    iterations: 1,
-                };
                 if (e.code === 'Digit1' && this.gameStatus == gameStatus.Started) {
                     const choices: NodeListOf<HTMLElement> = document.querySelectorAll('.audio__choice');
                     const target = choices[0];
                     buttonPressHandler(target);
-                    target.animate(newspaperSpinning, newspaperTiming);
+                    Animation1(target);
                 } else if (e.code === 'Digit2' && this.gameStatus == gameStatus.Started) {
                     const choices: NodeListOf<HTMLElement> = document.querySelectorAll('.audio__choice');
                     const target = choices[1];
                     buttonPressHandler(target);
-                    target.animate(newspaperSpinning, newspaperTiming);
+                    Animation1(target);
                 } else if (e.code === 'Digit3' && this.gameStatus == gameStatus.Started) {
                     const choices: NodeListOf<HTMLElement> = document.querySelectorAll('.audio__choice');
                     const target = choices[2];
                     buttonPressHandler(target);
-                    target.animate(newspaperSpinning, newspaperTiming);
+                    Animation1(target);
                 } else if (e.code === 'Digit4' && this.gameStatus == gameStatus.Started) {
                     const choices: NodeListOf<HTMLElement> = document.querySelectorAll('.audio__choice');
                     const target = choices[3];
                     buttonPressHandler(target);
-                    target.animate(newspaperSpinning, newspaperTiming);
+                    Animation1(target);
                 } else if (e.code === 'Digit5' && this.gameStatus == gameStatus.Started) {
                     const choices: NodeListOf<HTMLElement> = document.querySelectorAll('.audio__choice');
                     const target = choices[4];
                     buttonPressHandler(target);
-                    target.animate(newspaperSpinning, newspaperTiming);
+                    Animation1(target);
                 } else if (e.code === 'Space' && this.gameStatus != gameStatus.Ended) {
                     e.preventDefault();
                     this.wordAudio.play();
@@ -230,7 +214,7 @@ export default class AudioCall {
                     } else {
                         nextBtnHandler();
                     }
-                    nextBtn.animate(newspaperSpinning, newspaperTiming);
+                    Animation1(nextBtn);
                 }
             };
         };
@@ -355,22 +339,7 @@ export default class AudioCall {
 
                 const src = getNotNil(target.dataset.src);
                 this.sayWord(src);
-
-                //const src = target.dataset.src;
-                const audio = new Audio();
-                audio.src = `${this.data.base}/${src}`;
-                audio.autoplay = true;
-
-                const newspaperSpinning = [
-                    { transform: 'rotate(0) scale(1)' },
-                    { transform: 'rotate(0) scale(1.2)' },
-                    { transform: 'rotate(0) scale(1)' },
-                ];
-                const newspaperTiming = {
-                    duration: 100,
-                    iterations: 1,
-                };
-                playBtn.animate(newspaperSpinning, newspaperTiming);
+                Animation1(playBtn);
             });
         });
 

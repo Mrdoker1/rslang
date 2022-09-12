@@ -248,27 +248,26 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 100%;
   position: relative;
   
   &__photo {
     height: 200px;
-    border-radius: 14px;
+    width: 100%;
+    border-radius: 14px 14px 0px 0px;
   }
 
   &__word {
-    position: absolute;
     bottom: 20px;
     transition: $transition-1;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 12px;
-    margin-top: 20px;
     background-color: #ffffff;
-    border-radius: 14px;
+    border-radius: 0px 0px 14px 14px;
     box-shadow: $box-shadow-2;
     padding: 10px 20px;
+    width: -webkit-fill-available;
   }
 
   &__play {
