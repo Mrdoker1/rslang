@@ -39,6 +39,7 @@ export default class AudioCall {
     router: Router;
     learned = 0;
     gameStatus: gameStatus;
+    wordAudio: HTMLAudioElement;
     constructor(base: string, group: number, page: number, isBook: boolean = false, router: Router) {
         this.group = group;
         this.page = page;
@@ -51,6 +52,7 @@ export default class AudioCall {
         this.isBook = isBook;
         this.router = router;
         this.gameStatus = gameStatus.Started;
+        this.wordAudio = new Audio();
     }
 
     async start() {
@@ -59,7 +61,6 @@ export default class AudioCall {
         const game = this.render.gameAudioCall();
         main.append(game);
 
-        //gameWindow audio
         let count = 0;
         let attempt: number = 5;
 
@@ -70,7 +71,17 @@ export default class AudioCall {
         }
         this.showQuestion(words, count);
 
-        const answerBtns = document.querySelectorAll('.audio__choice, .audio__know-btn');
+        const nextBtn = getHTMLElement(document.querySelector('.audio__next-btn'));
+        nextBtn.addEventListener('click', (e) => {
+            if (!nextBtn.classList.contains('show-next')) {
+                const target = getHTMLElement(e.target);
+                buttonPressHandler(target);
+            } else {
+                nextBtnHandler();
+            }
+        });
+
+        const answerBtns = document.querySelectorAll('.audio__choice');
         answerBtns.forEach((btn) => {
             btn.addEventListener('click', (e) => {
                 const target = getHTMLElement(e.target);
@@ -78,13 +89,15 @@ export default class AudioCall {
             });
         });
 
-        const nextBtn = getHTMLElement(document.querySelector('.audio__next-btn'));
-        nextBtn.addEventListener('click', () => {
-            //if (typeof words === 'number') return;
+        const nextBtnHandler = () => {
+            nextBtn.classList.remove('show-next');
+            nextBtn.textContent = 'Не знаю';
             const len = words.length - 1;
+
             if (count === len || attempt === 0) {
                 if (this.series > this.record) this.record = this.series;
                 if (this.state.token) this.saveStatistics();
+
                 this.showResult(attempt, words);
                 this.playEndSound();
                 this.gameStatus = gameStatus.Ended;
@@ -94,7 +107,7 @@ export default class AudioCall {
             this.showQuestion(words, count);
             this.hideAnswer();
             this.gameStatus = gameStatus.Started;
-        });
+        };
 
         const playBtn = document.querySelectorAll('.js-play-word');
         playBtn.forEach((btn) => {
@@ -121,6 +134,8 @@ export default class AudioCall {
         });
 
         const buttonPressHandler = (target: HTMLElement) => {
+            nextBtn.classList.add('show-next');
+            nextBtn.textContent = 'Дальше';
             this.showAnswer(target);
             this.gameStatus = gameStatus.Paused;
             const answer = target.dataset.answer;
@@ -161,6 +176,13 @@ export default class AudioCall {
             }
         };
 
+        const playBtns = document.querySelectorAll('.js-play-word');
+        playBtns.forEach((btn) => {
+            btn.addEventListener('click', (e) => {
+                this.wordAudio.play();
+            });
+        });
+
         const keyPressHandler = () => {
             document.onkeydown = (e) => {
                 e = e || window.event;
@@ -173,26 +195,42 @@ export default class AudioCall {
                     duration: 100,
                     iterations: 1,
                 };
-                if (e.keyCode === 49 && this.gameStatus == gameStatus.Started) {
-                    const target = getHTMLElement(document.querySelectorAll('.audio__choice')[0]);
+                if (e.code === 'Digit1' && this.gameStatus == gameStatus.Started) {
+                    const choices: NodeListOf<HTMLElement> = document.querySelectorAll('.audio__choice');
+                    const target = choices[0];
                     buttonPressHandler(target);
                     target.animate(newspaperSpinning, newspaperTiming);
-                } else if (e.keyCode === 50 && this.gameStatus == gameStatus.Started) {
-                    const target = document.querySelectorAll('.audio__choice')[1] as HTMLElement;
+                } else if (e.code === 'Digit2' && this.gameStatus == gameStatus.Started) {
+                    const choices: NodeListOf<HTMLElement> = document.querySelectorAll('.audio__choice');
+                    const target = choices[1];
                     buttonPressHandler(target);
                     target.animate(newspaperSpinning, newspaperTiming);
-                } else if (e.keyCode === 51 && this.gameStatus == gameStatus.Started) {
-                    const target = document.querySelectorAll('.audio__choice')[2] as HTMLElement;
+                } else if (e.code === 'Digit3' && this.gameStatus == gameStatus.Started) {
+                    const choices: NodeListOf<HTMLElement> = document.querySelectorAll('.audio__choice');
+                    const target = choices[2];
                     buttonPressHandler(target);
                     target.animate(newspaperSpinning, newspaperTiming);
-                } else if (e.keyCode === 52 && this.gameStatus == gameStatus.Started) {
-                    const target = document.querySelectorAll('.audio__choice')[3] as HTMLElement;
+                } else if (e.code === 'Digit4' && this.gameStatus == gameStatus.Started) {
+                    const choices: NodeListOf<HTMLElement> = document.querySelectorAll('.audio__choice');
+                    const target = choices[3];
                     buttonPressHandler(target);
                     target.animate(newspaperSpinning, newspaperTiming);
-                } else if (e.keyCode === 53 && this.gameStatus == gameStatus.Started) {
-                    const target = document.querySelectorAll('.audio__choice')[4] as HTMLElement;
+                } else if (e.code === 'Digit5' && this.gameStatus == gameStatus.Started) {
+                    const choices: NodeListOf<HTMLElement> = document.querySelectorAll('.audio__choice');
+                    const target = choices[4];
                     buttonPressHandler(target);
                     target.animate(newspaperSpinning, newspaperTiming);
+                } else if (e.code === 'Space' && this.gameStatus != gameStatus.Ended) {
+                    e.preventDefault();
+                    this.wordAudio.play();
+                } else if (e.code === 'Enter' && this.gameStatus != gameStatus.Ended) {
+                    e.preventDefault();
+                    if (!nextBtn.classList.contains('show-next')) {
+                        buttonPressHandler(nextBtn);
+                    } else {
+                        nextBtnHandler();
+                    }
+                    nextBtn.animate(newspaperSpinning, newspaperTiming);
                 }
             };
         };
@@ -234,13 +272,6 @@ export default class AudioCall {
         return words;
     }
 
-    sayWord(path: string) {
-        const audio = new Audio();
-        audio.loop = false;
-        audio.src = `${this.data.base}/${path}`;
-        audio.autoplay = true;
-    }
-
     showQuestion(words: IWord[], count: number) {
         const word = words[count];
         const qWords = words.slice();
@@ -264,17 +295,12 @@ export default class AudioCall {
         const answerText = getHTMLElement(document.querySelector('.answer__text'));
         answerText.innerHTML = `<b>${word.word}</b> - ${word.wordTranslate}`;
 
-        const playBtns = document.querySelectorAll('.js-play-word');
-        playBtns.forEach((btn) => {
-            btn.setAttribute('data-src', word.audio);
-        });
-        this.sayWord(word.audio);
+        this.wordAudio.src = `${this.data.base}/${word.audio}`;
+        this.wordAudio.autoplay = true;
     }
 
     showAnswer(el: HTMLElement) {
         el.classList.add('active-answer');
-        document.querySelector('.audio__know-btn')?.classList.add('hidden');
-        document.querySelector('.audio__next-btn')?.classList.remove('hidden');
         document.querySelector('.audio__question')?.classList.add('hidden');
         document.querySelector('.audio__answer')?.classList.remove('hidden');
 
@@ -290,8 +316,6 @@ export default class AudioCall {
         choices.forEach((choice) => {
             choice.classList.remove('active-answer', 'disabled');
         });
-        document.querySelector('.audio__know-btn')?.classList.remove('hidden');
-        document.querySelector('.audio__next-btn')?.classList.add('hidden');
         document.querySelector('.audio__question')?.classList.remove('hidden');
         document.querySelector('.audio__answer')?.classList.add('hidden');
     }
@@ -328,7 +352,11 @@ export default class AudioCall {
                 if (target.classList.contains('play-icon')) {
                     target = getHTMLElement(target.closest('.gameresultword__icon'));
                 }
-                const src = target.dataset.src;
+
+                const src = getNotNil(target.dataset.src);
+                this.sayWord(src);
+
+                //const src = target.dataset.src;
                 const audio = new Audio();
                 audio.src = `${this.data.base}/${src}`;
                 audio.autoplay = true;
@@ -465,6 +493,13 @@ export default class AudioCall {
             console.log(`Ошибка updateUserStatistics ${updateUserStatistics}`);
             return;
         }
+    }
+
+    sayWord(path: string) {
+        const audio = new Audio();
+        audio.loop = false;
+        audio.src = `${this.data.base}/${path}`;
+        audio.autoplay = true;
     }
 
     playGoodSound() {

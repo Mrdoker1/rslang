@@ -107,8 +107,7 @@ export default class App {
                 this.login.initSecondTrigger();
             })
             .get('/book', (req) => {
-                this.showBook(0, 0);
-                Render.currentLink(req.path);
+                this.router.navigate('/book/0/0');
             })
             .get('/book/:group/:page', (req) => {
                 const state = new State();
@@ -146,8 +145,7 @@ export default class App {
                 Render.currentLink(req.path);
             })
             .get('/games', (req) => {
-                this.showGames();
-                Render.currentLink(req.path);
+                this.router.navigate('/games/sprint');
             })
             .get('/games/sprint', (req) => {
                 this.showGameDifficulty(gameType.Sprint);
@@ -181,6 +179,9 @@ export default class App {
             .error(404, () => {
                 //this.show404();
                 this.router.navigate('/');
+            })
+            .always(() => {
+                document.onkeydown = null; //очистка клавиатуры игр
             })
             .run();
     }

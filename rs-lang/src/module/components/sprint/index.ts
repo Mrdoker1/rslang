@@ -44,6 +44,7 @@ export default class Sprint {
     record = 0;
     count = 0;
     learned = 0;
+    prevTranslation = '';
     constructor(base: string, group: number, page: number, isBook: boolean = false, router: Router) {
         this.group = group;
         this.page = page;
@@ -134,16 +135,21 @@ export default class Sprint {
 
     setNewWord() {
         const word = this.words[this.count];
-        this.count += 1;
-        let possibleTranslation = word.wordTranslate;
 
+        let possibleTranslation = word.wordTranslate;
         if (getRandom(0, 1)) {
             const qWords = this.words.slice();
             qWords.splice(this.count, 1);
             shuffle(qWords);
-            possibleTranslation = qWords[0].wordTranslate;
-        }
 
+            possibleTranslation = qWords[0].wordTranslate;
+            const nextQuestion = this.words[this.count + 1]?.wordTranslate;
+            if (this.prevTranslation == possibleTranslation || nextQuestion == possibleTranslation) {
+                possibleTranslation = qWords[1].wordTranslate;
+            }
+        }
+        this.prevTranslation = possibleTranslation;
+        this.count += 1;
         this.gameState.word = word;
         this.gameState.wordEnglish = word.word;
         this.gameState.wordTranslation = word.wordTranslate;

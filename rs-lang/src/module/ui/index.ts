@@ -35,7 +35,7 @@ export default class Render {
                         <a href="/" class="nav__link">Главная</a>
                     </li>
                     <li class="nav__item">
-                        <a href="/book/0/0" class="nav__link">Учебник</a>
+                        <a href="/book" class="nav__link">Учебник</a>
                     </li>
                     <li class="nav__item">
                         <a href="/stats" class="nav__link">Статистика</a>
@@ -221,7 +221,7 @@ export default class Render {
                             <a href="/" class="nav__link">Главная</a>
                         </li>
                         <li class="nav__item">
-                            <a href="/book/0/0" class="nav__link">Учебник</a>
+                            <a href="/book" class="nav__link">Учебник</a>
                         </li>
                         <li class="nav__item">
                             <a href="/stats" class="nav__link">Статистика</a>
@@ -231,6 +231,9 @@ export default class Render {
                         </li>
                         <li class="nav__item">
                             <a href="/games/audio-call" class="nav__link">Аудио-вызов</a>
+                        </li>
+                        <li class="nav__item">
+                            <a href="/about" class="nav__link">О команде</a>
                         </li>
                     </ul>
                 </nav>
@@ -1086,8 +1089,7 @@ export default class Render {
                         <button class="audio__choice"></button>  
                     </div>
                     <div class="audio__next">
-                        <button class="bttn audio__know-btn">Не знаю</button>  
-                        <button class="bttn audio__next-btn hidden">Дальше</button>  
+                        <button class="bttn audio__next-btn">Не знаю</button>  
                     </div>
                 </div>
             </div>
@@ -1386,9 +1388,8 @@ export default class Render {
         return gameResultWords;
     }
 
-    static currentLink(path: string) {
-        const navLinks = document.querySelectorAll('.header__menu a:not([href^="#"])');
-        const levelLinks = document.querySelectorAll('.word-levels__list a:not([href^="#"])');
+    static selectLink(path: string, selector: string) {
+        const navLinks = document.querySelectorAll(selector);
         const parts = path.split('/').reverse();
 
         for (let link of navLinks) {
@@ -1398,11 +1399,18 @@ export default class Render {
         for (let item of parts) {
             for (let link of navLinks) {
                 const href = link.getAttribute('href');
+                if (!isNaN(parseInt(item))) continue;
+
                 if (href?.indexOf(item) !== -1) {
                     link.classList.add('active');
                     return;
                 }
             }
         }
+    }
+
+    static currentLink(path: string) {
+        Render.selectLink(path, '.header__menu a:not([href^="#"])');
+        Render.selectLink(path, '.footer__menu a:not([href^="#"])');
     }
 }
