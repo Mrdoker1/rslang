@@ -314,6 +314,8 @@ export default class Sprint {
 
         const wrapper = document.createElement('div');
         wrapper.classList.add('sprint-game-wrapper');
+        wrapper.classList.add('container');
+        wrapper.classList.add('align-center');
 
         const sprint = document.createElement('div');
         sprint.classList.add('sprint-game');
