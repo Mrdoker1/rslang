@@ -28,6 +28,11 @@ export default class Render {
         header.appendChild(headerContainer);
         headerContainer.innerHTML += `
         <div class="header-left">
+            <button class="header__burger">
+                <span class="line"></span>
+                <span class="line"></span>
+                <span class="line"></span>
+            </button>
             <a href="#" class="header__logo rs-logo"></a>
             <nav class="nav header__menu">
                 <ul class="nav__list">
@@ -75,13 +80,17 @@ export default class Render {
                             <a class="clear-statistics-button" data-routerjs-ignore>Очистить статистику
                             </a>
                         </li>
+                        <li clas="dropdown__menu-item">
+                            <a href="#" class="bttn bttn--transparent" data-routerjs-ignore data-signin="logout">Выход →</a>
+                        </li>
                     </ul>
                 </li>
             </div>
-            <a href="#" class="bttn bttn--transparent" data-routerjs-ignore data-signin="logout">Выход →</a>
-            <a href="#" class="bttn js-signin-modal-trigger" data-routerjs-ignore data-signin="signup">Регистрация</a>
+            <a href="#" class="bttn bttn--transparent bttn-logout" data-routerjs-ignore data-signin="logout">Выход →</a>
+            <a href="#" class="bttn bttn-singin js-signin-modal-trigger" data-routerjs-ignore data-signin="signup">Регистрация</a>
          </div>
         `;
+
         return header;
     }
 
@@ -118,6 +127,7 @@ export default class Render {
                 <span class="text">Мини-игры</span>
               </div>
           </div>
+          <img src="../assets/img/splash-bg-mobile.png" class="splash__image">
         </div>
         `;
         return splash;
@@ -288,7 +298,7 @@ export default class Render {
             <div class="statistics-denied__body">
               <div class="statistics-denied__heading">
                   <div class="statistics-denied__heading-header">Mrdoker1 <div class="label label--yellow">TeamLead</div> <a href="https://github.com/Mrdoker1/" class="label label--dark-green" target="_blank">github →</a></div>
-                  <div class="statistics-denied__heading-subtitle">Сделал дизайн, запросы к api, статистику, игру Спринт, немного верстал и курировал разработку.</div>
+                  <div class="statistics-denied__heading-subtitle">Сделал дизайн, запросы к api, статистику, игру спринт, немного верстал и курировал разработку.</div>
               </div>
             </div>
           </div>
@@ -308,7 +318,7 @@ export default class Render {
             <div class="statistics-denied__body">
               <div class="statistics-denied__heading">
                   <div class="statistics-denied__heading-header">makrakvladislav <a href="https://github.com/makrakvladislav/" class="label label--dark-green" target="_blank">github →</a></div>
-                  <div class="statistics-denied__heading-subtitle">Сделал главную страницу приложения, электронный учебник, помогал с версткой.</div>
+                  <div class="statistics-denied__heading-subtitle">Сделал главную страницу приложения, электронный учебник, верстку и адаптив.</div>
               </div>
             </div>
           </div>
@@ -942,6 +952,7 @@ export default class Render {
     gameDifficulty(type: gameType) {
         const container = document.createElement('div');
         container.classList.add('container');
+        container.classList.add('align-center');
         let levels = '';
         let title;
         let desc;
@@ -1304,7 +1315,7 @@ export default class Render {
         container.innerHTML = `
         <div class="container">
             <div class="gameresult__info">
-                <img src="../assets/img/result.svg">
+                <div class="result-image"></div>
                 <div class="gameresult__info-body">
                     <div class="gameresult__header">${header}</div>
                     <div class="gameresult__message">${resultMessage}</div>
