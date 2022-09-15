@@ -170,6 +170,12 @@
         }
     }
 
+    .bttn-logout {
+        display: none;
+
+        
+    }
+
     @include tablet {
         .nav {
             &__list {
