@@ -28,24 +28,48 @@
     border-radius: 14px;
     padding: 20px 40px;
     gap: 10px;
+    overflow: hidden;
 
+    @include tablet {
+        gap: 4px;
+        padding: 20px;
+    }
     &__light {
        background: #ffffff;
        box-shadow: $box-shadow-2;
+
+       @include tablet {
+            flex-direction: column;
+            padding: 20px;
+       }
     }
   }
 
   &__block {
+    width: 100%;
     position: relative;
+
+    @include tablet {
+        text-align: center;
+    }
   }
 
   &__heading{
       display: flex;
       align-items: center;
       gap: 10px;
+
+      @include tablet {
+          justify-content: center;
+      }
     &-title{
       font: $dela-gothic-48px;
       color: $color-primary;
+
+      @include tablet {
+          font: $dela-gothic-24px;
+          text-align: center;
+      }
     }
     &-skill{
       width: max-content;
@@ -54,6 +78,10 @@
       color: $color-cyan-dark;
       padding: 4px 8px; 
       border-radius: 6px;
+
+      @include tablet {
+          font-size: 10px;
+      }
     }
   }
 
@@ -61,6 +89,11 @@
     padding: 20px 0;
     font: $montserrat-16px;
     color: $color-grey-dark;
+
+    @include tablet {
+        text-align: center;
+        font: $montserrat-14px;
+    }
   }
 
   &__control {
@@ -70,6 +103,14 @@
     width: fit-content;
     border-radius: 8px;
     font: $montserrat-12px;
+
+    @include tablet {
+        margin: 0 auto;
+    }
+
+    @include phone {
+
+    }
     span {
       font: $montserrat-14px;
       color: $color-grey-dark;
@@ -80,10 +121,18 @@
     padding-top: 30px;
     font: $montserrat-14px;
     color: $color-grey-dark;
+
+    @include tablet {
+        text-align: left;
+    }
   }
 
   &__start {
     margin-top: 30px;
+
+    @include tablet {
+        margin-top: 20px;
+    }
   }
 
 }
@@ -93,6 +142,11 @@
   flex-direction: row;
   padding-top: 8px;
   gap: 16px;
+
+  @include tablet {
+      gap: 6px;
+      flex-wrap: wrap;
+  }
 
   &__btn {
     display: flex;
@@ -162,6 +216,10 @@
       opacity: 1;
       visibility: visible;
       transition: $transition-1;
+
+      @include tablet {
+            margin-top: 0px;
+      }
       
       &:hover {
         background-color: $color-cyan-dark;
@@ -204,6 +262,10 @@
       justify-content: space-around;
       gap: 10px;
       width: 100%;
+
+      @include tablet {
+          flex-direction: column;
+      }
     }
 
     &__choice {

@@ -18,26 +18,53 @@
     border-radius: 14px;
 
     align-items: center;
+
+    @include tablet {
+        width: 100%;
+        padding: 20px;
+    }
     &__wrapper{
         display: flex;
         gap: 20px;
+
+        @include tablet {
+            width: 100%;
+            flex-direction: column;
+        }
     }
     &__info{
         display: flex;
         flex-direction: row;
+
+        @include tablet {
+            flex-direction: column;
+            align-items: center;
+        }
         &-body{
             display: flex;
             flex-direction: column;
+
+            @include tablet {
+                align-items: center;
+            }
         }
     }
     &__header{
         font: $dela-gothic-32px;
         color: $color-primary;
+
+        @include tablet {
+            font: $dela-gothic-24px;
+        }
     }
     &__message{
         padding-top: 12px;
         font: $montserrat-16px;
         color: $color-grey-dark;
+
+        @include tablet {
+            font: $montserrat-14px;
+        }
     }
     &__charts{
         display: flex;
@@ -50,6 +77,10 @@
         justify-content: center;
         padding-top: 30px;
         gap: 20px;
+
+        @include tablet {
+            flex-direction: column;
+        }
     }
     &__button-replay{
         &:hover {
