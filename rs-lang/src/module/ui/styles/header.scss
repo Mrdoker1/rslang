@@ -5,9 +5,16 @@
     padding: 24px 0;
     position: sticky;
     top: 0;
-    z-index: 1;
+    z-index: 100;
     background-color: $color-grey-light;
     box-shadow: inset 0px -1px 0px #e0e0e0;
+
+    @include tablet {
+        align-items: center;
+        display: flex;
+        padding: 10px 0;
+        min-height: 52px;
+    }
 
     .container {
         width: 100%;
@@ -16,10 +23,47 @@
         align-items: center;
     }
 
+    &__burger {
+        background: none;
+        border: none;
+        text-align: left;
+        display: none;
+
+        &:hover {
+            background:  none;
+        }
+
+        @include tablet {
+            display: block;
+        }
+
+        .line {
+            width: 20px;
+            height: 2.5px;
+            background-color: $color-primary;
+            display: block;
+            margin: 3.5px;
+            transition: $transition-1;
+           
+            &:nth-child(2) {
+                width: 14px;
+            }
+
+            &:nth-child(3) {
+                width: 6px;
+            }
+        }
+    }
+
     &-left {
         display: flex;
         flex-direction: row;
         align-items: center;
+
+        @include tablet {
+            flex-basis: 55%;
+            justify-content: space-between;
+        }
     }
 
     &__logo {
@@ -30,12 +74,37 @@
         margin-left: 30px;
         padding-left: 30px;
         border-left: 1.22px solid $color-grey-medium;
+
+        @include tablet {
+            display: none;
+            width: 100%;
+            height: calc(100% - 52px);
+            padding: 0;
+            position: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            top: 52px;
+            right: -100%;
+            background: #f4f4f2;
+            transition: $transition-1;
+        }
+
+        &.open {
+            right: 0px;
+        }
     }
 
     &__user-links {
         gap: 24px;
         display: flex;
         align-items: center;
+
+        .bttn-logout, .bttn-singin  {
+            @include tablet { 
+                display: none;
+            }
+        }
     }
 
     .user {
@@ -83,12 +152,89 @@
                 width: 100%;
                 height: 100%;
             }
+
+            @include phone {
+                width: 32px;
+                height: 32px;
+            }
         }
 
         &__name {
             color: $color-grey-dark;
             letter-spacing:  -0.04em;
             text-transform: capitalize;
+
+            @include phone {
+                font: $montserrat-12px;
+            }
+        }
+    }
+
+    .bttn-logout {
+        display: none;
+
+        
+    }
+
+    @include tablet {
+        .nav {
+            &__list {
+                display: flex;
+                flex-direction: column;
+                gap: 32px;
+                text-align: center;
+            }
+            &__item {
+                padding: 0;
+                a {
+                    font: $montserrat-16px;
+                    color: $color-grey-dark;
+                    letter-spacing: 0;
+                    &.active {
+                        color: $color-primary;
+                    }
+                }
+            }
+
+            .dropdown span {
+                display: none;
+            }
+
+            .dropdown__menu {
+                padding: 0;
+                gap: 32px;
+                position: initial;
+                visibility: visible;
+                opacity: 1;
+                box-shadow: none;
+                background-color: #f4f4f2;
+            }
         }
     }
 }
+
+.menu-open {
+    .header {
+        background-color: #F4F4F2;
+    }
+    .line {
+        &:nth-child(1) {
+            -webkit-transform: translateY(5px) rotate(45deg);
+            -ms-transform: translateY(5px) rotate(45deg);
+            -o-transform: translateY(5px) rotate(45deg);
+            transform: translateY(5px) rotate(45deg);
+        }
+      
+        &:nth-child(2) {
+            opacity: 0;
+        }
+      
+        &:nth-child(3) {
+            width: 20px;
+            -webkit-transform: translateY(-7px) rotate(-45deg);
+            -ms-transform: translateY(-7px) rotate(-45deg);
+            -o-transform: translateY(-7px) rotate(-45deg);
+            transform: translateY(-7px) rotate(-45deg);
+        }
+    }
+} 

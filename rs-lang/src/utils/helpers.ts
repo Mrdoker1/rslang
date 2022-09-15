@@ -1,5 +1,8 @@
 import IWord from '../module/interface/IWord';
 
+//Utils
+import getHTMLElement from './getHTMLElement';
+
 const getRandom = (min: number, max: number): number => {
     const rand = min + Math.random() * (max + 1 - min);
     return Math.floor(rand);
@@ -38,4 +41,16 @@ const createStsEntry = () => {
     };
 };
 
-export { getRandom, shuffle, createStsEntry };
+const toggleMenu = () => {
+    const menu = getHTMLElement(document.querySelector('.header__menu'));
+    menu.classList.toggle('open');
+    document.body.classList.toggle('menu-open');
+};
+
+const closeMenu = () => {
+    const menu = getHTMLElement(document.querySelector('.header__menu'));
+    menu.classList.remove('open');
+    document.body.classList.remove('menu-open');
+};
+
+export { getRandom, shuffle, createStsEntry, toggleMenu, closeMenu };

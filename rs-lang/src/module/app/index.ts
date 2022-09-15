@@ -8,7 +8,7 @@ import Render from '../ui';
 import getHTMLElement from '../../utils/getHTMLElement';
 import getHTMLInputElement from '../../utils/getHTMLInputElement';
 import { gameType } from '../../utils/enums';
-import { getRandom, createStsEntry } from '../../utils/helpers';
+import { getRandom, createStsEntry, toggleMenu, closeMenu } from '../../utils/helpers';
 
 //Interface
 import IWord from '../interface/IWord';
@@ -97,6 +97,10 @@ export default class App {
         body.appendChild(footer);
 
         this.avatarHandler();
+
+        const burger = getHTMLElement(document.querySelector('.header__burger'));
+
+        burger.addEventListener('click', toggleMenu);
     }
 
     initRouter() {
@@ -105,9 +109,11 @@ export default class App {
                 this.showMain();
                 Render.currentLink(req.path);
                 this.login.initSecondTrigger();
+                closeMenu();
             })
             .get('/book', (req) => {
                 this.router.navigate('/book/0/0');
+                closeMenu();
             })
             .get('/book/:group/:page', (req) => {
                 const state = new State();
@@ -123,6 +129,7 @@ export default class App {
                     this.showBookPage(group, page);
                 }
                 Render.currentLink(req.path);
+                closeMenu();
             })
             .get('/book/sprint/:group/:page', (req) => {
                 const group = Number(req.params.group);
@@ -133,6 +140,7 @@ export default class App {
                 }
                 this.showSprint(group, page, true);
                 Render.currentLink(req.path);
+                closeMenu();
             })
             .get('/book/audio-call/:group/:page', (req) => {
                 const group = Number(req.params.group);
@@ -143,6 +151,7 @@ export default class App {
                 }
                 this.showAudioCall(group, page, true);
                 Render.currentLink(req.path);
+                closeMenu();
             })
             .get('/games', (req) => {
                 this.router.navigate('/games/sprint');
@@ -150,31 +159,37 @@ export default class App {
             .get('/games/sprint', (req) => {
                 this.showGameDifficulty(gameType.Sprint);
                 Render.currentLink(req.path);
+                closeMenu();
             })
             .get('/games/sprint/:group/:page', (req) => {
                 const group = Number(req.params.group);
                 const page = Number(req.params.page);
                 this.showSprint(group, page);
                 Render.currentLink(req.path);
+                closeMenu();
             })
             .get('/games/audio-call', (req) => {
                 this.showGameDifficulty(gameType.AudioCall);
                 Render.currentLink(req.path);
+                closeMenu();
             })
             .get('/games/audio-call/:group/:page', (req) => {
                 const group = Number(req.params.group);
                 const page = Number(req.params.page);
                 this.showAudioCall(group, page);
                 Render.currentLink(req.path);
+                closeMenu();
             })
             .get('/stats', (req) => {
                 this.showStatistics();
                 Render.currentLink(req.path);
                 this.login.initSecondTrigger();
+                closeMenu();
             })
             .get('/about', (req) => {
                 this.showPageAbout();
                 Render.currentLink(req.path);
+                closeMenu();
             })
             .error(404, () => {
                 //this.show404();
