@@ -39,10 +39,10 @@
 
         .line {
             width: 20px;
-            height: 2.5px;
+            height: 1.5px;
             background-color: $color-primary;
             display: block;
-            margin: 3.5px;
+            margin: 4.5px;
             transition: $transition-1;
            
             &:nth-child(2) {
@@ -61,7 +61,7 @@
         align-items: center;
 
         @include tablet {
-            flex-basis: 55%;
+            flex-basis: 58%;
             justify-content: space-between;
         }
     }
