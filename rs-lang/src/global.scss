@@ -808,7 +808,7 @@ body.menu-open {
     top: -5px;
     left: 105%;
 
-    @include tablet {
+    @include desktop {
         left: -115%;
         top: -50%;
     }
@@ -829,7 +829,7 @@ body.menu-open {
     border-style: solid;
     border-color: transparent black transparent transparent;
 
-    @include tablet {
+    @include desktop {
         left: 100%;
         transform:  rotateY(-190deg);
     }
