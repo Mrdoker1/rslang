@@ -11,11 +11,26 @@
         justify-content: space-between;
         align-items: center;
         margin-bottom: 20px;
+
+        @include tablet {
+            justify-content: space-around;
+            align-items: flex-start;
+        }
     }
 
     &__menu {
         .nav__item:last-child {
             padding-right: 0;
+        }
+
+        @include tablet {
+             .nav__item {
+                  padding: 0;
+             } 
+            .nav__list {
+                flex-direction: column;
+                gap: 16px;
+            }
         }
     }
 
@@ -30,6 +45,10 @@
         gap: 1rem;
         padding-top: 20px;
         border-top: 1.22px solid $color-grey-medium;
+
+        @include tablet {
+            flex-direction: column;
+        }
     }
 
     &__copyright {
