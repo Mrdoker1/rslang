@@ -343,12 +343,17 @@ export default class App {
         const settings = await this.getUserSettings();
         const loginStatus = state.token ? true : false;
         const main = getHTMLElement(document.querySelector('.main'));
-        main.innerHTML = '';
+        if (window.location.href.includes('book')) {
+            main.innerHTML = '';
+        }
         main.classList.remove('main-page');
         const pageBook = this.render.pageBook(settings || this.defaultSettings());
         const pageHeader = getHTMLElement(pageBook.querySelector('.page-header'));
         getHTMLElement(pageHeader.querySelectorAll('.menu__item')[0]).classList.add('active');
-        const sectionGames = this.render.sectionGames(`/games/sprint`, `/games/audio-call`);
+        const sectionGames = this.render.sectionGames(
+            `/games/sprint/${group}/${page}`,
+            `/games/audio-call/${group}/${page}`
+        );
         pageHeader.appendChild(sectionGames);
         const dataWords = await this.data.getWords(group, page);
 
@@ -428,8 +433,9 @@ export default class App {
                 linkActiveLevel[0].classList.add('active');
             }
             pageBook.children[0].classList.add(`A${group}`);
-
-            main.appendChild(pageBook);
+            if (window.location.href.includes('book')) {
+                main.appendChild(pageBook);
+            }
         }
     }
 
@@ -440,7 +446,9 @@ export default class App {
         const userId = state.userId;
         const token = state.token;
         const main = getHTMLElement(document.querySelector('.main'));
-        main.innerHTML = '';
+        if (window.location.href.includes('book')) {
+            main.innerHTML = '';
+        }
         main.classList.remove('main-page');
         const pageBook = this.render.pageBook(settings || this.defaultSettings());
         const pageHeader = getHTMLElement(pageBook.querySelector('.page-header'));
@@ -545,7 +553,7 @@ export default class App {
                                 console.log('error');
                             } else {
                                 const parent = target.parentElement!.parentElement!.closest('.card-word');
-                                parent!.remove();
+                                //parent!.remove();
                                 this.showBookPageHard(group, page);
                             }
                         } else if (target.getAttribute('data-handle') === 'add-to-easy') {
@@ -603,7 +611,7 @@ export default class App {
                                     return;
                                 }
                                 const parent = target.parentElement!.parentElement!.closest('.card-word');
-                                parent!.remove();
+                                //parent!.remove();
                                 this.showBookPageHard(group, page);
                             }
                         }
@@ -652,7 +660,9 @@ export default class App {
         const token = state.token;
         const loginStatus = state.token ? true : false;
         const main = getHTMLElement(document.querySelector('.main'));
-        main.innerHTML = '';
+        if (window.location.href.includes('book')) {
+            main.innerHTML = '';
+        }
         main.classList.remove('main-page');
         const pageBook = await this.render.pageBook(settings || this.defaultSettings());
         const pageHeader = getHTMLElement(pageBook.querySelector('.page-header'));
@@ -1241,8 +1251,9 @@ export default class App {
                     );
                     getHTMLElement(pageHeader.querySelector('.page-header__right')).appendChild(sectionGames);
                 }
-
-                main.appendChild(pageBook);
+                if (window.location.href.includes('book')) {
+                    main.appendChild(pageBook);
+                }
             }
         }
     }
