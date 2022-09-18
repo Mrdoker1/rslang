@@ -5,20 +5,22 @@
     display: flex;
     flex-direction: row;
     background: white;
-    //width: fit-content;
-    //padding: 40px;
     padding: 40px 40px;
-    // gap: 40px;
     gap: 20px;
-    width: 630px;
-    height: 400px;
+    max-height: 430px;
+    height: 100%;
     box-shadow: $box-shadow-2;
     border-radius: 14px;
     transition: $transition-1;
 
+    @include desktop {
+        flex-direction: column;
+        padding: 20px;
+        width: 50%;
+    }
+
     @include tablet {
         width: 100%;
-        padding: 20px;
         flex-direction: column;
         max-height: 400px;
         overflow: hidden;
