@@ -7,6 +7,10 @@ About
 * [Project Documentation](https://goofy-secure-b26.notion.site/RS-Lang-02cab7e30a424ca184c9284203e33e1e)
 * [Figma Design](https://www.figma.com/file/2WF9g7pRAwPl5InvHVDQZu/RS-Lang-Design?node-id=19%3A4202)
 
+Presentation
+* [Interactive](https://www.figma.com/proto/2WF9g7pRAwPl5InvHVDQZu/RS-Lang-Design?page-id=1497%3A2814&node-id=1500%3A2985&viewport=1540%2C358%2C0.17&scaling=contain&starting-point-node-id=1500%3A2985&hide-ui=1)
+* [PDF](https://drive.google.com/file/d/1QImbkyo2pWFrkh3eR25eH72DbVcBAzdT/view?usp=sharing)
+
 Used NPM Modules:
 * [router.js](https://www.npmjs.com/package/routerjs)
 * [chart.js](https://www.npmjs.com/package/chart.js)
