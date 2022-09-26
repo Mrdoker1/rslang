@@ -2,6 +2,12 @@
 
 ![Preview](https://user-images.githubusercontent.com/26232484/187568790-3b118f50-f773-4d1d-9100-4cc970a84dee.png)
 
+#### Done 05.09.2022 / Deadline 6.09.2022 
+
+Deploy
+* [Server](https://rslang-learnwords-app.herokuapp.com/doc/)
+* [App](https://rslang-team182-mrdoker1.herokuapp.com/)
+
 About
 * [Task Description](https://github.com/rolling-scopes-school/tasks/blob/master/tasks/stage-2/rs-lang/rslang.md)
 * [Project Documentation](https://goofy-secure-b26.notion.site/RS-Lang-02cab7e30a424ca184c9284203e33e1e)
