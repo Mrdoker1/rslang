@@ -1,0 +1,383 @@
+// Variables
+@import '../../../variables.scss';
+
+.game {
+  display: flex;
+  height: 100%;	
+  
+  :focus-visible {
+    outline: none;
+  }
+
+  &__wrapper {
+    transition: $transition-1;
+    margin: auto;   
+    padding: 10px 0;
+    max-width: 800px;
+    width: 100%;
+    
+    &:hover{
+      transform: scale(1.02);
+    }
+  }
+
+  &__window {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    border-radius: 14px;
+    padding: 20px 40px;
+    gap: 10px;
+    overflow: hidden;
+
+    @include tablet {
+        gap: 4px;
+        padding: 20px;
+    }
+    &__light {
+       background: #ffffff;
+       box-shadow: $box-shadow-2;
+
+       @include tablet {
+            flex-direction: column;
+            padding: 20px;
+       }
+    }
+  }
+
+  &__block {
+    width: 100%;
+    position: relative;
+
+    @include tablet {
+        text-align: center;
+    }
+  }
+
+  &__heading{
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      @include tablet {
+          justify-content: center;
+      }
+    &-title{
+      font: $dela-gothic-48px;
+      color: $color-primary;
+
+      @include tablet {
+          font: $dela-gothic-24px;
+          text-align: center;
+      }
+    }
+    &-skill{
+      width: max-content;
+      font: $montserrat-12px;
+      background-color: $color-cyan-light;
+      color: $color-cyan-dark;
+      padding: 4px 8px; 
+      border-radius: 6px;
+
+      @include tablet {
+          font-size: 10px;
+      }
+    }
+  }
+
+  &__desc {
+    padding: 20px 0;
+    font: $montserrat-16px;
+    color: $color-grey-dark;
+
+    @include tablet {
+        text-align: center;
+        font: $montserrat-14px;
+    }
+  }
+
+  &__control {
+    padding: 8px;
+    background-color: $color-grey-light;
+    color: $color-grey-dark;
+    width: fit-content;
+    border-radius: 8px;
+    font: $montserrat-12px;
+
+    @include tablet {
+        margin: 0 auto;
+    }
+
+    @include phone {
+
+    }
+    span {
+      font: $montserrat-14px;
+      color: $color-grey-dark;
+    }
+  }
+
+  &__text {
+    padding-top: 30px;
+    font: $montserrat-14px;
+    color: $color-grey-dark;
+
+    @include tablet {
+        text-align: left;
+    }
+  }
+
+  &__start {
+    margin-top: 30px;
+
+    @include tablet {
+        margin-top: 20px;
+    }
+  }
+
+}
+
+.levels {
+  display: flex;
+  flex-direction: row;
+  padding-top: 8px;
+  gap: 16px;
+
+  @include tablet {
+      gap: none;
+      flex-wrap: wrap;
+  }
+
+  &__btn {
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    cursor: pointer;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border-radius: 50%;
+    border: 3px solid black;
+    font: $montserrat-16px;
+  }
+
+  [type="radio"] { 
+    display: none;
+  }
+}
+
+@mixin radioBtn($colors...) {
+  @for $i from 1 to length($colors) + 1 {
+    #level-#{$i} {
+      & + label {
+        color: #{nth($colors, $i)};
+        border-color: #{nth($colors, $i)};
+        &:hover {
+          background-color: #{fade-out(nth($colors, $i), 0.9)};
+        }
+      }
+      &:checked + label {
+        color: white;
+        border-color: #{nth($colors, $i)};
+        background-color: #{nth($colors, $i)};
+      } 
+    }
+  }
+}
+
+@include radioBtn($color-green, $color-yellow, $color-orange, $color-red, $color-pink,  $color-cyan);
+
+.audio {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+
+    &__main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+
+    &__question {
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-top: 60px;
+      width: 140px;
+      height: 140px;
+      background-color: transparent;
+      border-radius: 100%;
+      border: 5px solid $color-cyan-dark;
+      color: $color-cyan-dark; 
+      opacity: 1;
+      visibility: visible;
+      transition: $transition-1;
+
+      @include tablet {
+            margin-top: 0px;
+      }
+      
+      &:hover {
+        background-color: $color-cyan-dark;
+        & img {
+          filter: brightness(0) saturate(100%) invert(100%) sepia(10%) saturate(0%) hue-rotate(269deg) brightness(107%) contrast(107%);
+        }
+        & span {  
+          color: #ffffff;
+        }
+      }   
+    }
+
+    &__img {
+      transition: $transition-1;
+    }
+
+    &__text-play {
+      transition: $transition-1;
+    }
+
+    &__attempts {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      padding-top: 20px;
+    }
+
+    &__icon-heart  {
+      font: $dela-gothic-32px;
+      color: $color-red;
+      transition: $transition-1;
+
+      &_miss {
+        color: $color-pink-light;   
+      }
+    }
+
+    &__choices {
+      display: flex;
+      justify-content: space-around;
+      gap: 10px;
+      width: 100%;
+
+      @include tablet {
+          flex-direction: column;
+      }
+    }
+
+    &__choice {
+      cursor: pointer;
+      padding: 10px; 
+      border-radius: 100px;
+      border: 3px solid $color-grey-icon;
+      color: $color-grey-icon;
+      background-color: transparent;
+      font: $montserrat-16px;
+      transition: $transition-1;
+  
+      &:hover {
+        background-color: transparent;
+        border-color: $color-grey-dark;
+        color: $color-grey-dark;
+      }
+
+      &.disabled{
+        pointer-events: none;
+        &[data-answer] {
+          border-color:  $color-red;
+          background-color: $color-red;
+          color: white;
+        }
+      }
+
+      &.active-answer{
+        &[data-answer] {
+          border-color:  $color-green;
+          background-color: $color-green;
+          color: white;
+        }
+        border-color: $color-cyan-dark;
+        color: $color-cyan-dark;
+      }
+    }  
+} 
+
+.answer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  
+  &__photo {
+    height: 200px;
+    width: 100%;
+    border-radius: 14px 14px 0px 0px;
+  }
+
+  &__word {
+    bottom: 20px;
+    transition: $transition-1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    background-color: #ffffff;
+    border-radius: 0px 0px 14px 14px;
+    box-shadow: $box-shadow-2;
+    padding: 10px 20px;
+    width: -webkit-fill-available;
+  }
+
+  &__play {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background-color: $color-grey-light;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    transition: $transition-1;
+    cursor: pointer;
+    //transform: translateZ(0);
+    &:hover {
+      background-color: $color-cyan-dark;
+
+      img {
+        //transform: translateZ(0);
+        -webkit-filter: brightness(0) saturate(100%) invert(100%) sepia(10%) saturate(0%) hue-rotate(269deg) brightness(107%) contrast(107%);
+        filter: brightness(0) saturate(100%) invert(100%) sepia(10%) saturate(0%) hue-rotate(269deg) brightness(107%) contrast(107%);
+      }
+    }
+  }
+
+  &__icon-music {
+    width: 24px;
+    height: 24px;
+    transition: $transition-1;
+  }
+
+  &__text {
+    font: $montserrat-18px;
+    color: $color-grey-dark;
+
+    b {
+      color: $color-primary;
+    }
+  }
+}
+
+.game-container {
+  gap: 10px;
+  max-width: 1400px;
+  padding: 0;
+  @media (max-width: 1320px) {
+    width: 500px;
+    flex-direction: column;
+  }
+}

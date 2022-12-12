@@ -1,0 +1,7 @@
+.games {
+    &__list {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+    }
+}

@@ -1,0 +1,50 @@
+// Variables
+@import '../../../variables.scss';
+
+.benefits {
+    background: white;
+    .benefits__item .container {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+
+        @include tablet {
+            flex-direction: column;
+        }
+    }
+    .benefits__item {
+      padding: 5rem 0 5rem;
+
+      @include tablet {
+         padding: 2.5rem 0 2.5rem;
+      }
+
+      &:first-child .container {
+          justify-content: space-between
+      }
+
+      &:nth-child(even) {
+          padding: 0;
+          background-color: $color-grey-light;
+          .container {
+            padding: 1rem 0 0 4.5rem;
+            flex-direction: row-reverse;
+
+            @include tablet {
+                padding: 2.5rem 1rem 0;
+                flex-direction: column;
+            }
+          }
+
+          @include tablet {
+              .section-img {
+                  order: 2;
+              }
+          }
+      }
+
+      @include tablet {
+          padding: 2.5rem 0 2.5rem;
+      }
+    }
+}

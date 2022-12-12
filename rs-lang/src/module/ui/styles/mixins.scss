@@ -1,0 +1,29 @@
+// Media Query
+$phone: 480;
+$tablet: 767;
+$large: 1024;
+$desktop: 1279;
+
+@mixin phone {
+  @media only screen and (max-width: ($phone * 1px)) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media only screen and (max-width: ($tablet * 1px)) {
+    @content;
+  }
+}
+
+@mixin large {
+  @media only screen and (max-width: ($large * 1px)) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media only screen and (max-width: ($desktop * 1px)) {
+    @content;
+  }
+}

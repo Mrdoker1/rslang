@@ -1,0 +1,98 @@
+// Variables
+@import '../../../variables.scss';
+
+.splash {
+    padding: 3.5rem 0 9rem;
+    //background: url('/assets/img/splash-bg.png') no-repeat center right $color-grey-ligth;
+
+    @include tablet {
+        padding: 2.5rem 0 1rem;
+    }
+
+    &__wrapper {
+        max-width: 475px;
+        width: 100%;
+
+        @include tablet {
+            max-width: 100%;
+            text-align: center;
+        }
+    }
+
+    &__subtitle {
+        margin-bottom: 24px;
+        font: $montserrat-16px;
+        color: $color-cyan-dark;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+
+        @include phone {
+          margin-bottom: 8px;
+            font: $montserrat-12px;
+        }
+    }
+
+    &__title {
+        margin-bottom: 30px;
+        font: $dela-gothic-56px;
+        letter-spacing: -0.04em;
+
+        @include phone { 
+            padding: 0 5%;
+            margin-bottom: 8px;
+            font: $dela-gothic-32px;
+        }
+    }
+
+    &__description {
+        margin-bottom: 32px;
+        font: $montserrat-18px;
+        color: $color-grey-dark;
+
+        @include phone {
+            padding: 0 5%;
+            margin-bottom: 8px;
+            font: $montserrat-14px;
+        }
+    }
+
+    &__buttons {
+        display: flex;
+        gap: 30px;
+        align-items: center;
+        margin-bottom: 50px;
+
+        @include tablet {
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+    }
+
+    &__image {
+        display: none;
+        max-width: 355px;
+        width: 100%;
+
+        @include tablet {
+            display: block;
+            margin:  0 auto;
+        }
+    }
+
+    &.parallax {
+      position: relative;
+      background: url('/assets/img/splash-bg-3.png') no-repeat center right, 
+      url('/assets/img/splash-bg-1.png') no-repeat 75%, 
+      url('/assets/img/splash-bg-2.png')  no-repeat 55%;
+
+      @include desktop {
+          background: url('/assets/img/splash-bg-3.png') no-repeat 170%, 
+          url('/assets/img/splash-bg-1.png') no-repeat 100%, 
+          url('/assets/img/splash-bg-2.png')  no-repeat 47%;
+      }
+
+      @include tablet {
+          background: none;
+      }
+    }
+}

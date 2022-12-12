@@ -1,0 +1,64 @@
+// Variables
+@import '../../../variables.scss';
+
+.footer {
+    padding: 2.5rem 0 2.5rem;
+    background-color: $color-grey-light;
+
+    &__wrapper {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+
+        @include tablet {
+            justify-content: space-around;
+            align-items: flex-start;
+        }
+    }
+
+    &__menu {
+        .nav__item:last-child {
+            padding-right: 0;
+        }
+
+        @include tablet {
+             .nav__item {
+                  padding: 0;
+             } 
+            .nav__list {
+                flex-direction: column;
+                gap: 16px;
+            }
+        }
+    }
+
+    .nav__item a {
+        font: $montserrat-14px;
+    }
+
+    &-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        padding-top: 20px;
+        border-top: 1.22px solid $color-grey-medium;
+
+        @include tablet {
+            flex-direction: column;
+        }
+    }
+
+    &__copyright {
+        font: $montserrat-12px;
+        color: $color-grey-dark;
+        a {
+            color: $color-grey-dark;
+            &:hover {
+                color: $color-primary;
+            }
+        }
+    }
+}

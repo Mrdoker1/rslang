@@ -1,0 +1,151 @@
+// Variables
+@import '../../../variables.scss';
+
+.gameresultwords{
+    display: flex;
+    flex-direction: row;
+    background: white;
+    padding: 40px 40px;
+    gap: 20px;
+    max-height: 430px;
+    height: 100%;
+    box-shadow: $box-shadow-2;
+    border-radius: 14px;
+    transition: $transition-1;
+
+    @include desktop {
+        flex-direction: column;
+        padding: 20px;
+        width: 50%;
+    }
+
+    @include tablet {
+        width: 100%;
+        flex-direction: column;
+        max-height: 400px;
+        overflow: hidden;
+        overflow-y: scroll;
+    }
+    &:hover{
+      transform: scale(1.02);
+    }
+    
+    &__list{
+        display: flex;
+        height: 200px;
+        //overflow-y: scroll;
+        overflow: hidden auto;
+        gap: 14px;
+        flex-direction: column;
+        margin-top: 24px;
+        padding: 4px;
+        height: 100%;
+    }
+}
+
+.knowingwords{
+    &__container{
+        display: flex;
+        flex-direction: column;
+        width: 50%;
+
+        @include tablet {
+            width: 100%;
+        }
+    }
+    &__header{
+        display: flex;
+        align-items: center;
+        flex-direction: row;
+        gap: 10px;
+
+        &-title {
+            font: $dela-gothic-32px;
+            color: $color-primary;
+
+            @include tablet {
+                font: $dela-gothic-24px;
+            }
+        }
+
+        &-label {
+            font: $montserrat-12px;
+            color: $color-cyan-dark;
+            background: $color-cyan-light;
+            padding: 4px 8px;
+            border-radius:  6px;
+        }
+    }
+}
+
+.unknowingwords{
+    &__container{
+        display: flex;
+        flex-direction: column;
+        //width: 50%;
+    }
+    &__header{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+
+        &-title {
+            font: $dela-gothic-32px;
+            color: $color-primary;
+
+            @include tablet {
+                font: $dela-gothic-24px;
+            }
+        }
+
+        &-label {
+            font: $montserrat-12px;
+            color: $color-pink-dark;
+            background: $color-pink-light;
+            padding: 4px 8px;
+            border-radius:  6px;
+            // &:hover {
+
+            // }
+        }
+    }
+}
+
+.gameresultword{
+    display: flex;
+    flex-direction: row;
+    //justify-content: center;
+    align-items: center;
+    gap: 10px;
+    
+    &__icon {
+        background-color: $color-grey-light;
+        padding: 8px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: $transition-1;
+        
+        svg {
+            filter: invert(89%) sepia(7%) saturate(31%) hue-rotate(339deg) brightness(86%) contrast(83%);
+        }
+
+        &:hover {
+            background: $color-cyan-dark;
+            .play-icon {
+                filter: brightness(0) saturate(100%) invert(100%) sepia(10%) saturate(0%) hue-rotate(269deg) brightness(107%) contrast(107%);
+            }
+        }
+    }
+    &__body{
+        display: flex;
+        flex-direction: row-reverse;
+        gap: 8px;
+        font: $montserrat-16px;
+        color: $color-grey-dark;
+
+        &-word {  
+            color: $color-primary;
+        }
+    }
+}
