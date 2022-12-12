@@ -11,7 +11,7 @@ Deploy
 About
 * [Task Description](https://github.com/rolling-scopes-school/tasks/blob/master/tasks/stage-2/rs-lang/rslang.md)
 * [Project Documentation](https://goofy-secure-b26.notion.site/RS-Lang-02cab7e30a424ca184c9284203e33e1e)
-* [Figma Design](https://www.figma.com/file/2WF9g7pRAwPl5InvHVDQZu/RS-Lang-Design?node-id=19%3A4202)
+* [Figma Design](https://www.figma.com/community/file/1184081630965775971)
 
 Presentation
 * [Interactive](https://www.figma.com/proto/2WF9g7pRAwPl5InvHVDQZu/RS-Lang-Design?page-id=1497%3A2814&node-id=1500%3A2985&viewport=1540%2C358%2C0.17&scaling=contain&starting-point-node-id=1500%3A2985&hide-ui=1)
