@@ -5,7 +5,7 @@
 #### Done 05.09.2022 / Deadline 6.09.2022 
 
 Deploy
-* [Server](https://rslang-learnwords-app.herokuapp.com/doc/)
+* [Server](https://github.com/rolling-scopes-school/react-rslang-be)
 * [App](https://rslang-team182-mrdoker1.herokuapp.com/)
 
 About
