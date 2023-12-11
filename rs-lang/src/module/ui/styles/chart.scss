@@ -1,0 +1,46 @@
+.chart {
+    position: absolute;
+    max-width: 500px;
+    max-height: 500px;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.chart-wrapper {
+    position: absolute;
+    fill: none;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    .chart-percentage {
+        transform: rotate(-90deg);
+        stroke-linecap: round;
+    }
+
+    svg {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.gameresult-chart{
+    position: relative;
+    width: 120px;
+    height: 120px;
+    &__body{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        flex-direction: column;
+        &-upper{}
+        &-value{
+            padding-bottom: 4px;
+        }
+        &-buttom{}
+    }
+    &__heart{
+
+    }
+}

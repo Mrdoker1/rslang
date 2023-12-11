@@ -1,0 +1,312 @@
+// Variables
+@import '../../../variables.scss';
+
+.statistics{
+    transition: $transition-1;
+    padding: 40px;
+    background: white;
+    border-radius: 14px;
+    box-shadow: $box-shadow-2;
+
+    @include phone {
+        padding: 20px;
+    }
+    &:hover{
+        transform: scale(1.02);
+    }
+    &-denied{
+        display: flex;
+        flex-direction: row;
+        background: white;
+        padding: 40px;
+        border-radius: 14px;
+        gap: 30px;
+        box-shadow: $box-shadow-2;
+
+        @include tablet {
+            width: 100%;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        &__body{
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        &__heading{
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            max-width: 490px;
+            &-header{
+                font: $dela-gothic-32px;
+                letter-spacing: -0.04em;
+
+                @include tablet {
+                    font: $dela-gothic-20px;
+                }
+            }
+            &-subtitle{
+                font: $montserrat-16px;
+                color: $color-grey-dark;
+
+                @include tablet {
+                    font: $montserrat-14px;
+                }
+            }
+
+            @include tablet {
+                margin-bottom: 20px;
+            }
+        }
+        &__buttons{
+            display: flex;
+            gap: 20px;
+            align-items: center;
+
+            @include tablet {
+                flex-direction: column;
+            }
+        }
+    }
+    &__tabs{
+        display: flex;
+        font: $dela-gothic-26px;
+        height: 40px;
+        gap: 40px;
+        cursor: pointer;
+
+        @include tablet {
+            height: 28px;
+            gap: 20px;
+            font: $dela-gothic-18px;
+        }
+
+        &-tab{
+            transition: $transition-1;
+            color: $color-grey-dark;
+            &:hover{
+                color: $color-primary;
+            }
+            &.active{
+                color: $color-primary;
+                border-bottom: 2px solid $color-primary;
+            }
+        }
+    }
+    &__charts{
+        transition: $transition-1;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        justify-content: center;
+        width: 50%;
+        padding: 40px;
+        background: white;
+        border-radius: 14px;
+        box-shadow: $box-shadow-2;
+        &:hover{
+            transform: scale(1.02);
+        }
+
+        @include tablet {
+            width: 100%;
+        }
+    }
+    &__container{
+        display: flex;
+        gap: 20px;
+        width: 100%;
+
+        @include tablet {
+            flex-direction: column;
+        }
+    }
+    &__wrapper{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        gap: 20px;
+    }
+    &__empty{}
+    &__body{
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        &-heading{
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+
+            @include phone {
+                text-align: center;
+            }
+        }
+        &-info{
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+    }
+    &__header{
+        font: $dela-gothic-32px;
+
+        @include phone {
+            font: $dela-gothic-24px;
+        }
+    }
+    &__subtitle{
+        font: $montserrat-16px;
+        color: $color-grey-dark;
+
+        @include phone {
+            font: $montserrat-14px;
+        }
+    }
+    &__wordLearnedTotal{
+        font: $dela-gothic-extra;
+
+        @include phone {
+            font: $dela-gothic-24px;
+        }
+        &-number{
+            display: flex;
+            justify-content: center;
+            span{
+                color: $color-cyan-dark;
+            }
+        }
+        &-subtitle{
+            font: $montserrat-16px;
+            color: $color-grey-dark;
+
+            @include phone {
+                font: $montserrat-12px;
+            }
+        }
+    }
+    &__rightAnswersTotal{
+        font: $dela-gothic-extra;
+
+        @include phone {
+            font: $dela-gothic-24px;
+        }
+        &-number{
+            display: flex;
+            justify-content: center;
+            span{
+                color: $color-cyan-dark;
+            }
+        }
+        &-subtitle{
+            font: $montserrat-16px;
+            color: $color-grey-dark;
+
+            @include phone {
+                font: $montserrat-12px;
+            }
+        }
+    }
+    &__sprint{
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+
+        @include phone {
+            gap: 10px;
+        }
+        & .sprint-image {
+            max-width: 70px;
+            max-height: 112px;
+        }
+        &-body{
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+
+            @include phone {
+                gap: 9px;
+            }
+        }
+        &-heading{
+            display: flex;
+            gap: 8px;
+        }
+        &-header{
+            font: $dela-gothic-26px;
+
+            @include phone {
+                font: $dela-gothic-20px;
+            }
+        }
+        &-info{
+            display: flex;
+            flex-direction: column;
+
+            @include phone {
+                font: $montserrat-12px;
+                color: $color-grey-dark;
+
+                b { 
+                    color: $color-primary;
+                 }
+            }
+        }
+    }
+    &__audiocall{
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+
+        @include phone {
+            gap: 10px;
+        }
+        & .audiocall-image {
+            max-width: 70px;
+            max-height: 112px;
+        }
+        & .sprint-image{}
+        &-body{
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+
+            @include phone {
+                gap: 9px;
+            }
+        }
+        &-heading{
+            display: flex;
+            gap: 8px;
+        }
+        &-header{
+            font: $dela-gothic-26px;
+
+            @include phone {
+                font: $dela-gothic-20px;
+            }
+        }
+        &-info{
+            display: flex;
+            flex-direction: column;
+
+            @include phone {
+                font: $montserrat-12px;
+                color: $color-grey-dark;
+
+                b { 
+                    color: $color-primary;
+                }
+            }
+        }
+    }
+}
+
+#Chart {
+    max-height: 400px;
+}

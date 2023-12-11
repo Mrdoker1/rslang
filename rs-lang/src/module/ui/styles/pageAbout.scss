@@ -1,0 +1,47 @@
+// Variables
+@import '../../../variables.scss';
+
+.page {
+    .about__list {
+          display: flex;
+          flex-direction: column;
+          gap: 40px;
+          align-items: center;
+
+          @include tablet {
+              gap: 20px;
+          }
+
+          .statistics-denied {
+              max-width: 800px;
+              width: 100%;
+          }
+
+          .statistics-denied__body {
+              justify-content: center;
+          }
+
+          .statistics-denied__heading-header {
+              display: flex;
+              gap: 14px;
+
+              @include tablet {
+                  gap: 8px;
+                  font: $dela-gothic-24px;
+                  justify-content: center;
+              }
+
+              .label {
+                  max-height: 25px;
+                  text-decoration: none;
+              }
+          }
+      }
+}
+
+.statistics-denied {
+    transition: $transition-1;
+    &:hover{
+      transform: scale(1.02);
+    }
+}
